@@ -28,11 +28,20 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable_refreshTreeView = vscode.commands.registerCommand("themeFav.refreshTreeView", () => {
 		themeProvider.refresh()
 	})
+	let disposable_sortAlphaAsc = vscode.commands.registerCommand("themeFav.sortAlphaAsc", () => {
+		lib.sortListAlphaAsc(context, themeProvider)
+	})
+	let disposable_sortAlphaDesc = vscode.commands.registerCommand("themeFav.sortAlphaDesc", () => {
+		lib.sortListAlphaDesc(context, themeProvider)
+	})
 	context.subscriptions.push(disposable_getFavorites);
 	context.subscriptions.push(disposable_selectFromFavorites);
 	context.subscriptions.push(disposable_saveTheme);
 	context.subscriptions.push(disposable_removeFromFavorites);
 	context.subscriptions.push(disposable_refreshTreeView);
+	context.subscriptions.push(disposable_sortAlphaAsc);
+	context.subscriptions.push(disposable_sortAlphaDesc);
+
 }
 
 export function deactivate() {

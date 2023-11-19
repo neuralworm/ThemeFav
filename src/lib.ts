@@ -12,10 +12,10 @@ export const getFavorites = (context: vscode.ExtensionContext): string[] => {
     catch(e){
         favoriteString = "[]"
     }
-    console.log("Retrieved " + favoriteString)
+    // console.log("Retrieved " + favoriteString)
     if(!favoriteString) favoriteString = "[]"
     let favoriteArray: string[] = JSON.parse(favoriteString)
-    console.log("Favorites: " + favoriteString)
+    // console.log("Favorites: " + favoriteString)
     return favoriteArray
 }
 export const saveThemeToState = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
@@ -115,7 +115,20 @@ export const removeFromFavorites = (context: vscode.ExtensionContext, themeProvi
     // ACTIVATE
     quickPickAction.show()
 }
-
+export const sortListAlphaAsc = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
+    let favs = getFavorites(context)
+    let sorted = sortAlphaAsc(favs)
+    context.globalState.update("theme_favorites", JSON.stringify(sorted)).then(()=>{
+        themeProvider.refresh()
+    })
+}
+export const sortListAlphaDesc = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
+    let favs = getFavorites(context)
+    let sorted = sortAlphaDesc(favs)
+    context.globalState.update("theme_favorites", JSON.stringify(sorted)).then(()=>{
+        themeProvider.refresh()
+    })
+}
 
 // UTIL
 export const setTheme = (themeString: string) => {
@@ -145,4 +158,13 @@ export const reorderTheme = (context: vscode.ExtensionContext, themeToMove: stri
     context.globalState.update('theme_favorites', newArray).then(()=>{
         vscode.commands.executeCommand("themeFav.refreshTreeView")
     })
+}
+// SORT UTIL
+const sortAlphaDesc = (themes: string[]) => {
+    console.log(themes)
+    return themes.sort((a, b) => a > b ? 1 : -1)
+}
+const sortAlphaAsc = (themes: string[]) => {
+    console.log(themes)
+    return themes.sort((a, b) => a < b ? 1 : -1)
 }

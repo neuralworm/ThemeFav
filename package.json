@@ -1,5 +1,5 @@
 {
-  "name": "themeFav",
+	"name": "themeFav",
 	"displayName": "ThemeFav: Theme Favorites",
 	"description": "Easily favorite themes and switch between them.",
 	"version": "0.0.1",
@@ -10,7 +10,7 @@
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:themeFav.favoritethememessage"
+		"onCommand:themeFav.favoritethememessage"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -21,7 +21,8 @@
 			},
 			{
 				"command": "themeFav.saveTheme",
-				"title": "ThemeFav: Save Current $(save)"
+				"title": "ThemeFav: Save Current",
+				"icon": "$(add)"
 			},
 			{
 				"command": "themeFav.selectFromFavorites",
@@ -29,12 +30,22 @@
 			},
 			{
 				"command": "themeFav.removeFromFavorites",
-				"title": "ThemeFav: Remove"
+				"title": "ThemeFav: Remove",
+				"icon": "$(remove)"
 			},
 			{
-                "command": "themeFav.refreshTreeView",
-                "title": "ThemeFav: Refresh"
-            }
+				"command": "themeFav.refreshTreeView",
+				"title": "ThemeFav: Refresh"
+			},
+			{
+				"command": "themeFav.sortAlphaAsc",
+				"title": "ThemeFav: Sort Alphabetically (Asc)",
+				"icon": "$(arrow-up)"
+			},{
+				"command": "themeFav.sortAlphaDesc",
+				"title": "ThemeFav: Sort Alphabetically (Desc)",
+				"icon": "$(arrow-down)"
+			}
 		],
 		"viewsContainers": {
 			"activitybar": [
@@ -50,6 +61,32 @@
 				{
 					"id": "favorites-list",
 					"name": "Themes"
+				}
+			]
+		},
+		"menus": {
+			"view/title": [
+				{
+					"command": "themeFav.saveTheme",
+					"when": "view == favorites-list",
+					"group": "navigation@1"
+				},
+				{
+					"command": "themeFav.removeFromFavorites",
+					"when": "view == favorites-list",
+					"group": "navigation@2"
+				},
+				{
+					"command": "themeFav.sortAlphaAsc",
+					"when": "view == favorites-list"
+				},
+				{
+					"command": "themeFav.sortAlphaDesc",
+					"when": "view == favorites-list"
+				}
+			],
+			"view/item/context": [
+				{
 				}
 			]
 		}

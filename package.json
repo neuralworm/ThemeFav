@@ -21,7 +21,7 @@
 			},
 			{
 				"command": "favoritethemes.saveTheme",
-				"title": "ThemeFav: Save Current"
+				"title": "ThemeFav: Save Current $(save)"
 			},
 			{
 				"command": "favoritethemes.selectFromFavorites",

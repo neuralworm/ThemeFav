@@ -7,12 +7,13 @@ import { ThemeFav, ThemeFavProvider } from './TreeViewProvider';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-	const themeProvider = new ThemeFavProvider(context)
 	console.log('ThemeFav now active.');
+	const themeProvider = new ThemeFavProvider(context)
 	// REGISTER TREEVIEW
 	const favoritesTreeView = vscode.window.createTreeView("favorites-list", {
 		treeDataProvider: themeProvider
 	})
+	// TREE VIEW SELECTION EVENTS
 	favoritesTreeView.onDidChangeSelection((e: vscode.TreeViewSelectionChangeEvent<ThemeFav>)=>{
 		lib.setTheme(e.selection[0].label)
 	})

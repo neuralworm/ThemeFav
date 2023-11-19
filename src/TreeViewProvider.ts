@@ -23,6 +23,7 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeFav>{
         this.favs = lib.getFavorites(this.context)
         this._onDidChangeTreeData.fire()
     }
+    
 }
 
 

@@ -2,15 +2,19 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as lib from './lib'
-import { ThemeFavProvider } from './TreeViewProvider';
+import { ThemeFav, ThemeFavProvider } from './TreeViewProvider';
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 	const themeProvider = new ThemeFavProvider(context)
 	console.log('ThemeFav now active.');
 	// REGISTER TREEVIEW
-	vscode.window.createTreeView("favorites-list", {
+	const favoritesTreeView = vscode.window.createTreeView("favorites-list", {
 		treeDataProvider: themeProvider
+	})
+	favoritesTreeView.onDidChangeSelection((e: vscode.TreeViewSelectionChangeEvent<ThemeFav>)=>{
+		lib.setTheme(e.selection[0].label)
 	})
 	// COMMANDS
 	let disposable_getFavorites = vscode.commands.registerCommand('themeFav.getFavorites', () => {

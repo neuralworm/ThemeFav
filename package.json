@@ -39,11 +39,11 @@
 			},
 			{
 				"command": "themeFav.sortAlphaAsc",
-				"title": "ThemeFav: Sort Alphabetically (Asc)",
+				"title": "Sort Alphabetically (Asc)",
 				"icon": "$(arrow-up)"
 			},{
 				"command": "themeFav.sortAlphaDesc",
-				"title": "ThemeFav: Sort Alphabetically (Desc)",
+				"title": "Sort Alphabetically (Desc)",
 				"icon": "$(arrow-down)"
 			}
 		],
@@ -87,6 +87,16 @@
 			],
 			"view/item/context": [
 				{
+				}
+			],
+			"commandPalette": [
+				{
+					"command": "themeFav.sortAlphaAsc",
+					"when": "false"
+				},
+				{
+					"command": "themeFav.sortAlphaDesc",
+					"when": "false"
 				}
 			]
 		}

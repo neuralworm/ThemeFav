@@ -1,5 +1,7 @@
 import * as vscode from 'vscode'
 import { ThemeFavProvider } from './TreeViewProvider'
+
+// BASIC STATE MANAGEMENT
 export const getFavorites = (context: vscode.ExtensionContext): string[] => {
     let state = context.globalState
     let favoriteString: string|undefined = state.get('theme_favorites')
@@ -28,8 +30,6 @@ export const saveThemeToState = (context: vscode.ExtensionContext, themeProvider
         themeProvider.refresh()
         vscode.window.showInformationMessage(themeString + " saved to favorites.")
     })
-
-    
 }
 export const removeThemeFromState = (context: vscode.ExtensionContext, themeString: string, themeProvider: ThemeFavProvider) => {
     console.log('request to remove ' + themeString)
@@ -43,8 +43,6 @@ export const removeThemeFromState = (context: vscode.ExtensionContext, themeStri
         themeProvider.refresh()
         vscode.window.showInformationMessage(themeString + " removed from favorites.")
     })
-    
-
 }
 export const activateTheme = (themeString: string) => {
     vscode.commands.executeCommand("workbench.action.selectTheme").then((val: any)=>{
@@ -132,4 +130,19 @@ export const getCurrentTheme = (): string => {
 export const doesContain =(favs: string[], themeString: string): boolean => {
     if(favs.indexOf(themeString) === -1) return false
     return true
+}
+export const getThemeIndex = (themes: string[], theme: string) => {
+    return themes.indexOf(theme)
+}
+
+// ORGANIZATION
+export const reorderTheme = (context: vscode.ExtensionContext, themeToMove: string, newInd: number) => {
+    let themes = getFavorites(context)
+    let ind = getThemeIndex(themes, themeToMove)
+    let newArray = [...themes]
+    let moving: string[] = newArray.splice(ind, 1)
+    newArray.splice(newInd, 0, moving[0])
+    context.globalState.update('theme_favorites', newArray).then(()=>{
+        vscode.commands.executeCommand("themeFav.refreshTreeView")
+    })
 }

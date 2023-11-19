@@ -33,7 +33,6 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable_saveTheme);
 	context.subscriptions.push(disposable_removeFromFavorites);
 	context.subscriptions.push(disposable_refreshTreeView);
-
 }
 
 export function deactivate() {

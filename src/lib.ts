@@ -1,4 +1,5 @@
 import * as vscode from 'vscode'
+import { ThemeFavProvider } from './TreeViewProvider'
 export const getFavorites = (context: vscode.ExtensionContext): string[] => {
     let state = context.globalState
     let favoriteString: string|undefined = state.get('theme_favorites')
@@ -15,7 +16,7 @@ export const getFavorites = (context: vscode.ExtensionContext): string[] => {
     console.log("Favorites: " + favoriteString)
     return favoriteArray
 }
-export const saveThemeToState = (context: vscode.ExtensionContext) => {
+export const saveThemeToState = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
     let themeString = getCurrentTheme()
     let favoriteArray = getFavorites(context)
     if(favoriteArray.indexOf(themeString) == -1){
@@ -23,10 +24,14 @@ export const saveThemeToState = (context: vscode.ExtensionContext) => {
     }
     else return
     let toSave = JSON.stringify(favoriteArray)
-    context.globalState.update("theme_favorites", toSave)
-    vscode.window.showInformationMessage(themeString + " saved to favorites.")
+    context.globalState.update("theme_favorites", toSave).then(()=>{
+        themeProvider.refresh()
+        vscode.window.showInformationMessage(themeString + " saved to favorites.")
+    })
+
+    
 }
-export const removeThemeFromState = (context: vscode.ExtensionContext, themeString: string) => {
+export const removeThemeFromState = (context: vscode.ExtensionContext, themeString: string, themeProvider: ThemeFavProvider) => {
     console.log('request to remove ' + themeString)
     let favorites: string[] = getFavorites(context)
     let ind = favorites.indexOf(themeString)
@@ -34,7 +39,12 @@ export const removeThemeFromState = (context: vscode.ExtensionContext, themeStri
     if(ind == -1) return
     favorites.splice(ind, 1)
     console.log(favorites)
-    context.globalState.update("theme_favorites", JSON.stringify(favorites))
+    context.globalState.update("theme_favorites", JSON.stringify(favorites)).then(()=>{
+        themeProvider.refresh()
+        vscode.window.showInformationMessage(themeString + " removed from favorites.")
+    })
+    
+
 }
 export const activateTheme = (themeString: string) => {
     vscode.commands.executeCommand("workbench.action.selectTheme").then((val: any)=>{
@@ -80,7 +90,7 @@ export const selectFavorite = (context: vscode.ExtensionContext) => {
     // ACTIVATE
     quickPickAction.show()
 }
-export const removeFromFavorites = (context: vscode.ExtensionContext) => {
+export const removeFromFavorites = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
     let favs = getFavorites(context)
     let quickPicks: vscode.QuickPickItem[] = []
     favs.forEach((val: string) => {
@@ -97,9 +107,9 @@ export const removeFromFavorites = (context: vscode.ExtensionContext) => {
     quickPickAction.onDidAccept(() => {
         const selection = quickPickAction.activeItems[0]
         console.log("want to remove " + selection.label)
-        removeThemeFromState(context, selection.label)
+        removeThemeFromState(context, selection.label, themeProvider)
         quickPickAction.hide()
-        vscode.window.showInformationMessage(selection.label + " removed from favorites.")
+        
     })
     quickPickAction.onDidChangeActive(() => {
         const selection = quickPickAction.activeItems[0]

@@ -1,6 +1,6 @@
 {
-  "name": "favoritethemes",
-	"displayName": "favorite themes",
+  "name": "themeFav",
+	"displayName": "ThemeFav: Theme Favorites",
 	"description": "Easily favorite themes and switch between them.",
 	"version": "0.0.1",
 	"engines": {
@@ -10,27 +10,31 @@
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:favoritethemes.favoritethememessage"
+        "onCommand:themeFav.favoritethememessage"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "favoritethemes.getFavorites",
+				"command": "themeFav.getFavorites",
 				"title": "ThemeFav: Get favorite themes."
 			},
 			{
-				"command": "favoritethemes.saveTheme",
+				"command": "themeFav.saveTheme",
 				"title": "ThemeFav: Save Current $(save)"
 			},
 			{
-				"command": "favoritethemes.selectFromFavorites",
+				"command": "themeFav.selectFromFavorites",
 				"title": "ThemeFav: Select"
 			},
 			{
-				"command": "favoritethemes.removeFromFavorites",
+				"command": "themeFav.removeFromFavorites",
 				"title": "ThemeFav: Remove"
-			}
+			},
+			{
+                "command": "themeFav.refreshTreeView",
+                "title": "ThemeFav: Refresh"
+            }
 		],
 		"viewsContainers": {
 			"activitybar": [

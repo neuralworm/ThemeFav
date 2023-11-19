@@ -2,17 +2,15 @@ import * as vscode from 'vscode'
 export const getFavorites = (context: vscode.ExtensionContext): string[] => {
     let state = context.globalState
     let favoriteString: string|undefined = state.get('theme_favorites')
-    
+    // ATTEMPT TO PARSE
     try{
         JSON.parse(favoriteString!)
     }
     catch(e){
         favoriteString = "[]"
     }
-
     console.log("Retrieved " + favoriteString)
     if(!favoriteString) favoriteString = "[]"
-
     let favoriteArray: string[] = JSON.parse(favoriteString)
     console.log("Favorites: " + favoriteString)
     return favoriteArray
@@ -45,15 +43,11 @@ export const activateTheme = (themeString: string) => {
         })
     })
 }
-
-
 // MENU ACTION
 export const selectFavorite = (context: vscode.ExtensionContext) => {
     let favs = getFavorites(context)
     let current = getCurrentTheme()
     let currentIncludedInFavorites = doesContain(favs, current)
-
-
     // CREATE OPTIONS
     let quickPickItems: vscode.QuickPickItem[] = []
     favs.forEach((val: string) => {
@@ -61,14 +55,11 @@ export const selectFavorite = (context: vscode.ExtensionContext) => {
             label: val,
         }
         quickPickItems.push(quickPick)
-        
     })
-
     // SETUP
     let quickPickAction = vscode.window.createQuickPick()
     quickPickAction.items = quickPickItems
     quickPickAction.title = "Select theme."
-
     // SET ACTIVE IF POSSIBLE
     if(currentIncludedInFavorites){
         let indexOfCurrent = quickPickItems.map((qp) => {
@@ -76,21 +67,16 @@ export const selectFavorite = (context: vscode.ExtensionContext) => {
         }).indexOf(current)
         quickPickAction.activeItems = [quickPickItems[indexOfCurrent]]
     }
-
-
-
     // CALLBACKS
     quickPickAction.onDidAccept(() => {
         const selection = quickPickAction.activeItems[0]
         setTheme(selection.label)
         quickPickAction.hide()
-        
     })
     quickPickAction.onDidChangeActive(() => {
         const selection = quickPickAction.activeItems[0]
         setTheme(selection.label)
     })
-    
     // ACTIVATE
     quickPickAction.show()
 }
@@ -103,11 +89,11 @@ export const removeFromFavorites = (context: vscode.ExtensionContext) => {
         }
         quickPicks.push(quickPick)
     })
+    // SETUP MENU
     let quickPickAction = vscode.window.createQuickPick()
     quickPickAction.items = quickPicks
     quickPickAction.title = "Remove theme."
-
-    // Select to remove
+    // SELECT TO REMOVE
     quickPickAction.onDidAccept(() => {
         const selection = quickPickAction.activeItems[0]
         console.log("want to remove " + selection.label)
@@ -118,9 +104,9 @@ export const removeFromFavorites = (context: vscode.ExtensionContext) => {
     quickPickAction.onDidChangeActive(() => {
         const selection = quickPickAction.activeItems[0]
     })
+    // ACTIVATE
     quickPickAction.show()
 }
-
 
 
 // UTIL
@@ -128,14 +114,11 @@ export const setTheme = (themeString: string) => {
     let config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration()
     config.update("workbench.colorTheme", themeString)
 }
-
 export const getCurrentTheme = (): string => {
     let config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration()
     let theme: string = config.get("workbench.colorTheme")!
-    console.log("Current theme is " + theme)
     return theme
 }
-
 export const doesContain =(favs: string[], themeString: string): boolean => {
     if(favs.indexOf(themeString) === -1) return false
     return true

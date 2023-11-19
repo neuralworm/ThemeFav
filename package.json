@@ -31,7 +31,24 @@
 				"command": "favoritethemes.removeFromFavorites",
 				"title": "ThemeFav: Remove"
 			}
-		]
+		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "theme-favorites",
+					"title": "ThemeFav",
+					"icon": "./resources/icon.svg"
+				}
+			]
+		},
+		"views": {
+			"theme-favorites": [
+				{
+					"id": "favorites-list",
+					"name": "Themes"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "yarn run compile",

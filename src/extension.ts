@@ -25,16 +25,21 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable_saveTheme = vscode.commands.registerCommand('favoritethemes.saveTheme', () => {
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
-		lib.saveTheme(context)
+		lib.saveThemeToState(context)
 	});
 	let disposable_selectFromFavorites = vscode.commands.registerCommand('favoritethemes.selectFromFavorites', () => {
 		// The code you place here will be executed every time your command is executed
 		// Display a message box to the user
 		lib.selectFavorite(context)
 	});
+	let disposable_removeFromFavorites = vscode.commands.registerCommand('favoritethemes.removeFromFavorites', () => {
+		// The code you place here will be executed every time your command is executed
+		// Display a message box to the user
+		lib.removeFromFavorites(context)
+	});
 	context.subscriptions.push(disposable_getFavorites);
 	context.subscriptions.push(disposable_saveTheme);
-	context.subscriptions.push(disposable_selectFromFavorites);
+	context.subscriptions.push(disposable_removeFromFavorites);
 
 
 }

@@ -17,15 +17,19 @@
 		"commands": [
 			{
 				"command": "favoritethemes.getFavorites",
-				"title": "Get favorite themes."
+				"title": "ThemeFav: Get favorite themes."
 			},
 			{
 				"command": "favoritethemes.saveTheme",
-				"title": "Save theme to favorites."
+				"title": "ThemeFav: Save Current"
 			},
 			{
 				"command": "favoritethemes.selectFromFavorites",
-				"title": "Select favorite theme."
+				"title": "ThemeFav: Select"
+			},
+			{
+				"command": "favoritethemes.removeFromFavorites",
+				"title": "ThemeFav: Remove"
 			}
 		]
 	},

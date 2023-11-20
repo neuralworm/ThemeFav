@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { ThemeFavProvider } from './TreeViewProvider'
+import { ThemeFav, ThemeFavProvider } from './TreeViewProvider'
 
 // BASIC STATE MANAGEMENT
 export const getFavorites = (context: vscode.ExtensionContext): string[] => {
@@ -88,7 +88,7 @@ export const selectFavorite = (context: vscode.ExtensionContext) => {
     // ACTIVATE
     quickPickAction.show()
 }
-export const removeFromFavorites = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
+export const removeViaCommandPalette = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
     let favs = getFavorites(context)
     let quickPicks: vscode.QuickPickItem[] = []
     favs.forEach((val: string) => {
@@ -107,13 +107,16 @@ export const removeFromFavorites = (context: vscode.ExtensionContext, themeProvi
         console.log("want to remove " + selection.label)
         removeThemeFromState(context, selection.label, themeProvider)
         quickPickAction.hide()
-        
     })
     quickPickAction.onDidChangeActive(() => {
         const selection = quickPickAction.activeItems[0]
     })
     // ACTIVATE
     quickPickAction.show()
+}
+export const removeViaView = (themeFav: ThemeFav, context: vscode.ExtensionContext, treeProvider: ThemeFavProvider) => {
+    let toRemove: string = themeFav.label
+    removeThemeFromState(context, toRemove, treeProvider)
 }
 export const sortListAlphaAsc = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
     let favs = getFavorites(context)

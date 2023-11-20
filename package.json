@@ -29,8 +29,13 @@
 				"title": "ThemeFav: Select"
 			},
 			{
-				"command": "themeFav.removeFromFavorites",
+				"command": "themeFav.removeViaCommandPalette",
 				"title": "ThemeFav: Remove",
+				"icon": "$(remove)"
+			},
+			{
+				"command": "themeFav.removeViaView",
+				"title": "Remove",
 				"icon": "$(remove)"
 			},
 			{
@@ -72,7 +77,7 @@
 					"group": "navigation@1"
 				},
 				{
-					"command": "themeFav.removeFromFavorites",
+					"command": "themeFav.removeViaCommandPalette",
 					"when": "view == favorites-list",
 					"group": "navigation@2"
 				},
@@ -87,6 +92,9 @@
 			],
 			"view/item/context": [
 				{
+					"command": "themeFav.removeViaView",
+					"group": "inline",
+					"when": "view == favorites-list"
 				}
 			],
 			"commandPalette": [

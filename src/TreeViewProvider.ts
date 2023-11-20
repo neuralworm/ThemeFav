@@ -34,4 +34,5 @@ export class ThemeFav implements vscode.TreeItem{
       ) {
         this.label = label
       }
+      
 }

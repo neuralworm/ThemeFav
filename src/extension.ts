@@ -15,7 +15,7 @@ export function activate(context: vscode.ExtensionContext) {
 	})
 	// TREE VIEW SELECTION EVENTS
 	favoritesTreeView.onDidChangeSelection((e: vscode.TreeViewSelectionChangeEvent<ThemeFav>)=>{
-		lib.setTheme(e.selection[0].label)
+		lib.setThemeActive(e.selection[0].label)
 	})
 	// COMMANDS
 	let disposable_getFavorites = vscode.commands.registerCommand('themeFav.getFavorites', () => {
@@ -36,7 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable_refreshTreeView = vscode.commands.registerCommand("themeFav.refreshTreeView", () => {
 		themeProvider.refresh()
 	})
-	let disposable_sortAlphaAsc = vscode.commands.registerCommand("themeFav.sortAlphaAsc", () => {
+	let disposable_sortAlphaAsc = vscode.commands.registerCommand("themeFav.sortAlphaAsc", (e: any) => {
 		lib.sortListAlphaAsc(context, themeProvider)
 	})
 	let disposable_sortAlphaDesc = vscode.commands.registerCommand("themeFav.sortAlphaDesc", () => {

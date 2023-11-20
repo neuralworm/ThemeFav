@@ -35,10 +35,8 @@ export const removeThemeFromState = (context: vscode.ExtensionContext, themeStri
     console.log('request to remove ' + themeString)
     let favorites: string[] = getFavorites(context)
     let ind = favorites.indexOf(themeString)
-    console.log(ind)
     if(ind == -1) return
     favorites.splice(ind, 1)
-    console.log(favorites)
     context.globalState.update("theme_favorites", JSON.stringify(favorites)).then(()=>{
         themeProvider.refresh()
         vscode.window.showInformationMessage(themeString + " removed from favorites.")
@@ -78,12 +76,12 @@ export const selectFavorite = (context: vscode.ExtensionContext) => {
     // CALLBACKS
     quickPickAction.onDidAccept(() => {
         const selection = quickPickAction.activeItems[0]
-        setTheme(selection.label)
+        setThemeActive(selection.label)
         quickPickAction.hide()
     })
     quickPickAction.onDidChangeActive(() => {
         const selection = quickPickAction.activeItems[0]
-        setTheme(selection.label)
+        setThemeActive(selection.label)
     })
     // ACTIVATE
     quickPickAction.show()
@@ -134,7 +132,7 @@ export const sortListAlphaDesc = (context: vscode.ExtensionContext, themeProvide
 }
 
 // UTIL
-export const setTheme = (themeString: string) => {
+export const setThemeActive = (themeString: string) => {
     let config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration()
     config.update("workbench.colorTheme", themeString)
 }
@@ -164,10 +162,8 @@ export const reorderTheme = (context: vscode.ExtensionContext, themeToMove: stri
 }
 // SORT UTIL
 const sortAlphaDesc = (themes: string[]) => {
-    console.log(themes)
     return themes.sort((a, b) => a > b ? 1 : -1)
 }
 const sortAlphaAsc = (themes: string[]) => {
-    console.log(themes)
     return themes.sort((a, b) => a < b ? 1 : -1)
 }

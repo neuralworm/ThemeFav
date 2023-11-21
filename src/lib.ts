@@ -227,7 +227,16 @@ export const getAllInstalled = (): ThemeExtJSON[] => {
     console.log(themesArr)
     return themesArr
 }
-
+export const validateThemes = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
+    let installed: ThemeExtJSON[] = getAllInstalled()
+    let installStrings = installed.map((val: ThemeExtJSON)=> val.id ? val.id : val.label)
+    let favs = getFavorites(context)
+    let newFavs = favs.filter((themeString: string) => {
+        if(installStrings.includes(themeString)) return true
+        return false
+    })
+    updateThemeState(newFavs, context, themeProvider)
+}
 const checkIfIfInstalled = (themeString: string, allInstalled: ThemeExtJSON[]): boolean => {
     if(allInstalled.map((val: ThemeExtJSON)=> val.label).includes(themeString)) return true
     return false

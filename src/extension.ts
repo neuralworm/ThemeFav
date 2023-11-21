@@ -46,6 +46,9 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable_manageFavorites = vscode.commands.registerCommand("themeFav.manage", () => {
 		lib.manageFavoritesViaPallette(context, themeProvider)
 	})
+	let disposable_validate = vscode.commands.registerCommand("themeFav.validate", () => {
+		lib.validateThemes(context, themeProvider)
+	})
 	context.subscriptions.push(disposable_getFavorites);
 	context.subscriptions.push(disposable_selectFromFavorites);
 	context.subscriptions.push(disposable_saveTheme);
@@ -55,6 +58,8 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable_sortAlphaAsc);
 	context.subscriptions.push(disposable_sortAlphaDesc);
 	context.subscriptions.push(disposable_manageFavorites);
+	context.subscriptions.push(disposable_validate);
+
 	// TEST
 	let disposable_listExt = vscode.commands.registerCommand("themeFav.listExt", () => {
 		lib.getAllInstalled()

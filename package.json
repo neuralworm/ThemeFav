@@ -59,6 +59,11 @@
 			{
 				"command": "themeFav.listExt",
 				"title": "THEMEFAV TEST: List Ext"
+			},
+			{
+
+				"command": "themeFav.validate",
+				"title": "ThemeFav: Validate Themes"
 			}
 		],
 		"viewsContainers": {
@@ -92,11 +97,18 @@
 				},
 				{
 					"command": "themeFav.sortAlphaAsc",
-					"when": "view == favorites-list"
+					"when": "view == favorites-list",
+					"group": "@1"
 				},
 				{
 					"command": "themeFav.sortAlphaDesc",
-					"when": "view == favorites-list"
+					"when": "view == favorites-list",
+					"group": "@1"
+				},
+				{
+					"command": "themeFav.validate",
+					"when": "view == favorites-list",
+					"group": "@2"
 				}
 			],
 			"view/item/context": [
@@ -116,6 +128,21 @@
 					"when": "false"
 				}
 			]
+		},
+		"configuration":{
+			"title": "ThemeFav",
+			"properties": {
+				"themeFav.showAllThemesInMenu": {
+					"type": "boolean",
+					"default": "true",
+					"description": "Determines if side action menu displays list of all installed themes in addition to favorites list."
+				},
+				"themeFav.validateThemesOnLaunch": {
+					"type": "boolean",
+					"default": "false",
+					"description": "Check favorites to ensure if still installed upon startup, and purge from favorites if missing."
+				}
+			}
 		}
 	},
 	"scripts": {

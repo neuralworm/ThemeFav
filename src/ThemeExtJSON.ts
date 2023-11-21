@@ -13,3 +13,4 @@ export const createThemeExtJSON = (label: string, path: string, uiTheme: string,
         id: id ? id : undefined
     }
 }
+type UITHEME = "vs-dark" | "vs" | "hc" | string

@@ -57,7 +57,7 @@ export const activateTheme = (themeString: string) => {
 export const selectFavorite = (context: vscode.ExtensionContext) => {
     let favs = getFavorites(context)
     let current = getCurrentTheme()
-    let currentIncludedInFavorites = doesContain(favs, current)
+    let currentIncludedInFavorites = favsIncludes(favs, current)
     // CREATE OPTIONS
     let quickPickItems: vscode.QuickPickItem[] = []
     favs.forEach((val: string) => {
@@ -179,18 +179,18 @@ export const getCurrentTheme = (): string => {
     let theme: string = config.get("workbench.colorTheme")!
     return theme
 }
-export const doesContain = (favs: string[], themeString: string): boolean => {
+export const favsIncludes = (favs: string[], themeString: string): boolean => {
     if (favs.indexOf(themeString) === -1) return false
     return true
 }
-export const getThemeIndex = (themes: string[], theme: string) => {
+export const getFavIndex = (themes: string[], theme: string) => {
     return themes.indexOf(theme)
 }
 
 // ORGANIZATION
 export const reorderTheme = (context: vscode.ExtensionContext, themeToMove: string, newInd: number) => {
     let themes = getFavorites(context)
-    let ind = getThemeIndex(themes, themeToMove)
+    let ind = getFavIndex(themes, themeToMove)
     let newArray = [...themes]
     let moving: string[] = newArray.splice(ind, 1)
     newArray.splice(newInd, 0, moving[0])
@@ -233,6 +233,10 @@ export const validateThemes = (context: vscode.ExtensionContext, themeProvider: 
         if(installStrings.includes(themeString)) return true
         return false
     })
+    // ALERT IF REMOVED
+    let diff = favs.length - newFavs.length
+    if(diff > 0) vscode.window.showInformationMessage(`Removed ${diff} uninstalled favorites.`)
+    // UPDATE GLOBAL STATE
     updateThemeState(newFavs, context, themeProvider)
 }
 const checkIfIfInstalled = (themeString: string, allInstalled: ThemeExtJSON[]): boolean => {

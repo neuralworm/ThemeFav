@@ -1,12 +1,14 @@
-# favoritethemes README
+# ThemeFav for VSCode
 
-This extension allows you to curate a list of your favorite themes and quickly switch between them (a feature vanilla VSCode lacks).
+This extension allows you to create and organize a list of your favorite themes and quickly switch between them (a feature vanilla VSCode lacks).
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+Add favorite themes to list via either the command pallette or sidebar activity menu.
 
-For example if there is an image subfolder under your extension project workspace:
+Management and validation utilities.
+
+Sort themes by a variety of means.
 
 \!\[feature X\]\(images/feature-x.png\)
 
@@ -14,22 +16,16 @@ For example if there is an image subfolder under your extension project workspac
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+VSCode
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+* `themeFav.showAllThemesInMenu`: Should side activity bar should all installed themes. (boolean)
+* `themeFav.validateThemesOnLaunch`: Validate favorites list with all installed themes, removing unisntalled themes from favorites. (boolean)
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+¯\_(ツ)_/¯
 
 ## Release Notes
 
@@ -38,13 +34,5 @@ Users appreciate release notes as you update your extension.
 ### 1.0.0
 
 Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
 
 -----------------------------------------------------------------------------------------------------------

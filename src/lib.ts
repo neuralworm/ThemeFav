@@ -18,10 +18,8 @@ export const getFavorites = (context: vscode.ExtensionContext): string[] => {
     catch (e) {
         favoriteString = "[]"
     }
-    // console.log("Retrieved " + favoriteString)
     if (!favoriteString) favoriteString = "[]"
     let favoriteArray: string[] = JSON.parse(favoriteString)
-    // console.log("Favorites: " + favoriteString)
     return favoriteArray
 }
 export const saveThemeToState = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
@@ -238,6 +236,6 @@ export const validateThemes = (context: vscode.ExtensionContext, themeProvider: 
     updateThemeState(newFavs, context, themeProvider)
 }
 const checkIfIfInstalled = (themeString: string, allInstalled: ThemeExtJSON[]): boolean => {
-    if(allInstalled.map((val: ThemeExtJSON)=> val.label).includes(themeString)) return true
+    if(allInstalled.map((val: ThemeExtJSON)=> val.id ? val.id : val.label).includes(themeString)) return true
     return false
 }

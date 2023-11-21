@@ -7,6 +7,9 @@ import { ThemeFav, ThemeFavProvider } from './TreeViewProvider';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+	// GET EXT CONFIG
+	const config = vscode.workspace.getConfiguration("themeFav")
+	console.log(config.get("validateThemesOnLaunch"))
 	console.log('ThemeFav now active.');
 	const themeProvider = new ThemeFavProvider(context)
 	// REGISTER TREEVIEW

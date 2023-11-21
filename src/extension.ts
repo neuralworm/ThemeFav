@@ -25,6 +25,7 @@ export function activate(context: vscode.ExtensionContext) {
 		lib.saveThemeToState(context, themeProvider)
 	});
 	let disposable_selectFromFavorites = vscode.commands.registerCommand('themeFav.selectFromFavorites', () => {
+		lib.getCurrentTheme()
 		lib.selectFavorite(context)
 	});
 	let disposable_removeViaCommandPalette = vscode.commands.registerCommand('themeFav.removeViaCommandPalette', () => {
@@ -42,6 +43,9 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable_sortAlphaDesc = vscode.commands.registerCommand("themeFav.sortAlphaDesc", () => {
 		lib.sortListAlphaDesc(context, themeProvider)
 	})
+	let disposable_manageFavorites = vscode.commands.registerCommand("themeFav.manage", () => {
+		lib.manageFavoritesViaPallette(context, themeProvider)
+	})
 	context.subscriptions.push(disposable_getFavorites);
 	context.subscriptions.push(disposable_selectFromFavorites);
 	context.subscriptions.push(disposable_saveTheme);
@@ -50,6 +54,12 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable_refreshTreeView);
 	context.subscriptions.push(disposable_sortAlphaAsc);
 	context.subscriptions.push(disposable_sortAlphaDesc);
+	context.subscriptions.push(disposable_manageFavorites);
+	// TEST
+	let disposable_listExt = vscode.commands.registerCommand("themeFav.listExt", () => {
+		lib.getAllInstalled()
+	})
+	context.subscriptions.push(disposable_listExt);
 
 }
 

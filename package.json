@@ -21,7 +21,7 @@
 			},
 			{
 				"command": "themeFav.saveTheme",
-				"title": "ThemeFav: Save Current",
+				"title": "ThemeFav: Add Current",
 				"icon": "$(add)"
 			},
 			{
@@ -46,10 +46,19 @@
 				"command": "themeFav.sortAlphaAsc",
 				"title": "Sort Alphabetically (Asc)",
 				"icon": "$(arrow-up)"
-			},{
+			},
+			{
 				"command": "themeFav.sortAlphaDesc",
 				"title": "Sort Alphabetically (Desc)",
 				"icon": "$(arrow-down)"
+			},
+			{
+				"command": "themeFav.manage",
+				"title": "ThemeFav: Manage"
+			},
+			{
+				"command": "themeFav.listExt",
+				"title": "THEMEFAV TEST: List Ext"
 			}
 		],
 		"viewsContainers": {

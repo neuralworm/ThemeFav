@@ -12,6 +12,12 @@ export function activate(context: vscode.ExtensionContext) {
 	console.log(config.get("validateThemesOnLaunch"))
 	console.log('ThemeFav now active.');
 	const themeProvider = new ThemeFavProvider(context)
+	// WATCH FOR THEME CHANGE
+	vscode.workspace.onDidChangeConfiguration((e: vscode.ConfigurationChangeEvent)=>{
+		console.log(e.affectsConfiguration("workbench.colorTheme"))
+		// HISTORY UPDATE
+		lib.addHistoryEvent(context, vscode.workspace.getConfiguration().get("workbench.colorTheme")!)
+	})
 	// REGISTER TREEVIEW
 	const favoritesTreeView = vscode.window.createTreeView("favorites-list", {
 		treeDataProvider: themeProvider
@@ -37,6 +43,9 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable_removeViaView = vscode.commands.registerCommand('themeFav.removeViaView', (itemCtx: ThemeFav) => {
 		lib.removeViaView(itemCtx, context, themeProvider)
 	});
+	let disposable_editViaTreeItem = vscode.commands.registerCommand('themeFav.editViaTreeItem', (itemCtx: ThemeFav) => {
+		lib.editTheme(itemCtx, context)
+	});
 	let disposable_refreshTreeView = vscode.commands.registerCommand("themeFav.refreshTreeView", () => {
 		themeProvider.refresh()
 	})
@@ -57,6 +66,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable_saveTheme);
 	context.subscriptions.push(disposable_removeViaCommandPalette);
 	context.subscriptions.push(disposable_removeViaView);
+	context.subscriptions.push(disposable_editViaTreeItem);
 	context.subscriptions.push(disposable_refreshTreeView);
 	context.subscriptions.push(disposable_sortAlphaAsc);
 	context.subscriptions.push(disposable_sortAlphaDesc);
@@ -65,9 +75,14 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// TEST
 	let disposable_listExt = vscode.commands.registerCommand("themeFav.listExt", () => {
-		lib.getAllInstalled()
+		lib.getInstalled()
+	})
+	
+	let TEST_reset_state = vscode.commands.registerCommand("themeFav.TEST_RESET", () => {
+		lib.resetState(context, themeProvider)
 	})
 	context.subscriptions.push(disposable_listExt);
+	context.subscriptions.push(TEST_reset_state);
 
 }
 

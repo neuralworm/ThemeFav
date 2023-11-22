@@ -1,7 +1,7 @@
 {
 	"name": "themeFav",
-	"displayName": "ThemeFav: Theme Favorites",
-	"description": "Easily favorite themes and switch between them.",
+	"displayName": "ThemeFav: Theme Manager",
+	"description": "Easily favorite themes and switch between them. Edit, create, save.",
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.84.0"
@@ -39,6 +39,11 @@
 				"icon": "$(remove)"
 			},
 			{
+				"command": "themeFav.editViaTreeItem",
+				"title": "Edit",
+				"icon": "$(edit)"
+			},
+			{
 				"command": "themeFav.refreshTreeView",
 				"title": "ThemeFav: Refresh"
 			},
@@ -59,6 +64,10 @@
 			{
 				"command": "themeFav.listExt",
 				"title": "THEMEFAV TEST: List Ext"
+			},
+			{
+				"command": "themeFav.TEST_RESET",
+				"title": "THEMEFAV TEST: RESET"
 			},
 			{
 
@@ -116,6 +125,11 @@
 					"command": "themeFav.removeViaView",
 					"group": "inline",
 					"when": "view == favorites-list"
+				},
+				{
+					"command": "themeFav.editViaTreeItem",
+					"group": "inline",
+					"when": "view == favorites-list"
 				}
 			],
 			"commandPalette": [
@@ -125,6 +139,10 @@
 				},
 				{
 					"command": "themeFav.sortAlphaDesc",
+					"when": "false"
+				},
+				{
+					"command": "themeFav.removeViaView",
 					"when": "false"
 				}
 			]
@@ -141,6 +159,13 @@
 					"type": "boolean",
 					"default": "false",
 					"description": "Check favorites to ensure if still installed upon startup, and purge from favorites if missing."
+				},
+				"themeFav.historyLength": {
+					"type": "integer",
+					"default": "20",
+					"description": "Length of history of last activated themes.",
+					"minimum": 0,
+					"maximum": 40
 				}
 			}
 		}

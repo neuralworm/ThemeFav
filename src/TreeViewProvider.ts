@@ -8,7 +8,7 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem|Folde
 	dragMimeTypes = ['application/vnd.code.tree.favtreeview', "text/plain"];
     context: vscode.ExtensionContext
     favs: ThemeExtJSON[]
-    all: ThemeExtJSON[]
+    installed: ThemeExtJSON[]
     history: ThemeExtJSON[]
     folders: Folder[]
     private _onDidChangeTreeData: vscode.EventEmitter<ThemeItem|undefined|null|void> = new vscode.EventEmitter<ThemeItem|undefined|null|void>()
@@ -17,7 +17,7 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem|Folde
     constructor(context: vscode.ExtensionContext){
         this.context = context
         this.favs = lib.getFavorites(this.context)
-        this.all = lib.getInstalled()
+        this.installed = lib.getInstalled()
         this.history = lib.getHistory(this.context)
         this.folders = lib.getFolderState(this.context)
     }
@@ -28,7 +28,7 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem|Folde
         // RETURN FAVORITES AS ROOT ELEMENTS
         if(element === undefined) return [...this.favs.map((themeExtJson: ThemeExtJSON, index: number)=>{
             return new ThemeItem(themeExtJson, vscode.TreeItemCollapsibleState.None)
-        }), ...this.folders.map((folder: Folder) => new FolderItem(vscode.TreeItemCollapsibleState.Expanded, folder))]
+        }), ...this.folders.map((folder: Folder) => new FolderItem(vscode.TreeItemCollapsibleState.Expanded, folder)), new FolderItem(vscode.TreeItemCollapsibleState.Collapsed, new Folder(this.installed, "Installed", false), "folder")]
         else if (element.hasOwnProperty("folder")){
             let folderElement = element as FolderItem
             return folderElement.folder.themes.map((theme: ThemeExtJSON) => new ThemeItem(theme, vscode.TreeItemCollapsibleState.None, folderElement.folder))
@@ -38,13 +38,13 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem|Folde
     refresh(): void {
         this.favs = lib.getFavorites(this.context)
         this.history = lib.getHistory(this.context)
-        this.all = lib.getInstalled()
+        this.installed = lib.getInstalled()
         this.folders = lib.getFolderState(this.context)
         this._onDidChangeTreeData.fire()
     }
     // DRAG N DROP
     handleDrag(source: readonly ThemeItem[], dataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): void | Thenable<void> {
-      dataTransfer.set('application/vnd.code.tree.favtreeview', new vscode.DataTransferItem(source))
+      dataTransfer.set('text/plain', new vscode.DataTransferItem(source))
       console.log('drag?')
     }
     handleDrop(target: ThemeItem | undefined, dataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): void | Thenable<void> {

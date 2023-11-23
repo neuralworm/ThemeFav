@@ -29,6 +29,12 @@ export function activate(context: vscode.ExtensionContext) {
 			lib.activateTheme(e.selection[0].theme)
 		}
 	})
+	favoritesTreeView.onDidCollapseElement((e: vscode.TreeViewExpansionEvent<FolderItem|ThemeItem>) => {
+		lib.updateFolderCollapse(e.element as FolderItem, context, themeProvider)
+	})
+	favoritesTreeView.onDidExpandElement((e: vscode.TreeViewExpansionEvent<FolderItem|ThemeItem>) => {
+		lib.updateFolderCollapse(e.element as FolderItem, context, themeProvider)
+	})
 	// COMMANDS
 	let disposable_getFavorites = vscode.commands.registerCommand('themeFav.getFavorites', () => {
 		lib.getFavorites(context)
@@ -67,11 +73,14 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable_newFolder = vscode.commands.registerCommand("themeFav.newFolder", () => {
 		lib.createFolder(context, themeProvider)
 	})
-	let disposable_moveToFolder = vscode.commands.registerCommand("themeFav.move", (e: ThemeItem) => {
+	let disposable_moveToFolder = vscode.commands.registerCommand("themeFav.moveToFolder", (e: ThemeItem) => {
 		lib.moveToFolderViaPallette(context, themeProvider, e)
 	})
 	let disposable_delete = vscode.commands.registerCommand("themeFav.delete", (e) => {
 		console.log(e)
+	})
+	let disposable_renameFolder = vscode.commands.registerCommand("themeFav.renameFolder", (e: FolderItem) => {
+		lib.renameFolder(e, context, themeProvider)
 	})
 	context.subscriptions.push(disposable_getFavorites);
 	context.subscriptions.push(disposable_selectFromFavorites);
@@ -87,6 +96,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable_newFolder);
 	context.subscriptions.push(disposable_moveToFolder);
 	context.subscriptions.push(disposable_delete);
+	context.subscriptions.push(disposable_renameFolder);
 
 
 	// TEST

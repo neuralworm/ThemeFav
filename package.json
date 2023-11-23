@@ -93,6 +93,10 @@
 			{
 				"command": "themeFav.delete",
 				"title": "Delete"
+			},
+			{
+				"command": "themeFav.renameFolder",
+				"title": "Rename"
 			}
 		],
 		"viewsContainers": {
@@ -149,7 +153,7 @@
 
 				{
 					"command": "themeFav.editJSON",
-					"when": "view == favtreeview"
+					"when": "view == favtreeview && viewItem == themeItem"
 				},
 				{
 					"command": "themeFav.delete",
@@ -157,7 +161,12 @@
 				},
 				{
 					"submenu": "themeFav.moveToFolderSubMenu",
-					"when": "view == favtreeview",
+					"when": "view == favtreeview && viewItem == themeItem",
+					"group": "themeFav"
+				},
+				{
+					"command": "themeFav.renameFolder",
+					"when": "view == favtreeview && viewItem == folder",
 					"group": "themeFav"
 				}
 			],
@@ -176,6 +185,10 @@
 				},
 				{
 					"command": "themeFav.delete",
+					"when": "false"
+				},
+				{
+					"command": "themeFav.renameFolder",
 					"when": "false"
 				}
 			],

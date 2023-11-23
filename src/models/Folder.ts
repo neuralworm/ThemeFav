@@ -5,6 +5,7 @@ export class Folder {
     public label: string
     static folders: Folder[] = []
     public id: string
+    public open: boolean = true
     constructor(themes: ThemeExtJSON[], label: string){
         this.themes = themes
         this.label = label

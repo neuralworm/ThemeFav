@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { ThemeItem, ThemeFavProvider } from './TreeViewProvider'
+import { ThemeItem, ThemeFavProvider, FolderItem } from './TreeViewProvider'
 import { ThemeExtJSON, ThemeExtJSON2, createThemeExtJSON } from './ThemeExtJSON'
 import { Folder } from './models/Folder'
 import { FolderQuickPickItem, ThemeQuickPickItem } from './models/QuickPick'
@@ -13,13 +13,11 @@ export const resetState = (context: vscode.ExtensionContext, themeProvider: Them
 export const updateThemeState = (newFavs: ThemeExtJSON[], context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
     context.globalState.update("themeFav_favorites", JSON.stringify(newFavs)).then(()=>{
         themeProvider.refresh()
-        console.log("new favs: "+ getFavorites(context))
     })
 }
 export const updateFolderState = (folders: Folder[], context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
     context.globalState.update("themeFav_folders", JSON.stringify(folders)).then(()=>{
         themeProvider.refresh()
-        console.log("Folders " + JSON.stringify(getFolderState(context)))
     })
 }
 export const getFolderState = (context: vscode.ExtensionContext): Folder[] => {
@@ -34,6 +32,20 @@ export const getFolderState = (context: vscode.ExtensionContext): Folder[] => {
     if(!folderString) folderString = "[]"
     let folderArr: Folder[] = JSON.parse(folderString)
     return folderArr
+}
+export const renameFolder = (folderItem: FolderItem, context: vscode.ExtensionContext, themeProv: ThemeFavProvider) => {
+    console.log("rename " + folderItem.label)
+}
+export const updateFolderCollapse = (folder: FolderItem, context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
+    let folders: Folder[] = getFolderState(context)
+    let index: number = getFolderIndex(folder, context, folders)
+    folders[index].open = !folders[index].open
+    updateFolderState(folders, context, themeProvider)
+}
+export const getFolderIndex = (folder: FolderItem, context: vscode.ExtensionContext, folders: Folder[]): number => {
+    let folderIds: string[] = folders.map((stateFolder)=>stateFolder.id)
+    return folderIds.indexOf(folder.folder.id)
+
 }
 export const getFavorites = (context: vscode.ExtensionContext): ThemeExtJSON[] => {
     let state = context.globalState
@@ -202,11 +214,11 @@ export const manageFavoritesViaPallette = (context: vscode.ExtensionContext, the
      // ACTIVATE
      quickPickAction.show()
 }
-export const moveToFolderViaPallette = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider, themeFav: ThemeItem) => {
+export const moveToFolderViaPallette = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider, themeItem: ThemeItem) => {
     let folders: Folder[] = getFolderState(context)
     // CHECK IF ALREADY IN FOLDERS
     let filtered = folders.filter((folder: Folder, index: number) => {
-        if(folder.themes.map(val => val.label).includes(themeFav.label)) return false
+        if(folder.themes.map(val => val.label).includes(themeItem.label)) return false
         return true
     })
     let quickPickItems: FolderQuickPickItem[] = filtered.map((val: Folder, index: number)=>{
@@ -224,7 +236,13 @@ export const moveToFolderViaPallette = (context: vscode.ExtensionContext, themeP
     quickPickAction.title = "Choose Folder"
     quickPickAction.onDidAccept(() => {
         let selectedFolder: FolderQuickPickItem = quickPickAction.selectedItems[0] as FolderQuickPickItem
-        console.log("need to move " + themeFav.label + " to " + selectedFolder.label)
+        console.log("need to move " + themeItem.label + " to " + selectedFolder.label)
+
+        // Modify folder array
+        folders[selectedFolder.index].themes.unshift(themeItem.theme)
+        // Save to state
+        updateFolderState(folders, context, themeProvider)
+
         quickPickAction.hide()
     })
 

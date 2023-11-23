@@ -26,9 +26,13 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem|Folde
     }
     getChildren(element?: ThemeItem | FolderItem | undefined): vscode.ProviderResult<(ThemeItem|FolderItem)[]> {
         // RETURN FAVORITES AS ROOT ELEMENTS
-        return [...this.favs.map((themeExtJson: ThemeExtJSON, index: number)=>{
+        if(element === undefined) return [...this.favs.map((themeExtJson: ThemeExtJSON, index: number)=>{
             return new ThemeItem(themeExtJson, vscode.TreeItemCollapsibleState.None)
         }), ...this.folders.map((folder: Folder) => new FolderItem(vscode.TreeItemCollapsibleState.Expanded, folder))]
+        else if (element.hasOwnProperty("folder")){
+            let folderElement = element as FolderItem
+            return folderElement.folder.themes.map((theme: ThemeExtJSON) => new ThemeItem(theme, vscode.TreeItemCollapsibleState.None))
+        }
     }
     // SYNC WITH STATE
     refresh(): void {
@@ -56,7 +60,9 @@ export class ThemeItem implements vscode.TreeItem{
     constructor(
         public theme: ThemeExtJSON,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-        public children?: ThemeItem[]
+        public children?: ThemeItem[],
+        public parent?: Folder,
+        public contextValue: string = "themeItem"
       ) {
         this.theme = theme
         this.label = ThemeExtJSON2.getInterfaceIdentifier(theme)
@@ -69,11 +75,13 @@ export class FolderItem implements vscode.TreeItem{
     label: string
     constructor(
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-        public folder: Folder
+        public folder: Folder,
+        public contextValue: string = "folder"
       ) {
         this.folder = folder
         this.label = folder.label
-        this.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed
+        this.collapsibleState = folder.open ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.Collapsed
       }
       
+          
 }

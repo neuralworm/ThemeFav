@@ -35,6 +35,27 @@ export const getFolderState = (context: vscode.ExtensionContext): Folder[] => {
 }
 export const renameFolder = (folderItem: FolderItem, context: vscode.ExtensionContext, themeProv: ThemeFavProvider) => {
     console.log("rename " + folderItem.label)
+    let folders: Folder[] = getFolderState(context)
+    let index: number = getFolderIndex(folderItem, context, folders)
+    let currentName: string = folders[index].label
+    let quickPickAction = vscode.window.createInputBox()
+    quickPickAction.value = currentName
+
+    // ON CHANGE
+    quickPickAction.onDidChangeValue((e: string) => {
+        currentName = e
+    })
+    // ON ACCEPT
+    quickPickAction.onDidAccept(()=>{
+        console.log("new name: " + currentName)
+        // NEEDS VALIDATION
+        folders[index].label = currentName
+        updateFolderState(folders, context, themeProv)
+        quickPickAction.hide()
+    })
+
+    // ACTIVATE
+    quickPickAction.show()
 }
 export const updateFolderCollapse = (folder: FolderItem, context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
     let folders: Folder[] = getFolderState(context)

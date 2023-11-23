@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { ThemeFav, ThemeFavProvider } from './TreeViewProvider'
+import { ThemeItem, ThemeFavProvider } from './TreeViewProvider'
 import { ThemeExtJSON, ThemeExtJSON2, createThemeExtJSON } from './ThemeExtJSON'
 import { Folder } from './models/Folder'
 import { FolderQuickPickItem, ThemeQuickPickItem } from './models/QuickPick'
@@ -202,7 +202,7 @@ export const manageFavoritesViaPallette = (context: vscode.ExtensionContext, the
      // ACTIVATE
      quickPickAction.show()
 }
-export const moveToFolderViaPallette = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider, themeFav: ThemeFav) => {
+export const moveToFolderViaPallette = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider, themeFav: ThemeItem) => {
     let folders: Folder[] = getFolderState(context)
     // CHECK IF ALREADY IN FOLDERS
     let filtered = folders.filter((folder: Folder, index: number) => {
@@ -232,14 +232,14 @@ export const moveToFolderViaPallette = (context: vscode.ExtensionContext, themeP
     quickPickAction.show()
 }
 // TREE VIEW ACTIONS
-export const editThemeJSON = (itemContext: ThemeFav, context: vscode.ExtensionContext) => {
+export const editThemeJSON = (itemContext: ThemeItem, context: vscode.ExtensionContext) => {
     console.log(itemContext.theme)
    
     vscode.workspace.openTextDocument(vscode.Uri.parse(itemContext.theme.uri?.path + itemContext.theme.path.slice(1))).then((val: vscode.TextDocument) => {
         vscode.window.showTextDocument(val)
     })
 }
-export const removeViaView = (themeFav: ThemeFav, context: vscode.ExtensionContext, treeProvider: ThemeFavProvider) => {
+export const removeViaView = (themeFav: ThemeItem, context: vscode.ExtensionContext, treeProvider: ThemeFavProvider) => {
     let toRemove: string = themeFav.label
     removeThemeFromState(context, toRemove, treeProvider)
 }

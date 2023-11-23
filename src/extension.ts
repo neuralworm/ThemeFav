@@ -2,7 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as lib from './lib'
-import { ThemeFav, ThemeFavProvider } from './TreeViewProvider';
+import { FolderItem, ThemeItem, ThemeFavProvider } from './TreeViewProvider';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -23,8 +23,11 @@ export function activate(context: vscode.ExtensionContext) {
 		treeDataProvider: themeProvider
 	})
 	// TREE VIEW SELECTION EVENTS
-	favoritesTreeView.onDidChangeSelection((e: vscode.TreeViewSelectionChangeEvent<ThemeFav>)=>{
-		lib.activateTheme(e.selection[0].theme)
+	favoritesTreeView.onDidChangeSelection((e: vscode.TreeViewSelectionChangeEvent<ThemeItem|FolderItem>)=>{
+		if(e.selection[0].hasOwnProperty("theme")){
+			//@ts-ignore
+			lib.activateTheme(e.selection[0].theme)
+		}
 	})
 	// COMMANDS
 	let disposable_getFavorites = vscode.commands.registerCommand('themeFav.getFavorites', () => {
@@ -40,10 +43,10 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable_removeViaCommandPalette = vscode.commands.registerCommand('themeFav.removeViaCommandPalette', () => {
 		lib.removeViaCommandPalette(context, themeProvider)
 	});
-	let disposable_removeViaView = vscode.commands.registerCommand('themeFav.removeViaView', (itemCtx: ThemeFav) => {
+	let disposable_removeViaView = vscode.commands.registerCommand('themeFav.removeViaView', (itemCtx: ThemeItem) => {
 		lib.removeViaView(itemCtx, context, themeProvider)
 	});
-	let disposable_editJSON = vscode.commands.registerCommand('themeFav.editJSON', (itemCtx: ThemeFav) => {
+	let disposable_editJSON = vscode.commands.registerCommand('themeFav.editJSON', (itemCtx: ThemeItem) => {
 		lib.editThemeJSON(itemCtx, context)
 	});
 	let disposable_refreshTreeView = vscode.commands.registerCommand("themeFav.refreshTreeView", () => {
@@ -64,7 +67,7 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable_newFolder = vscode.commands.registerCommand("themeFav.newFolder", () => {
 		lib.createFolder(context, themeProvider)
 	})
-	let disposable_moveToFolder = vscode.commands.registerCommand("themeFav.move", (e: ThemeFav) => {
+	let disposable_moveToFolder = vscode.commands.registerCommand("themeFav.move", (e: ThemeItem) => {
 		lib.moveToFolderViaPallette(context, themeProvider, e)
 	})
 	let disposable_delete = vscode.commands.registerCommand("themeFav.delete", (e) => {

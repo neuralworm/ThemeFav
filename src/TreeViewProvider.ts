@@ -3,7 +3,7 @@ import * as lib from './lib'
 import { ThemeExtJSON, ThemeExtJSON2 } from './ThemeExtJSON'
 import { Folder } from './models/Folder'
 
-export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeFav>, vscode.TreeDragAndDropController<ThemeFav>{
+export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem|FolderItem>, vscode.TreeDragAndDropController<ThemeItem>{
     dropMimeTypes = ['application/vnd.code.tree.favtreeview', "text/plain"];
 	dragMimeTypes = ['application/vnd.code.tree.favtreeview', "text/plain"];
     context: vscode.ExtensionContext
@@ -11,8 +11,8 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeFav>, vsco
     all: ThemeExtJSON[]
     history: ThemeExtJSON[]
     folders: Folder[]
-    private _onDidChangeTreeData: vscode.EventEmitter<ThemeFav|undefined|null|void> = new vscode.EventEmitter<ThemeFav|undefined|null|void>()
-    readonly onDidChangeTreeData: vscode.Event<ThemeFav | undefined | null | void> = this._onDidChangeTreeData.event;
+    private _onDidChangeTreeData: vscode.EventEmitter<ThemeItem|undefined|null|void> = new vscode.EventEmitter<ThemeItem|undefined|null|void>()
+    readonly onDidChangeTreeData: vscode.Event<ThemeItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
     constructor(context: vscode.ExtensionContext){
         this.context = context
@@ -21,14 +21,14 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeFav>, vsco
         this.history = lib.getHistory(this.context)
         this.folders = lib.getFolderState(this.context)
     }
-    getTreeItem(element: ThemeFav): vscode.TreeItem | Thenable<vscode.TreeItem> {
+    getTreeItem(element: ThemeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
         return element
     }
-    getChildren(element?: ThemeFav | undefined): vscode.ProviderResult<ThemeFav[]> {
+    getChildren(element?: ThemeItem | FolderItem | undefined): vscode.ProviderResult<(ThemeItem|FolderItem)[]> {
         // RETURN FAVORITES AS ROOT ELEMENTS
         return [...this.favs.map((themeExtJson: ThemeExtJSON, index: number)=>{
-            return new ThemeFav(themeExtJson, vscode.TreeItemCollapsibleState.None, undefined, false)
-        })]
+            return new ThemeItem(themeExtJson, vscode.TreeItemCollapsibleState.None)
+        }), ...this.folders.map((folder: Folder) => new FolderItem(vscode.TreeItemCollapsibleState.Expanded, folder))]
     }
     // SYNC WITH STATE
     refresh(): void {
@@ -39,11 +39,11 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeFav>, vsco
         this._onDidChangeTreeData.fire()
     }
     // DRAG N DROP
-    handleDrag(source: readonly ThemeFav[], dataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): void | Thenable<void> {
+    handleDrag(source: readonly ThemeItem[], dataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): void | Thenable<void> {
       dataTransfer.set('application/vnd.code.tree.favtreeview', new vscode.DataTransferItem(source))
       console.log('drag?')
     }
-    handleDrop(target: ThemeFav | undefined, dataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): void | Thenable<void> {
+    handleDrop(target: ThemeItem | undefined, dataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): void | Thenable<void> {
         const transferContent = dataTransfer.get('application/vnd.code.tree.favtreeview')
         console.log(transferContent)
     }
@@ -51,19 +51,29 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeFav>, vsco
 }
 
 
-export class ThemeFav implements vscode.TreeItem{
+export class ThemeItem implements vscode.TreeItem{
     label: string
     constructor(
         public theme: ThemeExtJSON,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-        public readonly themeExt: ThemeExtJSON|undefined,
-        public isFolder: boolean,
-        public children?: ThemeFav[]
+        public children?: ThemeItem[]
       ) {
         this.theme = theme
         this.label = ThemeExtJSON2.getInterfaceIdentifier(theme)
         this.collapsibleState = vscode.TreeItemCollapsibleState.None
       }
       
+      
+}
+export class FolderItem implements vscode.TreeItem{
+    label: string
+    constructor(
+        public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+        public folder: Folder
+      ) {
+        this.folder = folder
+        this.label = folder.label
+        this.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed
+      }
       
 }

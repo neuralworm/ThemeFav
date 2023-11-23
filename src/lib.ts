@@ -1,6 +1,7 @@
 import * as vscode from 'vscode'
 import { ThemeFav, ThemeFavProvider } from './TreeViewProvider'
 import { ThemeExtJSON, ThemeExtJSON2, createThemeExtJSON } from './ThemeExtJSON'
+import { Folder } from './models/Folder'
 
 // BASIC STATE MANAGEMENT
 export const resetState = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
@@ -14,10 +15,24 @@ export const updateThemeState = (newFavs: ThemeExtJSON[], context: vscode.Extens
         console.log("new favs: "+ getFavorites(context))
     })
 }
-export const updateHistoryState = (newHistory: ThemeExtJSON[], context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
-    context.globalState.update("themeFav_history", JSON.stringify(newHistory)).then(()=>{
+export const updateFolderState = (folders: Folder[], context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
+    context.globalState.update("themeFav_folders", JSON.stringify(folders)).then(()=>{
         themeProvider.refresh()
+        console.log("Folders " + JSON.stringify(getFolderState(context)))
     })
+}
+export const getFolderState = (context: vscode.ExtensionContext): Folder[] => {
+    let folderString: string | undefined = context.globalState.get("themeFav_folders")
+    // PARSE ATTEMPT
+    try {
+        JSON.parse(folderString!)
+    }
+    catch (e) {
+        folderString = "[]"
+    }
+    if(!folderString) folderString = "[]"
+    let folderArr: Folder[] = JSON.parse(folderString)
+    return folderArr
 }
 export const getFavorites = (context: vscode.ExtensionContext): ThemeExtJSON[] => {
     let state = context.globalState
@@ -33,7 +48,13 @@ export const getFavorites = (context: vscode.ExtensionContext): ThemeExtJSON[] =
     let favoriteArray: ThemeExtJSON[] = JSON.parse(favoriteString)
     return favoriteArray
 }
-export const getHistory = (context: vscode.ExtensionContext) => {
+export const updateHistoryState = (newHistory: ThemeExtJSON[], context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
+    context.globalState.update("themeFav_history", JSON.stringify(newHistory)).then(()=>{
+        themeProvider.refresh()
+        console.log(getHistory(context))
+    })
+}
+export const getHistory = (context: vscode.ExtensionContext): ThemeExtJSON[] => {
     let history: string | undefined = context.globalState.get("themeFav_history")
     try {
         JSON.parse(history!)
@@ -42,7 +63,7 @@ export const getHistory = (context: vscode.ExtensionContext) => {
         history = "[]"
     }
     if (!history) history = "[]"
-    let historyArray: string[] = JSON.parse(history)
+    let historyArray: ThemeExtJSON[] = JSON.parse(history)
     return historyArray
 }
 export const saveThemeToState = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
@@ -66,18 +87,24 @@ export const removeThemeFromState = (context: vscode.ExtensionContext, themeStri
         vscode.window.showInformationMessage(themeString + " removed from favorites.")
     })
 }
-export const activateTheme = (themeString: string) => {
-    vscode.commands.executeCommand("workbench.action.selectTheme").then((val: any) => {
-        vscode.commands.executeCommand(themeString).then(() => {
-
-        })
-    })
-}
 // HISTORY
-export const addHistoryEvent = (context: vscode.ExtensionContext, newHistoryString: string,) => {
-    console.log('request to add ' + newHistoryString + " to history.")
-    let history = getHistory(context)
+export const addHistoryEvent = (context: vscode.ExtensionContext, newHistoryTheme: ThemeExtJSON, themeProvider: ThemeFavProvider) => {
+    console.log('request to add ' + newHistoryTheme.label + " to history.")
+    let history: ThemeExtJSON[] = getHistory(context)
+    console.log('history : ' + history)
     // Check if exists in history
+    let index = history.map((val: ThemeExtJSON)=>val.label).indexOf(newHistoryTheme.label)
+    if(index !== -1) history.splice(index, 1)
+    history.unshift(newHistoryTheme)
+    updateHistoryState(history, context, themeProvider)
+}
+class CustomQuickPick implements vscode.QuickPickItem{
+    label: string
+    theme: ThemeExtJSON
+    constructor(label: string, theme: ThemeExtJSON){
+        this.label = label
+        this.theme = theme
+    }
 }
 // PALLETTE ACTION
 export const selectFavorite = (context: vscode.ExtensionContext) => {
@@ -85,15 +112,16 @@ export const selectFavorite = (context: vscode.ExtensionContext) => {
     let current: ThemeExtJSON = getCurrentTheme()
     let currentIncludedInFavorites = favsIncludes(favs, current)
     // CREATE OPTIONS
-    let quickPickItems: vscode.QuickPickItem[] = []
+    let quickPickItems: CustomQuickPick[] = []
     favs.forEach((val: ThemeExtJSON) => {
-        let quickPick: vscode.QuickPickItem = {
+        let quickPick: CustomQuickPick = {
             label: val.id? val.id : val.label,
+            theme: val
         }
         quickPickItems.push(quickPick)
     })
     // SETUP
-    let quickPickAction: vscode.QuickPick<vscode.QuickPickItem> = vscode.window.createQuickPick()
+    let quickPickAction: vscode.QuickPick<CustomQuickPick> = vscode.window.createQuickPick()
     quickPickAction.items = quickPickItems
     quickPickAction.title = "Select theme."
     // SET ACTIVE IF POSSIBLE
@@ -106,22 +134,23 @@ export const selectFavorite = (context: vscode.ExtensionContext) => {
     // CALLBACKS
     quickPickAction.onDidAccept(() => {
         const selection = quickPickAction.activeItems[0]
-        setThemeActive(selection.label)
+        activateTheme(selection.theme)
         quickPickAction.hide()
     })
     quickPickAction.onDidChangeActive(() => {
         const selection = quickPickAction.activeItems[0]
-        setThemeActive(selection.label)
+        activateTheme(selection.theme)
     })
     // ACTIVATE
     quickPickAction.show()
 }
 export const removeViaCommandPalette = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
     let favs: ThemeExtJSON[] = getFavorites(context)
-    let quickPicks: vscode.QuickPickItem[] = []
+    let quickPicks: CustomQuickPick[] = []
     favs.forEach((val: ThemeExtJSON) => {
-        let quickPick: vscode.QuickPickItem = {
+        let quickPick: CustomQuickPick = {
             label: ThemeExtJSON2.getInterfaceIdentifier(val),
+            theme: val
         }
         quickPicks.push(quickPick)
     })
@@ -145,14 +174,15 @@ export const removeViaCommandPalette = (context: vscode.ExtensionContext, themeP
 export const manageFavoritesViaPallette = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
     let allThemes: ThemeExtJSON[] = getInstalled()
     let favs: ThemeExtJSON[] = getFavorites(context)
-    let quickPickItems: vscode.QuickPickItem[] = allThemes.map((val: ThemeExtJSON)=>{
-        let pick: vscode.QuickPickItem = {
+    let quickPickItems: CustomQuickPick[] = allThemes.map((val: ThemeExtJSON)=>{
+        let pick: CustomQuickPick = {
             label: ThemeExtJSON2.getInterfaceIdentifier(val),
+            theme: val
         }
         return pick
     })
     // CREATE SELECTED LIST 
-    let selected = quickPickItems.filter((val: vscode.QuickPickItem) => {
+    let selected = quickPickItems.filter((val: CustomQuickPick) => {
         if(getThemeNameArray(favs).includes(val.label)) return true
         return false
     })
@@ -166,9 +196,8 @@ export const manageFavoritesViaPallette = (context: vscode.ExtensionContext, the
     let newFavs: ThemeExtJSON[] = []
     //  ACTIONS
     quickPickAction.onDidChangeSelection((e: readonly vscode.QuickPickItem[]) => {
-        let installed = getInstalled()
         newFavs = e.map((pick: vscode.QuickPickItem)=> {
-            let extJSON = getJSON(installed, pick.label)
+            let extJSON = getJSON(allThemes, pick.label)
             return extJSON
         })
     })
@@ -180,11 +209,10 @@ export const manageFavoritesViaPallette = (context: vscode.ExtensionContext, the
      quickPickAction.show()
 }
 // TREE VIEW ACTIONS
-export const editTheme = (itemContext: ThemeFav, context: vscode.ExtensionContext) => {
-    console.log(itemContext)
-    let uri = itemContext.theme.uri!
-    if(!uri) uri = vscode.Uri.file(itemContext.theme.absPath!)
-    vscode.workspace.openTextDocument(uri).then((val: vscode.TextDocument) => {
+export const editThemeJSON = (itemContext: ThemeFav, context: vscode.ExtensionContext) => {
+    console.log(itemContext.theme)
+   
+    vscode.workspace.openTextDocument(vscode.Uri.parse(itemContext.theme.uri?.path + itemContext.theme.path.slice(1))).then((val: vscode.TextDocument) => {
         vscode.window.showTextDocument(val)
     })
 }
@@ -208,10 +236,11 @@ export const sortListAlphaDesc = (context: vscode.ExtensionContext, themeProvide
 }
 
 // UTIL
-export const setThemeActive = (themeString: string) => {
+export const activateTheme = (theme: ThemeExtJSON) => {
     let config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration()
-    console.log(themeString)
-    config.update("workbench.colorTheme", themeString, true).then(()=> console.log('updated'))
+    console.log(theme.label)
+    config.update("workbench.colorTheme", theme.label, true).then(()=> {
+    })
 }
 export const getCurrentTheme = (): ThemeExtJSON => {
     let config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration()
@@ -229,6 +258,12 @@ export const getFavIndex = (themes: ThemeExtJSON[], theme: string) => {
 }
 
 // ORGANIZATION
+export const createFolder = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
+    let folders: Folder[] = getFolderState(context)
+    let newFolder = new Folder([], "New Favorites")
+    folders.unshift(newFolder)
+    updateFolderState(folders, context, themeProvider)
+}
 export const reorderFav = (context: vscode.ExtensionContext, themeToMove: string, newInd: number) => {
     let themes: ThemeExtJSON[] = getFavorites(context)
     let ind: number = getFavIndex(themes, themeToMove)
@@ -253,15 +288,17 @@ export const getInstalled = (): ThemeExtJSON[] => {
         if (val.packageJSON.hasOwnProperty("contributes")) return true
         return false
     }).map((val: vscode.Extension<any>) => {
-        return val.packageJSON.contributes
+        return {...val.packageJSON.contributes, uri: val.extensionUri, absPath: val.extensionPath}
     })
     themesArr = themesArr.filter((val: any) => {
         if (val.hasOwnProperty("themes")) return true
         return false
     }).flatMap((val: any) => {
-        return val.themes
+        return val.themes.map((themeObj:any)=>{
+            return {...themeObj, uri: val.uri, absPath: val.absPath}
+        })
     }).map((val: any) => {
-        return createThemeExtJSON(val.label, val.path, val.uiTheme, val.id ? val.id : null)
+        return createThemeExtJSON(val.label, val.path, val.uiTheme, val.id ? val.id : null, val.uri, val.absPath)
     })
     return themesArr
 }
@@ -284,11 +321,11 @@ const isInstalled = (themeString: string, allInstalled: ThemeExtJSON[]): boolean
     return false
 }
 const getThemeJson = (themeString: string): ThemeExtJSON => {
-    let installed = getInstalled()
+    let installed: ThemeExtJSON[] = getInstalled()
     let index = installed.map((ext: ThemeExtJSON) => {
         return ext.id ? ext.id : ext.label
     }).indexOf(themeString)
-    if(index == -1) return createThemeExtJSON(themeString, "", "", null)
+    if(index == -1) return createThemeExtJSON(themeString, "", "", null, )
     return installed[index]
 }
 const getJSON = (installed: ThemeExtJSON[], themeString: string): ThemeExtJSON => {

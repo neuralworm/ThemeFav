@@ -16,7 +16,7 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.workspace.onDidChangeConfiguration((e: vscode.ConfigurationChangeEvent)=>{
 		console.log(e.affectsConfiguration("workbench.colorTheme"))
 		// HISTORY UPDATE
-		lib.addHistoryEvent(context, vscode.workspace.getConfiguration().get("workbench.colorTheme")!)
+		lib.addHistoryEvent(context, vscode.workspace.getConfiguration().get("workbench.colorTheme")!, themeProvider)
 	})
 	// REGISTER TREEVIEW
 	const favoritesTreeView = vscode.window.createTreeView("favorites-list", {
@@ -24,7 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
 	})
 	// TREE VIEW SELECTION EVENTS
 	favoritesTreeView.onDidChangeSelection((e: vscode.TreeViewSelectionChangeEvent<ThemeFav>)=>{
-		lib.setThemeActive(e.selection[0].label)
+		lib.activateTheme(e.selection[0].theme)
 	})
 	// COMMANDS
 	let disposable_getFavorites = vscode.commands.registerCommand('themeFav.getFavorites', () => {
@@ -44,7 +44,7 @@ export function activate(context: vscode.ExtensionContext) {
 		lib.removeViaView(itemCtx, context, themeProvider)
 	});
 	let disposable_editViaTreeItem = vscode.commands.registerCommand('themeFav.editViaTreeItem', (itemCtx: ThemeFav) => {
-		lib.editTheme(itemCtx, context)
+		lib.editThemeJSON(itemCtx, context)
 	});
 	let disposable_refreshTreeView = vscode.commands.registerCommand("themeFav.refreshTreeView", () => {
 		themeProvider.refresh()
@@ -61,6 +61,9 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable_validate = vscode.commands.registerCommand("themeFav.validate", () => {
 		lib.validateThemes(context, themeProvider)
 	})
+	let disposable_newFolder = vscode.commands.registerCommand("themeFav.newFolder", () => {
+		lib.createFolder(context, themeProvider)
+	})
 	context.subscriptions.push(disposable_getFavorites);
 	context.subscriptions.push(disposable_selectFromFavorites);
 	context.subscriptions.push(disposable_saveTheme);
@@ -72,6 +75,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable_sortAlphaDesc);
 	context.subscriptions.push(disposable_manageFavorites);
 	context.subscriptions.push(disposable_validate);
+	context.subscriptions.push(disposable_newFolder);
 
 	// TEST
 	let disposable_listExt = vscode.commands.registerCommand("themeFav.listExt", () => {

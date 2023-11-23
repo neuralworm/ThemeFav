@@ -73,6 +73,19 @@
 
 				"command": "themeFav.validate",
 				"title": "ThemeFav: Validate Themes"
+			},
+			{
+				"command": "themeFav.newFolder",
+				"title": "ThemeFav: New Folder",
+				"icon": "$(new-folder)"
+			},
+			{
+				"command": "themeFav.move",
+				"title": "Move"
+			},
+			{
+				"command": "themeFav.delete",
+				"title": "Delete"
 			}
 		],
 		"viewsContainers": {
@@ -105,6 +118,11 @@
 					"group": "navigation@2"
 				},
 				{
+					"command": "themeFav.newFolder",
+					"when": "view == favorites-list",
+					"group": "navigation@3"
+				},
+				{
 					"command": "themeFav.sortAlphaAsc",
 					"when": "view == favorites-list",
 					"group": "@1"
@@ -130,6 +148,14 @@
 					"command": "themeFav.editViaTreeItem",
 					"group": "inline",
 					"when": "view == favorites-list"
+				},
+				{
+					"command": "themeFav.move",
+					"when": "view == favorites-list"
+				},
+				{
+					"command": "themeFav.delete",
+					"when": "view == favorites-list"
 				}
 			],
 			"commandPalette": [
@@ -143,6 +169,10 @@
 				},
 				{
 					"command": "themeFav.removeViaView",
+					"when": "false"
+				},
+				{
+					"command": "themeFav.delete",
 					"when": "false"
 				}
 			]

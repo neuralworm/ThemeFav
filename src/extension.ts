@@ -43,7 +43,7 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable_removeViaView = vscode.commands.registerCommand('themeFav.removeViaView', (itemCtx: ThemeFav) => {
 		lib.removeViaView(itemCtx, context, themeProvider)
 	});
-	let disposable_editViaTreeItem = vscode.commands.registerCommand('themeFav.editViaTreeItem', (itemCtx: ThemeFav) => {
+	let disposable_editJSON = vscode.commands.registerCommand('themeFav.editJSON', (itemCtx: ThemeFav) => {
 		lib.editThemeJSON(itemCtx, context)
 	});
 	let disposable_refreshTreeView = vscode.commands.registerCommand("themeFav.refreshTreeView", () => {
@@ -64,18 +64,22 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable_newFolder = vscode.commands.registerCommand("themeFav.newFolder", () => {
 		lib.createFolder(context, themeProvider)
 	})
+	let disposable_moveToFolder = vscode.commands.registerCommand("themeFav.move", (e: ThemeFav) => {
+		lib.moveToFolderViaPallette(context, themeProvider, e)
+	})
 	context.subscriptions.push(disposable_getFavorites);
 	context.subscriptions.push(disposable_selectFromFavorites);
 	context.subscriptions.push(disposable_saveTheme);
 	context.subscriptions.push(disposable_removeViaCommandPalette);
 	context.subscriptions.push(disposable_removeViaView);
-	context.subscriptions.push(disposable_editViaTreeItem);
+	context.subscriptions.push(disposable_editJSON);
 	context.subscriptions.push(disposable_refreshTreeView);
 	context.subscriptions.push(disposable_sortAlphaAsc);
 	context.subscriptions.push(disposable_sortAlphaDesc);
 	context.subscriptions.push(disposable_manageFavorites);
 	context.subscriptions.push(disposable_validate);
 	context.subscriptions.push(disposable_newFolder);
+	context.subscriptions.push(disposable_moveToFolder);
 
 	// TEST
 	let disposable_listExt = vscode.commands.registerCommand("themeFav.listExt", () => {

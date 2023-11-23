@@ -39,11 +39,6 @@
 				"icon": "$(remove)"
 			},
 			{
-				"command": "themeFav.editViaTreeItem",
-				"title": "Edit",
-				"icon": "$(edit)"
-			},
-			{
 				"command": "themeFav.refreshTreeView",
 				"title": "ThemeFav: Refresh"
 			},
@@ -80,13 +75,28 @@
 				"icon": "$(new-folder)"
 			},
 			{
-				"command": "themeFav.move",
-				"title": "Move"
+				"command": "themeFav.moveToNewFolder",
+				"title": "New Group"
+			},
+			{
+				"command": "themeFav.moveToFolder",
+				"title": "Group (Pick)"
+			},
+			{
+				"command": "themeFav.moveToDefault",
+				"title": "Uncategorized"
+			},
+			
+			{
+				"command": "themeFav.editJSON",
+				"title": "Edit JSON",
+				"icon": "$(edit)"
 			},
 			{
 				"command": "themeFav.delete",
 				"title": "Delete"
 			}
+			
 		],
 		"viewsContainers": {
 			"activitybar": [
@@ -145,19 +155,20 @@
 					"when": "view == favorites-list"
 				},
 				{
-					"command": "themeFav.editViaTreeItem",
-					"group": "inline",
-					"when": "view == favorites-list"
-				},
-				{
-					"command": "themeFav.move",
+					"command": "themeFav.editJSON",
 					"when": "view == favorites-list"
 				},
 				{
 					"command": "themeFav.delete",
 					"when": "view == favorites-list"
+				},
+				{
+					"submenu": "themeFav.moveToFolderSubMenu",
+					"when": "view == favorites-list",
+					"group": "themeFav"
 				}
 			],
+			
 			"commandPalette": [
 				{
 					"command": "themeFav.sortAlphaAsc",
@@ -175,8 +186,26 @@
 					"command": "themeFav.delete",
 					"when": "false"
 				}
+			],
+			"themeFav.moveToFolderSubMenu":[
+				{
+					"command": "themeFav.moveToNewFolder"
+				},
+				{
+					"command": "themeFav.moveToFolder"
+				},
+				{
+					"command": "themeFav.moveToDefault"
+				}
 			]
 		},
+		"submenus": [
+			{
+				"id": "themeFav.moveToFolderSubMenu",
+				"label": "Move"
+			}
+		],
+		
 		"configuration":{
 			"title": "ThemeFav",
 			"properties": {

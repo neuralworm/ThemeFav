@@ -9,6 +9,9 @@ export const resetState = (context: vscode.ExtensionContext, themeProvider: Them
     context.globalState.update("themeFav_favorites", "[]").then(()=>{
         themeProvider.refresh()
     })
+    context.globalState.update("themeFav_folders", "[]").then(()=>{
+        themeProvider.refresh()
+    })
 }
 export const updateThemeState = (newFavs: ThemeExtJSON[], context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
     context.globalState.update("themeFav_favorites", JSON.stringify(newFavs)).then(()=>{
@@ -236,19 +239,20 @@ export const manageFavoritesViaPallette = (context: vscode.ExtensionContext, the
      quickPickAction.show()
 }
 export const moveToFolderViaPallette = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider, themeItem: ThemeItem) => {
+    let oldFolder: Folder|undefined = themeItem.parent
     let folders: Folder[] = getFolderState(context)
+    let favs = getFavorites(context)
     // CHECK IF ALREADY IN FOLDERS
-    let filtered = folders.filter((folder: Folder, index: number) => {
-        if(folder.themes.map(val => val.label).includes(themeItem.label)) return false
-        return true
-    })
-    let quickPickItems: FolderQuickPickItem[] = filtered.map((val: Folder, index: number)=>{
+    let quickPickItems: FolderQuickPickItem[] = folders.map((val: Folder, index: number)=>{
         let pick: FolderQuickPickItem = {
             label: val.label,
             folder: val,
             index: index
         }
         return pick
+    }).filter((fldr: FolderQuickPickItem)=>{
+        if(fldr.folder.themes.map((val)=>val.label).includes(themeItem.label)) return false
+        return true
     })
     
     // SETUP MENU
@@ -258,12 +262,21 @@ export const moveToFolderViaPallette = (context: vscode.ExtensionContext, themeP
     quickPickAction.onDidAccept(() => {
         let selectedFolder: FolderQuickPickItem = quickPickAction.selectedItems[0] as FolderQuickPickItem
         console.log("need to move " + themeItem.label + " to " + selectedFolder.label)
-
-        // Modify folder array
+        // REMOVE FROM OLD FOLDER
+        if(!themeItem.parent){
+            let index: number = getFavIndex(favs, themeItem.label)
+            favs.splice(index, 1)
+        }
+        else{
+            if(!oldFolder) return
+            let index: number = folders.map(fldr=>fldr.id).indexOf(oldFolder?.id)
+            folders[index].themes.splice(folders[index].themes.map(theme=>theme.label).indexOf(themeItem.theme.label), 1)
+        }
+        // INSERT INTO NEW
         folders[selectedFolder.index].themes.unshift(themeItem.theme)
-        // Save to state
+        // SAVE STATES
         updateFolderState(folders, context, themeProvider)
-
+        updateThemeState(favs, context, themeProvider)
         quickPickAction.hide()
     })
 

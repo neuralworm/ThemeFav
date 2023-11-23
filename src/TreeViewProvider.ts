@@ -31,7 +31,7 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem|Folde
         }), ...this.folders.map((folder: Folder) => new FolderItem(vscode.TreeItemCollapsibleState.Expanded, folder))]
         else if (element.hasOwnProperty("folder")){
             let folderElement = element as FolderItem
-            return folderElement.folder.themes.map((theme: ThemeExtJSON) => new ThemeItem(theme, vscode.TreeItemCollapsibleState.None))
+            return folderElement.folder.themes.map((theme: ThemeExtJSON) => new ThemeItem(theme, vscode.TreeItemCollapsibleState.None, folderElement.folder))
         }
     }
     // SYNC WITH STATE
@@ -60,7 +60,6 @@ export class ThemeItem implements vscode.TreeItem{
     constructor(
         public theme: ThemeExtJSON,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-        public children?: ThemeItem[],
         public parent?: Folder,
         public contextValue: string = "themeItem"
       ) {

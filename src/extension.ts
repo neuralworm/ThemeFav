@@ -19,7 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
 		lib.addHistoryEvent(context, vscode.workspace.getConfiguration().get("workbench.colorTheme")!, themeProvider)
 	})
 	// REGISTER TREEVIEW
-	const favoritesTreeView = vscode.window.createTreeView("favorites-list", {
+	const favoritesTreeView = vscode.window.createTreeView("favtreeview", {
 		treeDataProvider: themeProvider
 	})
 	// TREE VIEW SELECTION EVENTS
@@ -67,6 +67,9 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable_moveToFolder = vscode.commands.registerCommand("themeFav.move", (e: ThemeFav) => {
 		lib.moveToFolderViaPallette(context, themeProvider, e)
 	})
+	let disposable_delete = vscode.commands.registerCommand("themeFav.delete", (e) => {
+		console.log(e)
+	})
 	context.subscriptions.push(disposable_getFavorites);
 	context.subscriptions.push(disposable_selectFromFavorites);
 	context.subscriptions.push(disposable_saveTheme);
@@ -80,6 +83,8 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable_validate);
 	context.subscriptions.push(disposable_newFolder);
 	context.subscriptions.push(disposable_moveToFolder);
+	context.subscriptions.push(disposable_delete);
+
 
 	// TEST
 	let disposable_listExt = vscode.commands.registerCommand("themeFav.listExt", () => {

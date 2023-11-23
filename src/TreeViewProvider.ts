@@ -4,8 +4,8 @@ import { ThemeExtJSON, ThemeExtJSON2 } from './ThemeExtJSON'
 import { Folder } from './models/Folder'
 
 export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeFav>, vscode.TreeDragAndDropController<ThemeFav>{
-    dropMimeTypes = ['application/vnd.code.tree.testViewDragAndDrop'];
-	dragMimeTypes = ['text/uri-list'];
+    dropMimeTypes = ['application/vnd.code.tree.favtreeview', "text/plain"];
+	dragMimeTypes = ['application/vnd.code.tree.favtreeview', "text/plain"];
     context: vscode.ExtensionContext
     favs: ThemeExtJSON[]
     all: ThemeExtJSON[]
@@ -30,6 +30,7 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeFav>, vsco
             return new ThemeFav(themeExtJson, vscode.TreeItemCollapsibleState.None, undefined, false)
         })]
     }
+    // SYNC WITH STATE
     refresh(): void {
         this.favs = lib.getFavorites(this.context)
         this.history = lib.getHistory(this.context)
@@ -37,7 +38,16 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeFav>, vsco
         this.folders = lib.getFolderState(this.context)
         this._onDidChangeTreeData.fire()
     }
-    
+    // DRAG N DROP
+    handleDrag(source: readonly ThemeFav[], dataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): void | Thenable<void> {
+      dataTransfer.set('application/vnd.code.tree.favtreeview', new vscode.DataTransferItem(source))
+      console.log('drag?')
+    }
+    handleDrop(target: ThemeFav | undefined, dataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): void | Thenable<void> {
+        const transferContent = dataTransfer.get('application/vnd.code.tree.favtreeview')
+        console.log(transferContent)
+    }
+   
 }
 
 
@@ -47,11 +57,12 @@ export class ThemeFav implements vscode.TreeItem{
         public theme: ThemeExtJSON,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
         public readonly themeExt: ThemeExtJSON|undefined,
-        public isFolder: boolean
+        public isFolder: boolean,
+        public children?: ThemeFav[]
       ) {
         this.theme = theme
         this.label = ThemeExtJSON2.getInterfaceIdentifier(theme)
-        this.collapsibleState = 0
+        this.collapsibleState = vscode.TreeItemCollapsibleState.None
       }
       
       

@@ -65,7 +65,6 @@
 				"title": "THEMEFAV TEST: RESET"
 			},
 			{
-
 				"command": "themeFav.validate",
 				"title": "ThemeFav: Validate Themes"
 			},
@@ -86,7 +85,6 @@
 				"command": "themeFav.moveToDefault",
 				"title": "Uncategorized"
 			},
-			
 			{
 				"command": "themeFav.editJSON",
 				"title": "Edit JSON",
@@ -96,7 +94,6 @@
 				"command": "themeFav.delete",
 				"title": "Delete"
 			}
-			
 		],
 		"viewsContainers": {
 			"activitybar": [
@@ -110,7 +107,7 @@
 		"views": {
 			"theme-favorites": [
 				{
-					"id": "favorites-list",
+					"id": "favtreeview",
 					"name": "Themes"
 				}
 			]
@@ -119,56 +116,51 @@
 			"view/title": [
 				{
 					"command": "themeFav.saveTheme",
-					"when": "view == favorites-list",
+					"when": "view == favtreeview",
 					"group": "navigation@1"
 				},
 				{
 					"command": "themeFav.removeViaCommandPalette",
-					"when": "view == favorites-list",
+					"when": "view == favtreeview",
 					"group": "navigation@2"
 				},
 				{
 					"command": "themeFav.newFolder",
-					"when": "view == favorites-list",
+					"when": "view == favtreeview",
 					"group": "navigation@3"
 				},
 				{
 					"command": "themeFav.sortAlphaAsc",
-					"when": "view == favorites-list",
+					"when": "view == favtreeview",
 					"group": "@1"
 				},
 				{
 					"command": "themeFav.sortAlphaDesc",
-					"when": "view == favorites-list",
+					"when": "view == favtreeview",
 					"group": "@1"
 				},
 				{
 					"command": "themeFav.validate",
-					"when": "view == favorites-list",
+					"when": "view == favtreeview",
 					"group": "@2"
 				}
 			],
 			"view/item/context": [
-				{
-					"command": "themeFav.removeViaView",
-					"group": "inline",
-					"when": "view == favorites-list"
-				},
+
 				{
 					"command": "themeFav.editJSON",
-					"when": "view == favorites-list"
+					"when": "view == favtreeview"
 				},
 				{
 					"command": "themeFav.delete",
-					"when": "view == favorites-list"
+					"when": "view == favtreeview"
 				},
 				{
 					"submenu": "themeFav.moveToFolderSubMenu",
-					"when": "view == favorites-list",
+					"when": "view == favtreeview",
 					"group": "themeFav"
 				}
 			],
-			
 			"commandPalette": [
 				{
 					"command": "themeFav.sortAlphaAsc",
@@ -187,7 +179,7 @@
 					"when": "false"
 				}
 			],
-			"themeFav.moveToFolderSubMenu":[
+			"themeFav.moveToFolderSubMenu": [
 				{
 					"command": "themeFav.moveToNewFolder"
 				},
@@ -205,8 +197,7 @@
 				"label": "Move"
 			}
 		],
-		
-		"configuration":{
+		"configuration": {
 			"title": "ThemeFav",
 			"properties": {
 				"themeFav.showAllThemesInMenu": {
@@ -238,16 +229,20 @@
 		"test": "node ./out/test/runTest.js"
 	},
 	"devDependencies": {
-		"@types/vscode": "^1.84.0",
 		"@types/glob": "^7.2.0",
 		"@types/mocha": "^9.1.1",
 		"@types/node": "16.x",
+		"@types/vscode": "^1.84.0",
 		"@typescript-eslint/eslint-plugin": "^5.30.0",
 		"@typescript-eslint/parser": "^5.30.0",
+		"@vscode/test-electron": "^2.1.5",
 		"eslint": "^8.18.0",
 		"glob": "^8.0.3",
 		"mocha": "^10.0.0",
-		"typescript": "^4.7.4",
-		"@vscode/test-electron": "^2.1.5"
+		"typescript": "^4.7.4"
+	},
+	"dependencies": {
+		"@types/uuid": "^9.0.7",
+		"uuid": "^9.0.1"
 	}
 }

@@ -68,10 +68,10 @@ export const getHistory = (context: vscode.ExtensionContext): ThemeExtJSON[] => 
     return historyArray
 }
 export const saveThemeToState = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
-    let themeString: ThemeExtJSON = getCurrentTheme()
+    let activeTheme: ThemeExtJSON = getCurrentTheme()
     let favoriteArray: ThemeExtJSON[] = getFavorites(context)
-    if (favoriteArray.indexOf(themeString) == -1) {
-        favoriteArray.push(themeString)
+    if (favoriteArray.map((theme: ThemeExtJSON) => ThemeExtJSON2.getInterfaceIdentifier(theme)).indexOf(ThemeExtJSON2.getInterfaceIdentifier(activeTheme)) == -1) {
+        favoriteArray.push(activeTheme)
     }
     else return
     updateThemeState(favoriteArray, context, themeProvider)
@@ -202,11 +202,11 @@ export const manageFavoritesViaPallette = (context: vscode.ExtensionContext, the
      // ACTIVATE
      quickPickAction.show()
 }
-export const moveToFolderViaPallette = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider, theme: ThemeFav) => {
+export const moveToFolderViaPallette = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider, themeFav: ThemeFav) => {
     let folders: Folder[] = getFolderState(context)
     // CHECK IF ALREADY IN FOLDERS
     let filtered = folders.filter((folder: Folder, index: number) => {
-        if(folder.themes.map(val => val.label).includes(theme.label)) return false
+        if(folder.themes.map(val => val.label).includes(themeFav.label)) return false
         return true
     })
     let quickPickItems: FolderQuickPickItem[] = filtered.map((val: Folder, index: number)=>{
@@ -217,13 +217,14 @@ export const moveToFolderViaPallette = (context: vscode.ExtensionContext, themeP
         }
         return pick
     })
+    
     // SETUP MENU
     let quickPickAction = vscode.window.createQuickPick()
     quickPickAction.items = quickPickItems
     quickPickAction.title = "Choose Folder"
     quickPickAction.onDidAccept(() => {
         let selectedFolder: FolderQuickPickItem = quickPickAction.selectedItems[0] as FolderQuickPickItem
-        console.log("need to move " + theme.label + " to " + selectedFolder.label)
+        console.log("need to move " + themeFav.label + " to " + selectedFolder.label)
         quickPickAction.hide()
     })
 
@@ -260,8 +261,7 @@ export const sortListAlphaDesc = (context: vscode.ExtensionContext, themeProvide
 // UTIL
 export const activateTheme = (theme: ThemeExtJSON) => {
     let config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration()
-    console.log(theme.label)
-    config.update("workbench.colorTheme", theme.label, true).then(()=> {
+    config.update("workbench.colorTheme", ThemeExtJSON2.getInterfaceIdentifier(theme), true).then(()=> {
     })
 }
 export const getCurrentTheme = (): ThemeExtJSON => {

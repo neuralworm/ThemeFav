@@ -150,25 +150,28 @@
 				}
 			],
 			"view/item/context": [
-
-				{
-					"command": "themeFav.editJSON",
-					"when": "view == favtreeview && viewItem == themeItem"
-				},
-				{
-					"command": "themeFav.delete",
-					"when": "view == favtreeview"
-				},
 				{
 					"submenu": "themeFav.moveToFolderSubMenu",
 					"when": "view == favtreeview && viewItem == themeItem",
-					"group": "themeFav"
+					"group": "edit"
 				},
 				{
 					"command": "themeFav.renameFolder",
 					"when": "view == favtreeview && viewItem == folder",
-					"group": "themeFav"
+					"group": "edit"
+				},
+
+				{
+					"command": "themeFav.editJSON",
+					"when": "view == favtreeview && viewItem == themeItem",
+					"group": "paths"
+				},
+				{
+					"command": "themeFav.delete",
+					"when": "view == favtreeview",
+					"group": "delete"
 				}
+				
 			],
 			"commandPalette": [
 				{

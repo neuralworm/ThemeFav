@@ -65,7 +65,7 @@ export function activate(context: vscode.ExtensionContext) {
 		lib.sortListAlphaDesc(context, themeProvider)
 	})
 	let disposable_manageFavorites = vscode.commands.registerCommand("themeFav.manage", () => {
-		lib.manageFavoritesViaPallette(context, themeProvider)
+		lib.manageMenu(context, themeProvider)
 	})
 	let disposable_validate = vscode.commands.registerCommand("themeFav.validate", () => {
 		lib.validateThemes(context, themeProvider)

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode'
 import { ThemeItem, ThemeFavProvider, FolderItem } from './TreeViewProvider'
-import { ThemeExtJSON, ThemeExtJSON2, createThemeExtJSON } from './ThemeExtJSON'
+import { ThemeExtJSON, ThemeExtJSON2, createThemeExtJSON } from './models/ThemeExtJSON'
 import { Folder } from './models/Folder'
 import { FolderQuickPickItem, ThemeQuickPickItem } from './models/QuickPick'
 
@@ -17,6 +17,11 @@ export const updateUncatFavs = (newFavs: ThemeExtJSON[], context: vscode.Extensi
     context.globalState.update("themeFav_favorites", JSON.stringify(newFavs)).then(()=>{
         themeProvider.refresh()
     })
+}
+export const addThemeToUncat = (themeToAdd: ThemeExtJSON, context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
+    let favs: ThemeExtJSON[] = getFavorites(context)
+    favs.push(themeToAdd)
+    updateUncatFavs(favs, context, themeProvider)
 }
 export const updateFolderState = (folders: Folder[], context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
     context.globalState.update("themeFav_folders", JSON.stringify(folders)).then(()=>{
@@ -90,7 +95,6 @@ export const getFavorites = (context: vscode.ExtensionContext): ThemeExtJSON[] =
 export const updateHistoryState = (newHistory: ThemeExtJSON[], context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
     context.globalState.update("themeFav_history", JSON.stringify(newHistory)).then(()=>{
         themeProvider.refresh()
-        console.log(getHistory(context))
     })
 }
 export const getHistory = (context: vscode.ExtensionContext): ThemeExtJSON[] => {
@@ -103,9 +107,10 @@ export const getHistory = (context: vscode.ExtensionContext): ThemeExtJSON[] => 
     }
     if (!history) history = "[]"
     let historyArray: ThemeExtJSON[] = JSON.parse(history)
+    console.log(historyArray)
     return historyArray
 }
-export const saveThemeToState = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
+export const saveThemeToUncat = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
     const activeTheme: ThemeExtJSON = getCurrentTheme()
     const favoriteArray: ThemeExtJSON[] = getFavorites(context)
     if (favoriteArray.map((theme: ThemeExtJSON) => ThemeExtJSON2.getInterfaceIdentifier(theme)).indexOf(ThemeExtJSON2.getInterfaceIdentifier(activeTheme)) == -1) {
@@ -158,11 +163,9 @@ export const treeDelete = (context: vscode.ExtensionContext, themeProvider: Them
 } 
 // HISTORY
 export const addHistoryEvent = (context: vscode.ExtensionContext, newHistoryTheme: ThemeExtJSON, themeProvider: ThemeFavProvider) => {
-    console.log('request to add ' + newHistoryTheme.label + " to history.")
     const history: ThemeExtJSON[] = getHistory(context)
-    console.log('history : ' + history)
     // Check if exists in history
-    const index = history.map((val: ThemeExtJSON)=>val.label).indexOf(newHistoryTheme.label)
+    const index: number = history.map((val: ThemeExtJSON)=>val.label).indexOf(newHistoryTheme.label)
     if(index !== -1) history.splice(index, 1)
     history.unshift(newHistoryTheme)
     updateHistoryState(history, context, themeProvider)
@@ -385,27 +388,37 @@ export const editThemeJSON = (itemContext: ThemeItem, context: vscode.ExtensionC
     })
 }
 export const removeThemeViaTree = (themeFav: ThemeItem, context: vscode.ExtensionContext, treeProvider: ThemeFavProvider) => {
-    let toRemove: string = themeFav.label
+    const toRemove: string = themeFav.label
     removeThemeFromState(context, toRemove, treeProvider)
 }
 export const sortListAlphaAsc = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
-    let favs: ThemeExtJSON[] = getFavorites(context)
-    let sorted: ThemeExtJSON[] = sortAlphaAsc(favs)
+    const favs: ThemeExtJSON[] = getFavorites(context)
+    const sorted: ThemeExtJSON[] = sortAlphaAsc(favs)
     context.globalState.update("themeFav_favorites", JSON.stringify(sorted)).then(() => {
         themeProvider.refresh()
     })
 }
 export const sortListAlphaDesc = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
-    let favs: ThemeExtJSON[] = getFavorites(context)
-    let sorted: ThemeExtJSON[] = sortAlphaDesc(favs)
+    const favs: ThemeExtJSON[] = getFavorites(context)
+    const sorted: ThemeExtJSON[] = sortAlphaDesc(favs)
     context.globalState.update("themeFav_favorites", JSON.stringify(sorted)).then(() => {
         themeProvider.refresh()
     })
 }
-
+export const moveToUncat = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider, themeItem: ThemeItem) => {
+    if(!themeItem.parent) return
+    const folderID: string = themeItem.parent.id
+    const folders: Folder[] = getFolderState(context)
+    const index: number = folders.map((folder => folder.id)).indexOf(folderID)
+    const folder: Folder = folders[index]
+    const themeIndex: number = getFavIndex(folder.themes, themeItem.label)
+    const themeToMove = folder.themes.splice(themeIndex, 1)
+    addThemeToUncat(themeToMove[0], context, themeProvider)
+    updateFolderState(folders, context, themeProvider)
+}
 // UTIL
 export const activateTheme = (theme: ThemeExtJSON) => {
-    let config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration()
+    const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration()
     config.update("workbench.colorTheme", ThemeExtJSON2.getInterfaceIdentifier(theme), true).then(()=> {
     })
 }

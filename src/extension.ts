@@ -14,7 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const themeProvider = new ThemeFavProvider(context)
 	// WATCH FOR THEME CHANGE
 	vscode.workspace.onDidChangeConfiguration((e: vscode.ConfigurationChangeEvent)=>{
-		console.log(e.affectsConfiguration("workbench.colorTheme"))
+		if(!e.affectsConfiguration("workbench.colorTheme")) return
 		// HISTORY UPDATE
 		lib.addHistoryEvent(context, vscode.workspace.getConfiguration().get("workbench.colorTheme")!, themeProvider)
 	})
@@ -40,7 +40,7 @@ export function activate(context: vscode.ExtensionContext) {
 		lib.getFavorites(context)
 	});
 	const disposable_saveTheme = vscode.commands.registerCommand('themeFav.saveTheme', () => {
-		lib.saveThemeToState(context, themeProvider)
+		lib.saveThemeToUncat(context, themeProvider)
 	});
 	const disposable_selectFromFavorites = vscode.commands.registerCommand('themeFav.selectFromFavorites', () => {
 		lib.getCurrentTheme()
@@ -78,6 +78,9 @@ export function activate(context: vscode.ExtensionContext) {
 	})
 	const disposable_moveToNewFolder = vscode.commands.registerCommand("themeFav.moveToNewFolder", (e: ThemeItem) => {
 	})
+	const disposable_moveToUncat = vscode.commands.registerCommand("themeFav.moveToDefault", (e: ThemeItem) => {
+		lib.moveToUncat(context, themeProvider, e)
+	})
 	const disposable_delete = vscode.commands.registerCommand("themeFav.delete", (treeItem: vscode.TreeItem) => {
 		lib.treeDelete(context, themeProvider, treeItem)
 	})
@@ -98,6 +101,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable_validate);
 	context.subscriptions.push(disposable_newFolder);
 	context.subscriptions.push(disposable_moveToFolder);
+	context.subscriptions.push(disposable_moveToUncat);
 	context.subscriptions.push(disposable_delete);
 	context.subscriptions.push(disposable_renameFolder);
 	context.subscriptions.push(disposable_moveToNewFolder);

@@ -1,7 +1,8 @@
 import * as vscode from 'vscode'
 import * as lib from './lib'
-import { ThemeExtJSON, ThemeExtJSON2 } from './ThemeExtJSON'
+import { ThemeExtJSON, ThemeExtJSON2 } from './models/ThemeExtJSON'
 import { Folder } from './models/Folder'
+import path = require('path');
 
 export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem|FolderItem>, vscode.TreeDragAndDropController<ThemeItem>{
     dropMimeTypes = ['application/vnd.code.tree.favtreeview', "text/plain"];
@@ -62,6 +63,10 @@ export class ThemeItem implements vscode.TreeItem{
         public theme: ThemeExtJSON,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
         public parent?: Folder,
+        public readonly iconPath = {
+            light: path.join(__filename, '../', "../", 'resources', 'pallette_light.svg'),
+            dark: path.join(__filename, '../', "../", 'resources', 'pallette_dark.svg')
+        }
       ) {
         this.theme = theme
         this.label = ThemeExtJSON2.getInterfaceIdentifier(theme)
@@ -76,6 +81,10 @@ export class ThemeItem implements vscode.TreeItem{
 export class FolderItem implements vscode.TreeItem{
     label: string
     contextValue?: string | undefined;
+    public readonly iconPath = {
+        light: path.join(__filename, '../', "../", 'resources', 'folder.png'),
+        dark: path.join(__filename, '../', "../", 'resources', 'folder.png')
+    }
     constructor(
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
         public folder: Folder,
@@ -83,9 +92,9 @@ export class FolderItem implements vscode.TreeItem{
         this.folder = folder
         this.label = folder.label + `${this.folder.themes.length > 0 ? ` (${folder.themes.length})` : " (empty)"}`
         this.collapsibleState = folder.open ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.Collapsed
-        if(folder.label == "Installed") this.contextValue = "installed"
+        if(folder.label == "Installed") this.contextValue = "installedFolder"
         else this.contextValue = "folder"
+        console.log(path.join(__filename, '../', '../', 'resources', 'themefav.svg'))
       }
-      
           
 }

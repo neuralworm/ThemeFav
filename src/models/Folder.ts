@@ -1,4 +1,4 @@
-import { ThemeExtJSON } from "../ThemeExtJSON";
+import { ThemeExtJSON } from "./ThemeExtJSON";
 import {v4  as uuid} from 'uuid'
 export class Folder {
     public themes: ThemeExtJSON[]

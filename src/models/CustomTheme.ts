@@ -1,4 +1,4 @@
-import { ThemeExtJSON } from "../ThemeExtJSON"
+import { ThemeExtJSON } from "./ThemeExtJSON"
 
 export class CustomTheme{
     name: string = "New Custom Theme"

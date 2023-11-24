@@ -163,12 +163,12 @@
 
 				{
 					"command": "themeFav.editJSON",
-					"when": "view == favtreeview && viewItem == themeItem",
+					"when": "view == favtreeview && !(viewItem == installedFolder) && viewItem != folder",
 					"group": "paths"
 				},
 				{
 					"command": "themeFav.delete",
-					"when": "view == favtreeview && viewItem != installed",
+					"when": "view == favtreeview && viewItem != installedFolder && viewItem !== installed",
 					"group": "delete"
 				}
 				

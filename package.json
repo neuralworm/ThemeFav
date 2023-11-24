@@ -66,7 +66,8 @@
 			},
 			{
 				"command": "themeFav.validate",
-				"title": "ThemeFav: Validate Themes"
+				"title": "ThemeFav: Validate Themes",
+				"icon": "$(refresh)"
 			},
 			{
 				"command": "themeFav.newFolder",
@@ -116,7 +117,15 @@
 			"theme-favorites": [
 				{
 					"id": "favtreeview",
-					"name": "Themes"
+					"name": "Favorites"
+				},
+				{
+					"id": "installedtreeview",
+					"name": "Installed"
+				},
+				{
+					"id": "mashuptreeview",
+					"name": "Mashups"
 				}
 			]
 		},
@@ -130,27 +139,32 @@
 				{
 					"command": "themeFav.removeViaCommandPalette",
 					"when": "view == favtreeview",
-					"group": "navigation@2"
+					"group": "@1"
 				},
 				{
 					"command": "themeFav.newFolder",
 					"when": "view == favtreeview",
-					"group": "navigation@3"
+					"group": "navigation@2"
 				},
 				{
 					"command": "themeFav.sortAlphaAsc",
 					"when": "view == favtreeview",
-					"group": "@1"
+					"group": "@2"
 				},
 				{
 					"command": "themeFav.sortAlphaDesc",
 					"when": "view == favtreeview",
-					"group": "@1"
+					"group": "@2"
 				},
 				{
 					"command": "themeFav.validate",
 					"when": "view == favtreeview",
-					"group": "@2"
+					"group": "navigation@3"
+				},
+				{
+					"command": "themeFav.validate",
+					"when": "view == installedtreeview",
+					"group": "navigation@1"
 				}
 			],
 			"view/item/context": [
@@ -160,6 +174,10 @@
 					"group": "edit"
 				},
 				{
+					"submenu": "themeFav.editJSON",
+					"when": "view == installedtreeview && viewItem == installedThemeItem"
+				},
+				{
 					"command": "themeFav.renameFolder",
 					"when": "view == favtreeview && viewItem == folder",
 					"group": "edit"
@@ -167,7 +185,7 @@
 
 				{
 					"command": "themeFav.editJSON",
-					"when": "view == favtreeview && !(viewItem == installedFolder) && viewItem != folder",
+					"when": "view == favtreeview && viewItem != folder",
 					"group": "paths"
 				},
 				{

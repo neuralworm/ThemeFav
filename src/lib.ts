@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { ThemeItem, ThemeFavProvider, FolderItem } from './TreeViewProvider'
+import { ThemeItem, ThemeFavProvider, FolderItem } from './treeviews/TreeViewFavorites'
 import { ThemeExtJSON, ThemeExtJSON2, createThemeExtJSON } from './models/ThemeExtJSON'
 import { Folder } from './models/Folder'
 import { FolderQuickPickItem, ThemeQuickPickItem } from './models/QuickPick'

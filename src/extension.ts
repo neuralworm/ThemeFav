@@ -87,6 +87,9 @@ export function activate(context: vscode.ExtensionContext) {
 	const disposable_renameFolder = vscode.commands.registerCommand("themeFav.renameFolder", (e: FolderItem) => {
 		lib.renameFolder(e, context, themeProvider)
 	})
+	const disposable_copyPath = vscode.commands.registerCommand("themeFav.copyPath", (e: ThemeItem) => {
+		lib.copyPath(e, context, themeProvider)
+	})
 
 	context.subscriptions.push(disposable_getFavorites);
 	context.subscriptions.push(disposable_selectFromFavorites);
@@ -105,6 +108,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable_delete);
 	context.subscriptions.push(disposable_renameFolder);
 	context.subscriptions.push(disposable_moveToNewFolder);
+	context.subscriptions.push(disposable_copyPath);
 
 
 

@@ -1,5 +1,5 @@
 {
-	"name": "themeFav",
+	"name": "ThemeFav",
 	"displayName": "ThemeFav: Theme Manager",
 	"description": "Easily favorite themes and switch between them. Edit, create, save.",
 	"version": "0.0.1",
@@ -97,6 +97,10 @@
 			{
 				"command": "themeFav.renameFolder",
 				"title": "Rename"
+			},
+			{
+				"command": "themeFav.copyPath",
+				"title": "Copy Path"
 			}
 		],
 		"viewsContainers": {
@@ -170,6 +174,11 @@
 					"command": "themeFav.delete",
 					"when": "view == favtreeview && viewItem != installedFolder && viewItem !== installed",
 					"group": "delete"
+				},
+				{
+					"command": "themeFav.copyPath",
+					"when": "view == favtreeview && (viewItem == installed || viewItem == themeItem)",
+					"group": "copy"
 				}
 				
 			],

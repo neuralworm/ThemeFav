@@ -36,52 +36,55 @@ export function activate(context: vscode.ExtensionContext) {
 		lib.updateFolderCollapse(e.element as FolderItem, context, themeProvider)
 	})
 	// COMMANDS
-	let disposable_getFavorites = vscode.commands.registerCommand('themeFav.getFavorites', () => {
+	const disposable_getFavorites = vscode.commands.registerCommand('themeFav.getFavorites', () => {
 		lib.getFavorites(context)
 	});
-	let disposable_saveTheme = vscode.commands.registerCommand('themeFav.saveTheme', () => {
+	const disposable_saveTheme = vscode.commands.registerCommand('themeFav.saveTheme', () => {
 		lib.saveThemeToState(context, themeProvider)
 	});
-	let disposable_selectFromFavorites = vscode.commands.registerCommand('themeFav.selectFromFavorites', () => {
+	const disposable_selectFromFavorites = vscode.commands.registerCommand('themeFav.selectFromFavorites', () => {
 		lib.getCurrentTheme()
 		lib.selectFavorite(context)
 	});
-	let disposable_removeViaCommandPalette = vscode.commands.registerCommand('themeFav.removeViaCommandPalette', () => {
+	const disposable_removeViaCommandPalette = vscode.commands.registerCommand('themeFav.removeViaCommandPalette', () => {
 		lib.removeViaCommandPalette(context, themeProvider)
 	});
-	let disposable_removeViaView = vscode.commands.registerCommand('themeFav.removeViaView', (itemCtx: ThemeItem) => {
-		lib.removeViaView(itemCtx, context, themeProvider)
+	const disposable_removeViaView = vscode.commands.registerCommand('themeFav.removeViaView', (itemCtx: ThemeItem) => {
+		lib.removeThemeViaTree(itemCtx, context, themeProvider)
 	});
-	let disposable_editJSON = vscode.commands.registerCommand('themeFav.editJSON', (itemCtx: ThemeItem) => {
+	const disposable_editJSON = vscode.commands.registerCommand('themeFav.editJSON', (itemCtx: ThemeItem) => {
 		lib.editThemeJSON(itemCtx, context)
 	});
-	let disposable_refreshTreeView = vscode.commands.registerCommand("themeFav.refreshTreeView", () => {
+	const disposable_refreshTreeView = vscode.commands.registerCommand("themeFav.refreshTreeView", () => {
 		themeProvider.refresh()
 	})
-	let disposable_sortAlphaAsc = vscode.commands.registerCommand("themeFav.sortAlphaAsc", (e: any) => {
+	const disposable_sortAlphaAsc = vscode.commands.registerCommand("themeFav.sortAlphaAsc", (e: any) => {
 		lib.sortListAlphaAsc(context, themeProvider)
 	})
-	let disposable_sortAlphaDesc = vscode.commands.registerCommand("themeFav.sortAlphaDesc", () => {
+	const disposable_sortAlphaDesc = vscode.commands.registerCommand("themeFav.sortAlphaDesc", () => {
 		lib.sortListAlphaDesc(context, themeProvider)
 	})
-	let disposable_manageFavorites = vscode.commands.registerCommand("themeFav.manage", () => {
+	const disposable_manageFavorites = vscode.commands.registerCommand("themeFav.manage", () => {
 		lib.manageMenu(context, themeProvider)
 	})
-	let disposable_validate = vscode.commands.registerCommand("themeFav.validate", () => {
+	const disposable_validate = vscode.commands.registerCommand("themeFav.validate", () => {
 		lib.validateThemes(context, themeProvider)
 	})
-	let disposable_newFolder = vscode.commands.registerCommand("themeFav.newFolder", () => {
+	const disposable_newFolder = vscode.commands.registerCommand("themeFav.newFolder", () => {
 		lib.createFolder(context, themeProvider)
 	})
-	let disposable_moveToFolder = vscode.commands.registerCommand("themeFav.moveToFolder", (e: ThemeItem) => {
+	const disposable_moveToFolder = vscode.commands.registerCommand("themeFav.moveToFolder", (e: ThemeItem) => {
 		lib.moveToFolderViaPallette(context, themeProvider, e)
 	})
-	let disposable_delete = vscode.commands.registerCommand("themeFav.delete", (e) => {
-		console.log(e)
+	const disposable_moveToNewFolder = vscode.commands.registerCommand("themeFav.moveToNewFolder", (e: ThemeItem) => {
 	})
-	let disposable_renameFolder = vscode.commands.registerCommand("themeFav.renameFolder", (e: FolderItem) => {
+	const disposable_delete = vscode.commands.registerCommand("themeFav.delete", (treeItem: vscode.TreeItem) => {
+		lib.treeDelete(context, themeProvider, treeItem)
+	})
+	const disposable_renameFolder = vscode.commands.registerCommand("themeFav.renameFolder", (e: FolderItem) => {
 		lib.renameFolder(e, context, themeProvider)
 	})
+
 	context.subscriptions.push(disposable_getFavorites);
 	context.subscriptions.push(disposable_selectFromFavorites);
 	context.subscriptions.push(disposable_saveTheme);
@@ -97,6 +100,8 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable_moveToFolder);
 	context.subscriptions.push(disposable_delete);
 	context.subscriptions.push(disposable_renameFolder);
+	context.subscriptions.push(disposable_moveToNewFolder);
+
 
 
 	// TEST

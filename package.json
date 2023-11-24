@@ -168,7 +168,7 @@
 				},
 				{
 					"command": "themeFav.delete",
-					"when": "view == favtreeview",
+					"when": "view == favtreeview && viewItem != installed",
 					"group": "delete"
 				}
 				

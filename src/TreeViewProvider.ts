@@ -64,8 +64,8 @@ export class ThemeItem implements vscode.TreeItem{
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
         public parent?: Folder,
         public readonly iconPath = {
-            light: path.join(__filename, '../', "../", 'resources', 'pallette_light.svg'),
-            dark: path.join(__filename, '../', "../", 'resources', 'pallette_dark.svg')
+            light: path.join(__filename, '../', "../", 'resources', 'json.svg'),
+            dark: path.join(__filename, '../', "../", 'resources', 'json.svg')
         }
       ) {
         this.theme = theme
@@ -82,8 +82,8 @@ export class FolderItem implements vscode.TreeItem{
     label: string
     contextValue?: string | undefined;
     public readonly iconPath = {
-        light: path.join(__filename, '../', "../", 'resources', 'folder.png'),
-        dark: path.join(__filename, '../', "../", 'resources', 'folder.png')
+        light: path.join(__filename, '../', "../", 'resources', `folder${this.folder.open ? "_open" : ""}.png`),
+        dark: path.join(__filename, '../', "../", 'resources', `folder${this.folder.open ? "_open" : ""}.png`)
     }
     constructor(
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
@@ -91,10 +91,11 @@ export class FolderItem implements vscode.TreeItem{
       ) {
         this.folder = folder
         this.label = folder.label + `${this.folder.themes.length > 0 ? ` (${folder.themes.length})` : " (empty)"}`
+        
         this.collapsibleState = folder.open ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.Collapsed
+
         if(folder.label == "Installed") this.contextValue = "installedFolder"
         else this.contextValue = "folder"
-        console.log(path.join(__filename, '../', '../', 'resources', 'themefav.svg'))
       }
-          
+    
 }

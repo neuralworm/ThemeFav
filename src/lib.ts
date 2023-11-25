@@ -45,7 +45,7 @@ export const renameFolder = (folderItem: FolderItem, context: vscode.ExtensionCo
     const reserved: string[] = ["Installed"]
     // console.log("rename " + folderItem.label)
     const folders: Folder[] = getFolderState(context)
-    const index: number = getFolderIndexFromItem(folderItem, context, folders)
+    const index: number = getFolderIndexFromItem(folderItem, folders)
     let currentName: string = folders[index].label
     const quickPickAction = vscode.window.createInputBox()
     quickPickAction.value = currentName
@@ -69,15 +69,15 @@ export const renameFolder = (folderItem: FolderItem, context: vscode.ExtensionCo
 }
 export const updateFolderCollapse = (folder: FolderItem, context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
     const folders: Folder[] = getFolderState(context)
-    const index: number = getFolderIndexFromItem(folder, context, folders)
+    const index: number = getFolderIndexFromItem(folder, folders)
     folders[index].open = !folders[index].open
     updateFolderState(folders, context, themeProvider)
 }
-export const getFolderIndexFromItem = (folder: FolderItem, context: vscode.ExtensionContext, folders: Folder[]): number => {
+export const getFolderIndexFromItem = (folder: FolderItem, folders: Folder[]): number => {
     const folderIds: string[] = folders.map((stateFolder)=>stateFolder.id)
     return folderIds.indexOf(folder.folder.id)
 }
-export const getFolderIndex = (folder: Folder, context: vscode.ExtensionContext, folders: Folder[]): number => {
+export const getFolderIndex = (folder: Folder, folders: Folder[]): number => {
     const folderIds: string[] = folders.map((stateFolder)=>stateFolder.id)
     return folderIds.indexOf(folder.id)
 }
@@ -130,7 +130,6 @@ export const removeThemeFromUncat = (context: vscode.ExtensionContext, themeStri
     favorites.splice(ind, 1)
     context.globalState.update("themeFav_favorites", JSON.stringify(favorites)).then(() => {
         themeProvider.refresh()
-        // vscode.window.showInformationMessage(themeString + " removed from favorites.")
     })
 }
 // DELETE BOTH THEMES AND FOLDERS VIA TREEVIEW
@@ -138,7 +137,7 @@ export const treeDelete = (context: vscode.ExtensionContext, themeProvider: Them
     if(treeItem.hasOwnProperty("folder")){
         const folder: FolderItem = treeItem as FolderItem
         const folders: Folder[] = getFolderState(context)
-        let index = getFolderIndexFromItem(folder, context, folders)     
+        let index = getFolderIndexFromItem(folder, folders)     
         folders.splice(index, 1)
         updateFolderState(folders, context, themeProvider)   
     }
@@ -333,7 +332,7 @@ export const manageFolder = (context: vscode.ExtensionContext, themeProvider: Th
     quickPickAction.onDidAccept(() => {
         // FINALIZE STATE CHANGE
         let folders = getFolderState(context)
-        let folderIndex = getFolderIndex(folder.folder, context, folders)
+        let folderIndex = getFolderIndex(folder.folder, folders)
         folders[folderIndex].themes = selectedThemes
         updateFolderState(folders,context, themeProvider)
         quickPickAction.hide()
@@ -385,6 +384,25 @@ export const moveToFolderViaPallette = (context: vscode.ExtensionContext, themeP
 
     // ACTIVATE
     quickPickAction.show()
+}
+const addToFolder = (themeToAdd: ThemeExtJSON, folder: Folder, context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
+    const folders: Folder[] = getFolderState(context)
+    const folderIndex: number = getFolderIndex(folder, folders)
+    const themeStrings = folders[folderIndex].themes.map((val: ThemeExtJSON)=> val.label)
+    if(themeStrings.indexOf(themeToAdd.label) === -1){
+        folders[folderIndex].themes.push(themeToAdd)
+        updateFolderState(folders, context, themeProvider)
+    }
+}
+const removeFromFolder = (themeToAdd: ThemeExtJSON, folder: Folder, context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
+    const folders: Folder[] = getFolderState(context)
+    const folderIndex: number = getFolderIndex(folder, folders)
+    const themeStrings = folders[folderIndex].themes.map((val: ThemeExtJSON)=> val.label)
+    const themeIndex: number = themeStrings.indexOf(themeToAdd.label)
+    if(themeIndex !== -1){
+        folders[folderIndex].themes.splice(themeIndex, 1)
+        updateFolderState(folders, context, themeProvider)
+    }
 }
 // TREE VIEW ACTIONS
 export const editThemeJSON = (itemContext: ThemeItem, context: vscode.ExtensionContext) => {

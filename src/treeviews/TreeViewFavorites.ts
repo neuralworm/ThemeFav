@@ -57,8 +57,9 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem|Folde
 
 
 export class ThemeItem implements vscode.TreeItem{
-    label: string
+    public label: string
     public contextValue?: string
+    public description?: string | boolean | undefined;
     constructor(
         public theme: ThemeExtJSON,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
@@ -73,6 +74,7 @@ export class ThemeItem implements vscode.TreeItem{
         this.collapsibleState = vscode.TreeItemCollapsibleState.None
         if(parent && parent.label == "Installed") this.contextValue = "installed"
         else this.contextValue = "themeItem"
+        this.description = this.theme.uiTheme
       }
       
       
@@ -85,12 +87,14 @@ export class FolderItem implements vscode.TreeItem{
         light: path.join(__filename, '../', "../", "../", 'resources', `folder${this.folder.open ? "_open" : ""}.png`),
         dark: path.join(__filename, '../', "../", "../", 'resources', `folder${this.folder.open ? "_open" : ""}.png`)
     }
+    description?: string | boolean | undefined;
     constructor(
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
         public folder: Folder,
       ) {
         this.folder = folder
-        this.label = folder.label + `${this.folder.themes.length > 0 ? ` (${folder.themes.length})` : " (empty)"}`
+        this.label = folder.label
+        this.description = `${this.folder.themes.length > 0 ? ` (${folder.themes.length})` : " (empty)"}`
         
         this.collapsibleState = folder.open ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.Collapsed
         this.contextValue = "folder"

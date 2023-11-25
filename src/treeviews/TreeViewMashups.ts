@@ -35,7 +35,6 @@ export class MashupThemeProvider implements vscode.TreeDataProvider<MashupItem>,
         this._onDidChangeTreeData.fire()
     }
    
-   
 }
 
 export class MashupItem implements vscode.TreeItem{

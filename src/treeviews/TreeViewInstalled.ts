@@ -36,8 +36,9 @@ export class InstalledThemeProvider implements vscode.TreeDataProvider<Installed
 
 
 export class InstalledThemeItem implements vscode.TreeItem{
-    label: string
+    public label: string
     public contextValue?: string = "installedThemeItem"
+    public description?: string | boolean | undefined;
     constructor(
         public theme: ThemeExtJSON,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
@@ -50,6 +51,7 @@ export class InstalledThemeItem implements vscode.TreeItem{
         this.label = ThemeExtJSON2.getInterfaceIdentifier(theme)
         this.collapsibleState = vscode.TreeItemCollapsibleState.None
         this.contextValue = "installedThemeItem"
+        this.description = theme.uiTheme
       }
       
       

@@ -102,6 +102,10 @@
 			{
 				"command": "themeFav.copyPath",
 				"title": "Copy Path"
+			},
+			{
+				"command": "themeFav.addTo",
+				"title": "Add to"
 			}
 		],
 		"viewsContainers": {
@@ -120,12 +124,16 @@
 					"name": "Favorites"
 				},
 				{
-					"id": "installedtreeview",
-					"name": "Installed"
-				},
-				{
 					"id": "mashuptreeview",
 					"name": "Mashups"
+				},
+				{
+					"id": "historytreeview",
+					"name": "History"
+				},
+				{
+					"id": "installedtreeview",
+					"name": "Installed"
 				}
 			]
 		},
@@ -174,10 +182,6 @@
 					"group": "edit"
 				},
 				{
-					"submenu": "themeFav.editJSON",
-					"when": "view == installedtreeview && viewItem == installedThemeItem"
-				},
-				{
 					"command": "themeFav.renameFolder",
 					"when": "view == favtreeview && viewItem == folder",
 					"group": "edit"
@@ -197,6 +201,10 @@
 					"command": "themeFav.copyPath",
 					"when": "view == favtreeview && (viewItem == installed || viewItem == themeItem)",
 					"group": "copy"
+				},
+				{
+					"command": "themeFav.addTo",
+					"when": "view == installedtreeview"
 				}
 				
 			],

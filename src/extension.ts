@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
 import * as lib from './lib'
 import { FolderItem, ThemeItem, ThemeFavProvider } from './treeviews/TreeViewFavorites';
 import { InstalledThemeItem, InstalledThemeProvider } from './treeviews/TreeViewInstalled';
-import { MashupThemeProvider } from './treeviews/TreeViewMashups';
+import { MashupItem, MashupThemeProvider } from './treeviews/TreeViewMashups';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -26,14 +26,17 @@ export function activate(context: vscode.ExtensionContext) {
 		// EXTENSION INSTALL EVENTS
 	})
 	// REGISTER TREEVIEWS
-	const favoritesTreeView = vscode.window.createTreeView("favtreeview", {
-		treeDataProvider: favThemeProvider
+	const favoritesTreeView: vscode.TreeView<ThemeItem|FolderItem> = vscode.window.createTreeView("favtreeview", {
+		treeDataProvider: favThemeProvider,
+		dragAndDropController: favThemeProvider
 	})
-	const installedTreeView = vscode.window.createTreeView("installedtreeview", {
-		treeDataProvider: installedThemeProvider
+	const installedTreeView: vscode.TreeView<InstalledThemeItem> = vscode.window.createTreeView("installedtreeview", {
+		treeDataProvider: installedThemeProvider,
+		dragAndDropController: installedThemeProvider
 	})
-	const mashupTreeView = vscode.window.createTreeView("mashuptreeview", {
-		treeDataProvider: mashupThemeProvider
+	const mashupTreeView: vscode.TreeView<MashupItem> = vscode.window.createTreeView("mashuptreeview", {
+		treeDataProvider: mashupThemeProvider,
+		dragAndDropController: mashupThemeProvider
 	})
 	// TREE VIEW SELECTION EVENTS
 	favoritesTreeView.onDidChangeSelection((e: vscode.TreeViewSelectionChangeEvent<ThemeItem|FolderItem>)=>{

@@ -4,8 +4,8 @@ import * as lib from '../lib'
 import path = require('path');
 
 export class InstalledThemeProvider implements vscode.TreeDataProvider<InstalledThemeItem>, vscode.TreeDragAndDropController<InstalledThemeItem>{
-    dropMimeTypes = ['application/vnd.code.tree.favtreeview', "text/plain"];
-	dragMimeTypes = ['application/vnd.code.tree.favtreeview', "text/plain"];
+    dropMimeTypes = [];
+	dragMimeTypes = ["application/vnd.code.tree.favtreeview", "text/plain"];
     context: vscode.ExtensionContext
     installed: ThemeExtJSON[]
     private _onDidChangeTreeData: vscode.EventEmitter<InstalledThemeItem|undefined|null|void> = new vscode.EventEmitter<InstalledThemeItem|undefined|null|void>()
@@ -30,6 +30,11 @@ export class InstalledThemeProvider implements vscode.TreeDataProvider<Installed
         this.installed = lib.getInstalled()
         this._onDidChangeTreeData.fire()
     }
+    // DRAG
+    handleDrag(source: readonly InstalledThemeItem[], dataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): void | Thenable<void> {
+        console.log("drag")
+        dataTransfer.set('application/vnd.code.tree.favtreeview', new vscode.DataTransferItem(source));
+    }
    
    
 }
@@ -39,6 +44,7 @@ export class InstalledThemeItem implements vscode.TreeItem{
     public label: string
     public contextValue?: string = "installedThemeItem"
     public description?: string | boolean | undefined;
+    public tooltip?: string | vscode.MarkdownString | undefined;
     constructor(
         public theme: ThemeExtJSON,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
@@ -52,6 +58,7 @@ export class InstalledThemeItem implements vscode.TreeItem{
         this.collapsibleState = vscode.TreeItemCollapsibleState.None
         this.contextValue = "installedThemeItem"
         this.description = theme.uiTheme
+        this.tooltip = theme.absPath
       }
       
       

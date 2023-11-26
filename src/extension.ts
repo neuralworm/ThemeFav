@@ -112,6 +112,9 @@ export function activate(context: vscode.ExtensionContext) {
 	const disposable_addTo = vscode.commands.registerCommand("themeFav.addTo", (e: InstalledThemeItem)=>{
 		lib.moveToFolderViaPallette(context, favThemeProvider, e)
 	})
+	const dispoasable_search = vscode.commands.registerCommand("themeFav.search", () => {
+		lib.searchInstalled(context, installedThemeProvider, installedTreeView)
+	})
 
 	context.subscriptions.push(disposable_getFavorites);
 	context.subscriptions.push(disposable_selectFromFavorites);
@@ -132,6 +135,8 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable_moveToNewFolder);
 	context.subscriptions.push(disposable_copyPath);
 	context.subscriptions.push(disposable_addTo);
+	context.subscriptions.push(dispoasable_search);
+
 
 
 

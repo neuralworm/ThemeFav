@@ -3,6 +3,7 @@ import * as lib from '../lib'
 import { ThemeExtJSON, ThemeExtJSON2 } from '../models/ThemeExtJSON'
 import { Folder } from '../models/Folder'
 import path = require('path');
+import { InstalledThemeItem } from './TreeViewInstalled';
 
 export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem | FolderItem>, vscode.TreeDragAndDropController<ThemeItem>{
     dropMimeTypes = ["application/vnd.code.tree.favtreeview", "text/plain"];
@@ -44,28 +45,64 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem | Fol
         this._onDidChangeTreeData.fire()
     }
     // DRAG N DROP
-    // handleDrag(source: readonly ThemeItem[], dataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): void | Thenable<void> {
-    //   dataTransfer.set('text/plain', new vscode.DataTransferItem(source))
-    //   console.log('drag?')
-    // }
+    handleDrag(source: readonly ThemeItem[], dataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): void | Thenable<void> {
+        dataTransfer.set('application/vnd.code.tree.favtreeview', new vscode.DataTransferItem(source))
+        console.log('drag?')
+    }
     handleDrop(target: ThemeItem | FolderItem | undefined, dataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): void | Thenable<void> {
         const transferContent = dataTransfer.get('application/vnd.code.tree.favtreeview')
         if (transferContent) {
+
             let targetType: TargetType
-            const incoming: any[] = JSON.parse(transferContent.value)
-            console.log(incoming.length + " items incoming")
+            let incoming: any[]
+            try {
+                incoming = JSON.parse(transferContent.value)
+            }
+            catch (e) {
+                incoming = transferContent.value
+            }
+            console.log("target: " + target)
+            console.log("data: " + incoming[0])
+
             targetType = !target ? "uncategorized" : (target.contextValue === "folder") ? "folder" : "item"
+            
+            const themeItem: InstalledThemeItem = incoming[0]
+            const theme = themeItem.theme
+            console.log(themeItem)
+            // HANDLE ADDS
             switch (targetType) {
                 case "uncategorized":
-
+                    if (lib.doesInclude(this.favs, theme)) break
+                    lib.addThemeToUncat(theme, this.context, this)
                     break;
                 case "folder":
-
+                    let targetFolder: FolderItem = target as FolderItem
+                    if (lib.doesFolderInclude(targetFolder.folder, theme)) break
+                    lib.addToFolder(theme, targetFolder.folder, this.context, this)
                     break
                 case "item":
+                    const targetItem: ThemeItem = target as ThemeItem
+                    // GET PARENT OF TARGET ITEM
+                    const parent: Folder = targetItem.parent!
+
+                    // MOVE TO UNCAT
+                    if (!parent) {
+                        const index = lib.getFavIndex(this.favs, targetItem.label)
+                        lib.addThemeToUncat(theme, this.context, this, index)
+                    }
+                    // OR MOVE TO FOLDER
+                    else {
+                        const index = lib.getFavIndex(parent.themes, targetItem.label)
+                        lib.addToFolder(theme, parent, this.context, this, index)
+                    }
                     break
                 default:
                     break
+            }
+            // HANDLE REMOVALS IF NECESSARY
+            if (incoming[0].contextValue === "installedThemeItem") console.log('no need to remove from a list')
+            else {
+                
             }
         }
     }

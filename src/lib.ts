@@ -1,3 +1,4 @@
+import { InstalledThemeItem, InstalledThemeProvider } from './treeviews/TreeViewInstalled';
 import * as vscode from 'vscode'
 import { ThemeItem, ThemeFavProvider, FolderItem } from './treeviews/TreeViewFavorites'
 import { ThemeExtJSON, ThemeExtJSON2, createThemeExtJSON } from './models/ThemeExtJSON'
@@ -18,9 +19,14 @@ export const updateUncatFavs = (newFavs: ThemeExtJSON[], context: vscode.Extensi
         themeProvider.refresh()
     })
 }
-export const addThemeToUncat = (themeToAdd: ThemeExtJSON, context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
+export const addThemeToUncat = (themeToAdd: ThemeExtJSON, context: vscode.ExtensionContext, themeProvider: ThemeFavProvider, index?: number) => {
     let favs: ThemeExtJSON[] = getFavorites(context)
-    favs.push(themeToAdd)
+    let doesExist: boolean = doesInclude(favs, themeToAdd)
+    if(doesExist) return
+    if(index !== undefined){
+        favs.splice(index, 0, themeToAdd)
+    }
+    else favs.push(themeToAdd)
     updateUncatFavs(favs, context, themeProvider)
 }
 export const updateFolderState = (folders: Folder[], context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
@@ -416,16 +422,17 @@ export const moveToFolderViaPallette = (context: vscode.ExtensionContext, themeP
     // ACTIVATE
     quickPickAction.show()
 }
-const addToFolder = (themeToAdd: ThemeExtJSON, folder: Folder, context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
+export const addToFolder = (themeToAdd: ThemeExtJSON, folder: Folder, context: vscode.ExtensionContext, themeProvider: ThemeFavProvider, index?: number) => {
     const folders: Folder[] = getFolderState(context)
     const folderIndex: number = getFolderIndex(folder, folders)
     const themeStrings = folders[folderIndex].themes.map((val: ThemeExtJSON)=> val.label)
     if(themeStrings.indexOf(themeToAdd.label) === -1){
-        folders[folderIndex].themes.push(themeToAdd)
+        if(index !== undefined) folders[folderIndex].themes.splice(index, 0, themeToAdd)
+        else folders[folderIndex].themes.push(themeToAdd)
         updateFolderState(folders, context, themeProvider)
     }
 }
-const removeFromFolder = (themeToAdd: ThemeExtJSON, folder: Folder, context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
+export const removeFromFolder = (themeToAdd: ThemeExtJSON, folder: Folder, context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
     const folders: Folder[] = getFolderState(context)
     const folderIndex: number = getFolderIndex(folder, folders)
     const themeStrings = folders[folderIndex].themes.map((val: ThemeExtJSON)=> val.label)
@@ -434,6 +441,9 @@ const removeFromFolder = (themeToAdd: ThemeExtJSON, folder: Folder, context: vsc
         folders[folderIndex].themes.splice(themeIndex, 1)
         updateFolderState(folders, context, themeProvider)
     }
+}
+export const searchInstalled = (context: vscode.ExtensionContext, dataProvider: InstalledThemeProvider, treeView: vscode.TreeView<InstalledThemeItem>) => {
+    vscode.commands.executeCommand(('workbench.action.selectTheme'))
 }
 // TREE VIEW ACTIONS
 export const editThemeJSON = (itemContext: ThemeItem, context: vscode.ExtensionContext) => {
@@ -483,7 +493,7 @@ export const activateTheme = (theme: ThemeExtJSON) => {
 }
 export const getCurrentTheme = (): ThemeExtJSON => {
     let config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration()
-    console.log(config.get("workbench.theme"))
+    console.log(config.get("workbench.colorTheme"))
     let theme: string = config.get("workbench.colorTheme")!
     let themeEXT: ThemeExtJSON = getThemeJson(theme)
     return themeEXT
@@ -573,7 +583,7 @@ const getThemeJson = (themeString: string): ThemeExtJSON => {
     let index = installed.map((ext: ThemeExtJSON) => {
         return ext.id ? ext.id : ext.label
     }).indexOf(themeString)
-    if(index == -1) return createThemeExtJSON(themeString, "", "", null, )
+    if(index === -1) return createThemeExtJSON(themeString, "", "", null)
     return installed[index]
 }
 const getJSON = (installed: ThemeExtJSON[], themeString: string): ThemeExtJSON => {
@@ -584,6 +594,16 @@ const getJSON = (installed: ThemeExtJSON[], themeString: string): ThemeExtJSON =
     return installed[index]
 }
 
-const getThemeNameArray = (themes: ThemeExtJSON[]): string[] => {
+export const getThemeNameArray = (themes: ThemeExtJSON[]): string[] => {
     return themes.map((theme: ThemeExtJSON) => theme.id ? theme.id : theme.label)
+}
+export const doesInclude = (list: ThemeExtJSON[], theme: ThemeExtJSON): boolean => {
+    let nameArray: string[] = list.map((themeVal) => themeVal.label)
+    if(nameArray.includes(theme.label)) return true
+    return false
+}
+export const doesFolderInclude = (folder: Folder, theme: ThemeExtJSON): boolean => {
+    let nameArray: string[] = folder.themes.map((themeVal) => themeVal.label)
+    if(nameArray.includes(theme.label)) return true
+    return false
 }

@@ -35,6 +35,7 @@ export class InstalledThemeProvider implements vscode.TreeDataProvider<Installed
         console.log("drag")
         dataTransfer.set('application/vnd.code.tree.favtreeview', new vscode.DataTransferItem(source));
     }
+    
    
    
 }

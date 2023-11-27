@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-export interface ThemeExtJSON {
+export interface ThemeEXT {
     label: string,
     path: string,
     uiTheme: string,
@@ -7,7 +7,7 @@ export interface ThemeExtJSON {
     uri?: vscode.Uri,
     absPath?: string
 }
-export class ThemeExtJSON2 {
+export class ThemeExtUtil {
     label: string
     path: string
     uiTheme: string
@@ -21,12 +21,12 @@ export class ThemeExtJSON2 {
     public getIdentifier = (): string => {
         return this.id ? this.id : this.label
     }
-    public static getInterfaceIdentifier = (theme: ThemeExtJSON): string => {
+    public static getInterfaceIdentifier = (theme: ThemeEXT): string => {
         return theme.id ? theme.id : theme.label
     }
 }
 // WHEN USING NAMES FOUND VIA EXTENSION SEARCH, ID'S MUST BE PRIORITIZED OVER LABELS
-export const createThemeExtJSON = (label: string, path: string, uiTheme: string, id?: string | null, uri?: vscode.Uri, absPath?: string): ThemeExtJSON => {
+export const createThemeExtJSON = (label: string, path: string, uiTheme: string, id?: string | null, uri?: vscode.Uri, absPath?: string): ThemeEXT => {
     return {
         label: label,
         path: path,

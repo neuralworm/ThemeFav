@@ -1,4 +1,4 @@
-import { ThemeExtJSON } from "../models/ThemeExtJSON"
+import { ThemeEXT } from "../models/ThemeExtJSON"
 import * as vscode from 'vscode'
 import { ThemeFavProvider } from "../treeviews/TreeViewFavorites"
 

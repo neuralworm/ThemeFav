@@ -1,13 +1,13 @@
-import { ThemeExtJSON } from "./ThemeExtJSON"
+import { ThemeEXT } from "./ThemeExtJSON"
 
 export class CustomTheme{
     name: string = "New Custom Theme"
-    activityBar?: ThemeExtJSON
-    statusBar?: ThemeExtJSON
-    base?: ThemeExtJSON
-    terminal?: ThemeExtJSON
+    activityBar?: ThemeEXT
+    statusBar?: ThemeEXT
+    base?: ThemeEXT
+    terminal?: ThemeEXT
 
-    updateActivityBar = (theme: ThemeExtJSON) => {
+    updateActivityBar = (theme: ThemeEXT) => {
         // Get activity bar section of colors from the theme JSON file
         
     }

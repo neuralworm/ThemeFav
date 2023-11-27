@@ -1,7 +1,7 @@
 import * as lib from './lib'
-import { ThemeExtJSON } from './models/ThemeExtJSON'
+import { ThemeEXT } from './models/ThemeExtJSON'
 
 type LocationType = "uncategorized" | "folder" | "installed"
-export const transferFromTo = (from: LocationType, to: LocationType, theme: ThemeExtJSON) => {
+export const transferFromTo = (from: LocationType, to: LocationType, theme: ThemeEXT) => {
     
 }

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { ThemeExtJSON, ThemeExtJSON2 } from '../models/ThemeExtJSON';
+import { ThemeEXT, ThemeExtUtil } from '../models/ThemeExtJSON';
 import * as lib from '../lib'
 import path = require('path');
 
@@ -43,7 +43,7 @@ export class MashupThemeProvider implements vscode.TreeDataProvider<MashupFolder
 
 export class MashupFolderItem implements vscode.TreeItem{
     public contextValue?: string = "mashup"
-    public child?: ThemeExtJSON
+    public child?: ThemeEXT
     constructor(
         public label: string,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
@@ -60,12 +60,12 @@ export class MashupFolderItem implements vscode.TreeItem{
 }
 
 export class MashupThemeItem implements vscode.TreeItem{
-    public theme: ThemeExtJSON
+    public theme: ThemeEXT
     public label: string
     public collapsibleState?: vscode.TreeItemCollapsibleState | undefined;
     public contextValue?: string | undefined = "mashup_theme"
     
-    constructor(theme: ThemeExtJSON){
+    constructor(theme: ThemeEXT){
         this.label = theme.label
         this.theme = theme
         this.collapsibleState = vscode.TreeItemCollapsibleState.None

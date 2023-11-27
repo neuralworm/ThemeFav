@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { ThemeExtJSON, ThemeExtJSON2 } from '../models/ThemeExtJSON';
+import { ThemeEXT, ThemeExtUtil } from '../models/ThemeExtJSON';
 import * as lib from '../lib'
 import path = require('path');
 
@@ -8,7 +8,7 @@ export class MashupThemeProvider implements vscode.TreeDataProvider<HistoryItem>
     dropMimeTypes = ['application/vnd.code.tree.favtreeview', "text/plain"];
 	dragMimeTypes = ['application/vnd.code.tree.favtreeview', "text/plain"];
     context: vscode.ExtensionContext
-    history: ThemeExtJSON[]
+    history: ThemeEXT[]
     private _onDidChangeTreeData: vscode.EventEmitter<HistoryItem|undefined|null|void> = new vscode.EventEmitter<HistoryItem|undefined|null|void>()
     readonly onDidChangeTreeData: vscode.Event<HistoryItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
@@ -21,7 +21,7 @@ export class MashupThemeProvider implements vscode.TreeDataProvider<HistoryItem>
     }
     getChildren(element?: HistoryItem | undefined): vscode.ProviderResult<(HistoryItem)[]> {
         // RETURN FAVORITES AS ROOT ELEMENTS
-        if(element === undefined) return this.history.map((historyItem: ThemeExtJSON)=>{
+        if(element === undefined) return this.history.map((historyItem: ThemeEXT)=>{
             return new HistoryItem(historyItem.label, vscode.TreeItemCollapsibleState.None)
         })
     }

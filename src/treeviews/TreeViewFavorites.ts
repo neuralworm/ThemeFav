@@ -66,7 +66,10 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem | Fol
 
             targetType = !target ? "uncategorized" : (target.contextValue === "folder") ? "folder" : "item"
             
-            const themeItem: InstalledThemeItem = incoming[0]
+            // DETERMINE TRANSFER LOCATION
+            let themeItem: InstalledThemeItem|ThemeItem = incoming[0]
+            
+
             const theme = themeItem.theme
             console.log(themeItem)
             // HANDLE ADDS
@@ -100,9 +103,12 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem | Fol
                     break
             }
             // HANDLE REMOVALS IF NECESSARY
-            if (incoming[0].contextValue === "installedThemeItem") console.log('no need to remove from a list')
+            if (themeItem.contextValue === "installedThemeItem") console.log('no need to remove from a list')
             else {
-                
+                const themeItem2 = themeItem as ThemeItem
+                const parent = themeItem2.parent
+                if(parent === undefined) lib.removeThemeFromUncat(this.context, themeItem2.label, this)
+                else lib.removeFromFolder(themeItem2.theme, themeItem2.parent!, this.context, this)
             }
         }
     }

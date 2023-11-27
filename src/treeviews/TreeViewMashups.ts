@@ -10,24 +10,28 @@ const sections: string[] = [
     "EDITOR"
 ]
 
-export class MashupThemeProvider implements vscode.TreeDataProvider<MashupItem>, vscode.TreeDragAndDropController<MashupItem>{
+export class MashupThemeProvider implements vscode.TreeDataProvider<MashupFolderItem|MashupThemeItem>, vscode.TreeDragAndDropController<MashupFolderItem|MashupThemeItem>{
     dropMimeTypes = ['application/vnd.code.tree.favtreeview', "text/plain"];
 	dragMimeTypes = ['application/vnd.code.tree.favtreeview', "text/plain"];
     context: vscode.ExtensionContext
-    private _onDidChangeTreeData: vscode.EventEmitter<MashupItem|undefined|null|void> = new vscode.EventEmitter<MashupItem|undefined|null|void>()
-    readonly onDidChangeTreeData: vscode.Event<MashupItem | undefined | null | void> = this._onDidChangeTreeData.event;
+    private _onDidChangeTreeData: vscode.EventEmitter<MashupFolderItem|undefined|null|void> = new vscode.EventEmitter<MashupFolderItem|undefined|null|void>()
+    readonly onDidChangeTreeData: vscode.Event<MashupFolderItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
     constructor(context: vscode.ExtensionContext){
         this.context = context
     }
-    getTreeItem(element: MashupItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
+    getTreeItem(element: MashupFolderItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
         return element
     }
-    getChildren(element?: MashupItem | undefined): vscode.ProviderResult<(MashupItem)[]> {
+    getChildren(element?: MashupFolderItem | MashupThemeItem | undefined): vscode.ProviderResult<(MashupFolderItem|MashupThemeItem)[]> {
         // RETURN FAVORITES AS ROOT ELEMENTS
         if(element === undefined) return sections.map((section: string)=>{
-            return new MashupItem(section, vscode.TreeItemCollapsibleState.None)
+            return new MashupFolderItem(section, vscode.TreeItemCollapsibleState.None)
         })
+        if(element.contextValue === "mashup"){
+            let el = element as MashupFolderItem
+            if(el.child)  return [new MashupThemeItem(el.child)]
+        }
         
     }
     // SYNC WITH STATE
@@ -37,8 +41,9 @@ export class MashupThemeProvider implements vscode.TreeDataProvider<MashupItem>,
    
 }
 
-export class MashupItem implements vscode.TreeItem{
+export class MashupFolderItem implements vscode.TreeItem{
     public contextValue?: string = "mashup"
+    public child?: ThemeExtJSON
     constructor(
         public label: string,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
@@ -48,8 +53,21 @@ export class MashupItem implements vscode.TreeItem{
         }
       ) {
         this.label = label
-        this.collapsibleState = vscode.TreeItemCollapsibleState.None
+        this.collapsibleState = vscode.TreeItemCollapsibleState.Expanded
         this.contextValue = "mashup"
       }
       
+}
+
+export class MashupThemeItem implements vscode.TreeItem{
+    public theme: ThemeExtJSON
+    public label: string
+    public collapsibleState?: vscode.TreeItemCollapsibleState | undefined;
+    public contextValue?: string | undefined = "mashup_theme"
+    
+    constructor(theme: ThemeExtJSON){
+        this.label = theme.label
+        this.theme = theme
+        this.collapsibleState = vscode.TreeItemCollapsibleState.None
+    }
 }

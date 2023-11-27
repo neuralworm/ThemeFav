@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
 import * as lib from './lib'
 import { FolderItem, ThemeItem, ThemeFavProvider } from './treeviews/TreeViewFavorites';
 import { InstalledThemeItem, InstalledThemeProvider } from './treeviews/TreeViewInstalled';
-import { MashupItem, MashupThemeProvider } from './treeviews/TreeViewMashups';
+import { MashupFolderItem, MashupThemeItem, MashupThemeProvider } from './treeviews/TreeViewMashups';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -34,10 +34,11 @@ export function activate(context: vscode.ExtensionContext) {
 		treeDataProvider: installedThemeProvider,
 		dragAndDropController: installedThemeProvider
 	})
-	const mashupTreeView: vscode.TreeView<MashupItem> = vscode.window.createTreeView("mashuptreeview", {
+	const mashupTreeView: vscode.TreeView<MashupFolderItem|MashupThemeItem> = vscode.window.createTreeView("mashuptreeview", {
 		treeDataProvider: mashupThemeProvider,
 		dragAndDropController: mashupThemeProvider
 	})
+	
 	// TREE VIEW SELECTION EVENTS
 	favoritesTreeView.onDidChangeSelection((e: vscode.TreeViewSelectionChangeEvent<ThemeItem|FolderItem>)=>{
 		if(e.selection[0].hasOwnProperty("theme")){

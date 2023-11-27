@@ -70,33 +70,38 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem | Fol
             let themeItem: InstalledThemeItem|ThemeItem = incoming[0]
             
 
-            const theme = themeItem.theme
-            console.log(themeItem)
+            const activeTheme = themeItem.theme
             // HANDLE ADDS
             switch (targetType) {
                 case "uncategorized":
-                    if (lib.doesInclude(this.favs, theme)) break
-                    lib.addThemeToUncat(theme, this.context, this)
+                    if (lib.doesInclude(this.favs, activeTheme)) return
+                    lib.addThemeToUncat(activeTheme, this.context, this)
                     break;
                 case "folder":
                     let targetFolder: FolderItem = target as FolderItem
-                    if (lib.doesFolderInclude(targetFolder.folder, theme)) break
-                    lib.addToFolder(theme, targetFolder.folder, this.context, this)
+                    if (lib.doesFolderInclude(targetFolder.folder, activeTheme)) return
+                    lib.addToFolder(activeTheme, targetFolder.folder, this.context, this)
                     break
                 case "item":
                     const targetItem: ThemeItem = target as ThemeItem
+                    if(targetItem.parent == undefined){
+                        if(lib.doesInclude(this.favs, activeTheme)) return
+                    } 
+                    else{
+                        if(lib.doesFolderInclude(targetItem.parent!, activeTheme)) return
+                    } 
                     // GET PARENT OF TARGET ITEM
                     const parent: Folder = targetItem.parent!
 
                     // MOVE TO UNCAT
                     if (!parent) {
                         const index = lib.getFavIndex(this.favs, targetItem.label)
-                        lib.addThemeToUncat(theme, this.context, this, index)
+                        lib.addThemeToUncat(activeTheme, this.context, this, index)
                     }
                     // OR MOVE TO FOLDER
                     else {
                         const index = lib.getFavIndex(parent.themes, targetItem.label)
-                        lib.addToFolder(theme, parent, this.context, this, index)
+                        lib.addToFolder(activeTheme, parent, this.context, this, index)
                     }
                     break
                 default:

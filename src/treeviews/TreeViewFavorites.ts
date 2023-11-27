@@ -133,8 +133,8 @@ export class ThemeItem implements vscode.TreeItem {
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
         public parent?: Folder,
         public readonly iconPath = {
-            light: path.join(__filename, '../', "../", "../", 'resources', 'json.svg'),
-            dark: path.join(__filename, '../', "../", "../", 'resources', 'json.svg')
+            light: path.join(__filename, '../', "../", "../", 'resources', theme.uiTheme == "vs" ? "light_dark.svg" : "dark_dark.svg"),
+            dark: path.join(__filename, '../', "../", "../", 'resources', theme.uiTheme == "vs" ? "light_light.svg" : "dark_light.svg")
         }
     ) {
         this.theme = theme

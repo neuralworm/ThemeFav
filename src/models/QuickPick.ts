@@ -1,10 +1,10 @@
-import { ThemeEXT } from "./ThemeExtJSON"
+import { IThemeEXT } from "./ThemeExtJSON"
 import * as vscode from 'vscode'
 import { Folder } from "./Folder"
 export class ThemeQuickPickItem implements vscode.QuickPickItem{
     label: string
-    theme: ThemeEXT
-    constructor(label: string, theme: ThemeEXT){
+    theme: IThemeEXT
+    constructor(label: string, theme: IThemeEXT){
         this.label = label
         this.theme = theme
     }

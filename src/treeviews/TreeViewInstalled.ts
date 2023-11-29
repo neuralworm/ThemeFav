@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { ThemeEXT, ThemeExtUtil } from '../models/ThemeExtJSON';
+import { IThemeEXT, ThemeExtUtil } from '../models/ThemeExtJSON';
 import * as lib from '../lib'
 import path = require('path');
 
@@ -7,7 +7,7 @@ export class InstalledThemeProvider implements vscode.TreeDataProvider<Installed
     dropMimeTypes = [];
 	dragMimeTypes = ["application/vnd.code.tree.favtreeview", "text/plain"];
     context: vscode.ExtensionContext
-    installed: ThemeEXT[]
+    installed: IThemeEXT[]
     private _onDidChangeTreeData: vscode.EventEmitter<InstalledThemeItem|undefined|null|void> = new vscode.EventEmitter<InstalledThemeItem|undefined|null|void>()
     readonly onDidChangeTreeData: vscode.Event<InstalledThemeItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
@@ -20,7 +20,7 @@ export class InstalledThemeProvider implements vscode.TreeDataProvider<Installed
     }
     getChildren(element?: InstalledThemeItem | undefined): vscode.ProviderResult<(InstalledThemeItem)[]> {
         // RETURN FAVORITES AS ROOT ELEMENTS
-        if(element === undefined) return this.installed.map((theme: ThemeEXT)=>{
+        if(element === undefined) return this.installed.map((theme: IThemeEXT)=>{
             return new InstalledThemeItem(theme, vscode.TreeItemCollapsibleState.None)
         })
     }
@@ -42,7 +42,7 @@ export class InstalledThemeItem implements vscode.TreeItem{
     public description?: string | boolean | undefined;
     public tooltip?: string | vscode.MarkdownString | undefined;
     constructor(
-        public theme: ThemeEXT,
+        public theme: IThemeEXT,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
         public readonly iconPath = {
             light: path.join(__filename, '../', "../", "../", 'resources', theme.uiTheme == "vs" ? "light_dark.svg" : "dark_dark.svg"),

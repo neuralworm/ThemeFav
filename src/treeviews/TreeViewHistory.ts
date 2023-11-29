@@ -1,28 +1,29 @@
+import { IThemeEXT } from './../models/ThemeExtJSON';
 import * as vscode from 'vscode'
-import { ThemeEXT, ThemeExtUtil } from '../models/ThemeExtJSON';
 import * as lib from '../lib'
 import path = require('path');
 
 
-export class MashupThemeProvider implements vscode.TreeDataProvider<HistoryItem>, vscode.TreeDragAndDropController<HistoryItem>{
+export class HistoryDataProvider implements vscode.TreeDataProvider<HistoryItem>, vscode.TreeDragAndDropController<HistoryItem>{
     dropMimeTypes = ['application/vnd.code.tree.favtreeview', "text/plain"];
 	dragMimeTypes = ['application/vnd.code.tree.favtreeview', "text/plain"];
     context: vscode.ExtensionContext
-    history: ThemeEXT[]
+    history: IThemeEXT[]
     private _onDidChangeTreeData: vscode.EventEmitter<HistoryItem|undefined|null|void> = new vscode.EventEmitter<HistoryItem|undefined|null|void>()
     readonly onDidChangeTreeData: vscode.Event<HistoryItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
     constructor(context: vscode.ExtensionContext){
         this.context = context
         this.history = lib.getHistory(context)
+        console.log(this.history)
     }
     getTreeItem(element: HistoryItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
         return element
     }
     getChildren(element?: HistoryItem | undefined): vscode.ProviderResult<(HistoryItem)[]> {
         // RETURN FAVORITES AS ROOT ELEMENTS
-        if(element === undefined) return this.history.map((historyItem: ThemeEXT)=>{
-            return new HistoryItem(historyItem.label, vscode.TreeItemCollapsibleState.None)
+        if(element === undefined) return this.history.map((historyItem: IThemeEXT)=>{
+            return new HistoryItem(historyItem, vscode.TreeItemCollapsibleState.None)
         })
     }
     // SYNC WITH STATE
@@ -35,15 +36,16 @@ export class MashupThemeProvider implements vscode.TreeDataProvider<HistoryItem>
 
 export class HistoryItem implements vscode.TreeItem{
     public contextValue?: string = "historyItem"
+    public label: string
     constructor(
-        public label: string,
+        public theme: IThemeEXT,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
         public readonly iconPath = {
             light: path.join(__filename, '../', "../", "../", 'resources', 'json.svg'),
             dark: path.join(__filename, '../', "../", "../", 'resources', 'json.svg')
         }
       ) {
-        this.label = label
+        this.label = theme.label
         this.collapsibleState = vscode.TreeItemCollapsibleState.None
         this.contextValue = "historyItem"
       }

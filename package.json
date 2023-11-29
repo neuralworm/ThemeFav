@@ -111,6 +111,26 @@
 				"command": "themeFav.search",
 				"title": "Search",
 				"icon": "$(search)"
+			},
+			{
+				"command": "themeFav.duplciateAndEdit",
+				"title": "Duplicate and Edit",
+				"icon": "$(copy)"
+			},
+			{
+				"command": "themeFav.activateMashup",
+				"title": "ThemeFav: Activate Mashup Theme",
+				"icon": "$(activate)"
+			},
+			{
+				"command": "themeFav.disableMashup",
+				"title": "ThemeFav: Disable Mashup Theme",
+				"icon": "$(disable)"
+			},
+			{
+				"command": "themeFav.activateHistoryItem",
+				"title": "Set Active",
+				"icon": "$(check)"
 			}
 		],
 		"viewsContainers": {
@@ -183,6 +203,11 @@
 					"command": "themeFav.search",
 					"when": "view == installedtreeview",
 					"group": "navigation@1"
+				},
+				{
+					"command": "themeFav.activateMashup",
+					"when": "view == mashuptreeview",
+					"group": "navigation@1"
 				}
 			],
 			"view/item/context": [
@@ -203,9 +228,19 @@
 					"group": "paths"
 				},
 				{
+					"command": "themeFav.editJSON",
+					"when": "view == installedtreeview",
+					"group": "paths"
+				},
+				{
 					"command": "themeFav.delete",
 					"when": "view == favtreeview && viewItem != installedFolder && viewItem !== installed",
 					"group": "delete"
+				},
+				{
+					"command": "themeFav.editJSON",
+					"when": "view == mashuptreeview && viewItem == mashup_theme",
+					"group": "paths"
 				},
 				{
 					"command": "themeFav.copyPath",
@@ -215,6 +250,11 @@
 				{
 					"command": "themeFav.addTo",
 					"when": "view == installedtreeview"
+				},
+				{
+					"command": "themeFav.activateHistoryItem",
+					"when": "view == historytreeview",
+					"group": "inline"
 				}
 				
 			],

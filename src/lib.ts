@@ -17,14 +17,10 @@ export const resetState = (context: vscode.ExtensionContext, themeProvider: Them
                     historyData.refresh()
                     themeProvider.refresh()
                     mashupProvider.refresh()
-                    
-
                 })
             })
         })
     })
-
-
 }
 export const updateUncatFavs = (newFavs: IThemeEXT[], context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
     context.globalState.update("themeFav_favorites", JSON.stringify(newFavs)).then(() => {

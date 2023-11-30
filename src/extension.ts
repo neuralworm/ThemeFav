@@ -8,6 +8,7 @@ import { InstalledThemeItem, InstalledThemeProvider } from './treeviews/TreeView
 import { MashupFolderItem, MashupThemeItem, MashupThemeProvider } from './treeviews/TreeViewMashups';
 import { HistoryDataProvider, HistoryItem } from './treeviews/TreeViewHistory';
 import { IThemeEXT } from './models/ThemeExtJSON';
+import { Custom } from './lib/custom';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -131,6 +132,9 @@ export function activate(context: vscode.ExtensionContext) {
 	const disposable_activateHistoryItem = vscode.commands.registerCommand("themeFav.activateHistoryItem", (e: HistoryItem) => {
 		lib.activateTheme(e.theme)
 	})
+	const disposable_activateMashupTheme = vscode.commands.registerCommand("themeFav.activateMashup", (e: HistoryItem) => {
+		Custom.applyUpdate(mashupThemeProvider.mashupData)
+	})
 	context.subscriptions.push(disposable_getFavorites);
 	context.subscriptions.push(disposable_selectFromFavorites);
 	context.subscriptions.push(disposable_saveTheme);
@@ -153,6 +157,8 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable_search);
 	context.subscriptions.push(disposable_duplicate);
 	context.subscriptions.push(disposable_activateHistoryItem);
+	context.subscriptions.push(disposable_activateMashupTheme);
+
 
 
 

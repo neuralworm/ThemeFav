@@ -8,7 +8,7 @@ import { Custom } from '../lib/custom';
 import { ThemeItem } from './TreeViewFavorites';
 
 const mashupTemp: IMashupTheme = createMashupTheme()
-const sections: string[] = ["base", ...Object.keys(jsonTemplate)]
+const sections: string[] = ["base", "tokens/syntax", ...Object.keys(jsonTemplate)]
 type Dictionary = {
     [index: string]: IThemeEXT|undefined
 }

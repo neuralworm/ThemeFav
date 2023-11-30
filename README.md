@@ -1,6 +1,6 @@
 # ThemeFav for VSCode
 
-This extension allows you to create and organize a list of your favorite themes and quickly switch between them (a feature vanilla VSCode lacks).
+Create favorites lists and group your favorite themes together.
 
 ## Features
 
@@ -8,9 +8,15 @@ Add favorite themes to list via either the command pallette or sidebar activity 
 
 Management and validation utilities.
 
+History list for finding that one theme who's name you forgot.
+
 Sort themes by a variety of means.
 
+(Early Development) - Mashup feature alows the styles from different themes to be applied to different sections of VSCode.   Please give feedback!
+
 \!\[feature X\]\(images/feature-x.png\)
+
+
 
 > Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
 
@@ -20,7 +26,6 @@ VSCode
 
 ## Extension Settings
 
-* `themeFav.showAllThemesInMenu`: Should side activity bar should all installed themes. (boolean)
 * `themeFav.validateThemesOnLaunch`: Validate favorites list with all installed themes, removing unisntalled themes from favorites. (boolean)
 
 ## Known Issues

@@ -3,7 +3,7 @@ import * as vscode from 'vscode'
 import { ThemeFavProvider } from "../treeviews/TreeViewFavorites"
 import * as fs from "fs"
 import { IMashupTheme, MashupTheme, createMashupTheme } from "../models/MashupTheme"
-import { MashupThemeProvider } from "../treeviews/TreeViewMashups"
+import { MashupThemeProvider as MashupDataProvider } from "../treeviews/TreeViewMashups"
 import * as jsonTemplate from '../template/sections.json'
 import path = require("path")
 import { jsonrepair } from "jsonrepair"
@@ -21,12 +21,11 @@ export namespace Custom {
         config.update("workbench.colorCustomizations", customConfig, true).then(() => {
             if(baseTheme){
                 config.update("workbench.colorTheme", baseTheme.label, true).then(() => {
-            
                 })
             }
             if(tokens){
                 config.update("editor.tokenColorCustomizations", tokens, true).then(() => {
-            
+                    
                 })
             }
         })
@@ -56,7 +55,7 @@ export namespace Custom {
         if (!rawData) mashupTheme = createMashupTheme()
         return mashupTheme
     }
-    export const updateMashupState = (context: vscode.ExtensionContext, data: IMashupTheme, mashupDataProvider: MashupThemeProvider) => {
+    export const updateMashupState = (context: vscode.ExtensionContext, data: IMashupTheme, mashupDataProvider: MashupDataProvider) => {
         context.globalState.update("themeFav_mashup", JSON.stringify(data)).then(() => {
             mashupDataProvider.refresh()
         })
@@ -114,4 +113,5 @@ export namespace Custom {
     export const getTokenConfig = (mashupTheme: IMashupTheme) => {
 
     }
+  
 }

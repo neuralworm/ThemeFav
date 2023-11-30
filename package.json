@@ -120,7 +120,7 @@
 			{
 				"command": "themeFav.activateMashup",
 				"title": "ThemeFav: Activate Mashup Theme",
-				"icon": "$(activate)"
+				"icon": "$(check)"
 			},
 			{
 				"command": "themeFav.disableMashup",
@@ -307,11 +307,6 @@
 		"configuration": {
 			"title": "ThemeFav",
 			"properties": {
-				"themeFav.showAllThemesInMenu": {
-					"type": "boolean",
-					"default": "true",
-					"description": "Determines if side action menu displays list of all installed themes in addition to favorites list."
-				},
 				"themeFav.validateThemesOnLaunch": {
 					"type": "boolean",
 					"default": "false",

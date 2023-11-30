@@ -1,6 +1,20 @@
-# ThemeFav for VSCode
+<div align="center">
+<h1 style="text-align: center;">ThemeFav for <a href="https://code.visualstudio.com/">VSCode</a></h1>
 
-Create favorites lists and group your favorite themes together.
+### Create favorites lists and group your favorite themes together.
+
+<div  class="display:flex; align-items: center; justify-content: center; text-align: center;">
+
+
+[GitHub](https://github.com/neuralworm/ThemeFav)
+
+
+
+</div>
+
+</div>
+
+
 
 ## Features
 
@@ -19,6 +33,16 @@ Sort themes by a variety of means.
 
 
 > Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+
+## Installation
+
+```
+ext install themefav
+```
+
+## Commands
+tbd
+
 
 ## Requirements
 

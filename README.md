@@ -9,8 +9,7 @@
 <div  class="display:flex; align-items: center; justify-content: center; text-align: center;">
 
 
-[GitHub](/resources/themefav_logo.png)
-
+![themefav_logo](https://github.com/neuralworm/ThemeFav/assets/105694623/dcafb883-0c25-4d23-a138-a637209f2ea6)
 
 
 </div>

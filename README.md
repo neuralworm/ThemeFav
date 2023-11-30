@@ -1,6 +1,7 @@
 <div align="center">
 
-![ThemeFav Logo]()
+
+![themefav_logo](https://github.com/neuralworm/ThemeFav/assets/105694623/dcafb883-0c25-4d23-a138-a637209f2ea6)
 
 <h1 style="text-align: center;">ThemeFav for <a href="https://code.visualstudio.com/">VSCode</a></h1>
 
@@ -8,8 +9,6 @@
 
 <div  class="display:flex; align-items: center; justify-content: center; text-align: center;">
 
-
-![themefav_logo](https://github.com/neuralworm/ThemeFav/assets/105694623/dcafb883-0c25-4d23-a138-a637209f2ea6)
 
 
 </div>

@@ -37,7 +37,7 @@ export class MashupThemeProvider implements vscode.TreeDataProvider<MashupFolder
         })
         if (element.contextValue === "mashup_folder") {
             let el = element as MashupFolderItem
-            if (el.child) return [new MashupThemeItem(el.child)]
+            if (el.child) return [new MashupThemeItem(el.child, el.label)]
         }
 
     }
@@ -64,7 +64,7 @@ export class MashupThemeProvider implements vscode.TreeDataProvider<MashupFolder
     // SYNC WITH STATE
     refresh(): void {
         this.mashupData = Custom.getMashupState(this.context)
-        Custom.applyUpdate(this.mashupData)
+        Custom.applyUpdate(this)
         this._onDidChangeTreeData.fire()
     }
 
@@ -78,6 +78,7 @@ export class MashupFolderItem implements vscode.TreeItem {
         light: path.join(__filename, '../', "../", "../", 'resources', 'folder.png'),
         dark: path.join(__filename, '../', "../", "../", 'resources', 'folder.png')
     }
+    public confidence?: string
     constructor(
         public label: string,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
@@ -97,10 +98,12 @@ export class MashupThemeItem implements vscode.TreeItem {
     public label: string
     public collapsibleState?: vscode.TreeItemCollapsibleState | undefined;
     public contextValue?: string | undefined = "mashup_theme"
+    public slot: string
 
-    constructor(theme: IThemeEXT) {
+    constructor(theme: IThemeEXT, slot: string) {
         this.label = theme.label
         this.theme = theme
         this.collapsibleState = vscode.TreeItemCollapsibleState.None
+        this.slot = slot
     }
 }

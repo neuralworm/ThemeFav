@@ -9,6 +9,7 @@ import { MashupFolderItem, MashupThemeItem, MashupThemeProvider } from './treevi
 import { HistoryDataProvider, HistoryItem } from './treeviews/TreeViewHistory';
 import { IThemeEXT } from './models/ThemeExtJSON';
 import { Custom } from './lib/custom';
+import { ActiveDataProvider, ActiveThemeItem } from './treeviews/TreeViewActive';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -19,15 +20,18 @@ export function activate(context: vscode.ExtensionContext) {
 	// PROVIDERS
 	const favThemeProvider = new ThemeFavProvider(context)
 	const installedThemeProvider = new InstalledThemeProvider(context)
-	const mashupThemeProvider = new MashupThemeProvider(context)
-	const historyThemeProvider = new HistoryDataProvider(context)
+	const mashupDataProvider = new MashupThemeProvider(context)
+	const historyDataProvider = new HistoryDataProvider(context)
+	const activeDataProvider = new ActiveDataProvider(context)
+
 
 	// WATCH FOR THEME CHANGE
 	vscode.workspace.onDidChangeConfiguration((e: vscode.ConfigurationChangeEvent)=>{
 		if(!e.affectsConfiguration("workbench.colorTheme")) return
 		// HISTORY UPDATE
 		const theme: IThemeEXT = lib.getExtData(installedThemeProvider.installed , vscode.workspace.getConfiguration().get("workbench.colorTheme")!)
-		lib.addHistoryEvent(context, theme, historyThemeProvider)
+		lib.addHistoryEvent(context, theme, historyDataProvider)
+		activeDataProvider.refresh()
 	})
 	vscode.extensions.onDidChange(() => {
 		// EXTENSION INSTALL EVENTS
@@ -42,11 +46,14 @@ export function activate(context: vscode.ExtensionContext) {
 		dragAndDropController: installedThemeProvider
 	})
 	const mashupTreeView: vscode.TreeView<MashupFolderItem|MashupThemeItem> = vscode.window.createTreeView("mashuptreeview", {
-		treeDataProvider: mashupThemeProvider,
-		dragAndDropController: mashupThemeProvider
+		treeDataProvider: mashupDataProvider,
+		dragAndDropController: mashupDataProvider
 	})
 	const historyTreeView: vscode.TreeView<HistoryItem> = vscode.window.createTreeView("historytreeview", {
-		treeDataProvider: historyThemeProvider,
+		treeDataProvider: historyDataProvider,
+	})
+	const activeTreeView: vscode.TreeView<ActiveThemeItem> = vscode.window.createTreeView("activetreeview", {
+		treeDataProvider: activeDataProvider,
 	})
 	
 	// TREE VIEW SELECTION EVENTS
@@ -133,7 +140,10 @@ export function activate(context: vscode.ExtensionContext) {
 		lib.activateTheme(e.theme)
 	})
 	const disposable_activateMashupTheme = vscode.commands.registerCommand("themeFav.activateMashup", (e: HistoryItem) => {
-		Custom.applyUpdate(mashupThemeProvider.mashupData)
+		Custom.applyUpdate(mashupDataProvider)
+	})
+	const disposable_removeFromMashup = vscode.commands.registerCommand("themeFav.removeFromMashup", (e: MashupThemeItem) => {
+		Custom.removeMashupTheme(e, context, mashupDataProvider)
 	})
 	context.subscriptions.push(disposable_getFavorites);
 	context.subscriptions.push(disposable_selectFromFavorites);
@@ -158,7 +168,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable_duplicate);
 	context.subscriptions.push(disposable_activateHistoryItem);
 	context.subscriptions.push(disposable_activateMashupTheme);
-
+	context.subscriptions.push(disposable_removeFromMashup)
 
 
 
@@ -169,7 +179,7 @@ export function activate(context: vscode.ExtensionContext) {
 	})
 	
 	let TEST_reset_state = vscode.commands.registerCommand("themeFav.TEST_RESET", () => {
-		lib.resetState(context, favThemeProvider, mashupThemeProvider, historyThemeProvider)
+		lib.resetState(context, favThemeProvider, mashupDataProvider, historyDataProvider)
 	})
 	context.subscriptions.push(disposable_listExt);
 	context.subscriptions.push(TEST_reset_state);

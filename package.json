@@ -131,6 +131,11 @@
 				"command": "themeFav.activateHistoryItem",
 				"title": "Set Active",
 				"icon": "$(check)"
+			},
+			{
+				"command": "themeFav.removeFromMashup",
+				"title": "Remove",
+				"icon": "$(remove)"
 			}
 		],
 		"viewsContainers": {
@@ -144,6 +149,10 @@
 		},
 		"views": {
 			"theme-favorites": [
+				{
+					"id": "activetreeview",
+					"name": "Active Theme"
+				},
 				{
 					"id": "favtreeview",
 					"name": "Favorites"
@@ -254,6 +263,10 @@
 					"command": "themeFav.activateHistoryItem",
 					"when": "view == historytreeview",
 					"group": "inline"
+				},
+				{
+					"command": "themeFav.removeFromMashup",
+					"when": "view == mashuptreeview && viewItem == mashup_theme"
 				}
 			],
 			"commandPalette": [

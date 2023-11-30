@@ -1,6 +1,6 @@
+import { MashupFolderItem, MashupThemeItem, MashupThemeProvider } from './../treeviews/TreeViewMashups';
 import { IThemeEXT } from "../models/ThemeExtJSON"
 import * as vscode from 'vscode'
-import { ThemeFavProvider } from "../treeviews/TreeViewFavorites"
 import * as fs from "fs"
 import { IMashupTheme, MashupTheme, createMashupTheme } from "../models/MashupTheme"
 import { MashupThemeProvider as MashupDataProvider } from "../treeviews/TreeViewMashups"
@@ -9,6 +9,9 @@ import path = require("path")
 import { jsonrepair } from "jsonrepair"
 type Dictionary = {
     [index: string]: string[]
+}
+type StringIndexable = {
+    [index: string]: IThemeEXT|undefined
 }
 export namespace Custom {
     export const getTemplate = () => {
@@ -60,7 +63,13 @@ export namespace Custom {
             mashupDataProvider.refresh()
         })
     }
-    export const createCustomConfig = (mashupTheme: IMashupTheme): any => {
+    export const removeMashupTheme = (e: MashupThemeItem, context: vscode.ExtensionContext, dataProvider: MashupDataProvider) => {
+        const state: IMashupTheme = getMashupState(context)
+        const stateD = state as StringIndexable
+        stateD[e.slot] = undefined
+        updateMashupState(context, stateD, dataProvider)
+    }
+    export const createCustomConfig = (mashupTheme: IMashupTheme, dataProvider: MashupThemeProvider): any => {
         const config: any = {
         }
         for (const [key, value] of Object.entries(mashupTheme)){
@@ -75,7 +84,7 @@ export namespace Custom {
                 const repaired = jsonrepair(JSONstring)
                                 
                 const themeObj: any = JSON.parse(repaired)
-
+                // @ts-ignore
                 const dict = jsonTemplate as Dictionary
                 const valuesToSearch: string[] = dict[key]
                 console.log("KEY: " + key)
@@ -95,23 +104,26 @@ export namespace Custom {
                     }
 
                 })
-                console.log("found " + count + " of " + valuesToSearch.length + "values")
-
-
+                // CONFIDENCE
+                console.log(getMashupConfidence(valuesToSearch.length, count))
             }
             catch(e){
                 console.log(e)
             }
        }
-        console.log(config)
+        // console.log(config)
         return config
     }
-    export const applyUpdate = (mashup: IMashupTheme) => {
-        const newConfig = createCustomConfig(mashup)
-        setCustomConfig(newConfig, mashup.base)
+    export const applyUpdate = (mashupDataProvider: MashupDataProvider) => {
+        const data = mashupDataProvider.mashupData
+        const newConfig = createCustomConfig(data, mashupDataProvider)
+        setCustomConfig(newConfig, data.base)
     }
     export const getTokenConfig = (mashupTheme: IMashupTheme) => {
 
     }
-  
+    export const getMashupConfidence = (possibleValues: number, foundValues: number): string => {
+        const perc = (foundValues * 100) / possibleValues
+        return `${perc < 10 ? "Pointless" : (perc < 30 ? "Ineffective" : (perc < 70 ? "Effective" : "Very Effective"))} (${foundValues}/${possibleValues})`
+    }
 }

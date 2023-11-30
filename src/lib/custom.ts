@@ -24,6 +24,7 @@ export namespace Custom {
         config.update("workbench.colorCustomizations", customConfig, true).then(() => {
             if(baseTheme){
                 config.update("workbench.colorTheme", baseTheme.label, true).then(() => {
+                    
                 })
             }
             if(tokens){

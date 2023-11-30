@@ -54,6 +54,7 @@ export function activate(context: vscode.ExtensionContext) {
 	})
 	const activeTreeView: vscode.TreeView<ActiveThemeItem> = vscode.window.createTreeView("activetreeview", {
 		treeDataProvider: activeDataProvider,
+		dragAndDropController: activeDataProvider
 	})
 	
 	// TREE VIEW SELECTION EVENTS

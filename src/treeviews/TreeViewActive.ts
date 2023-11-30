@@ -3,11 +3,12 @@ import { IThemeEXT, ThemeExtUtil } from '../models/ThemeExtJSON';
 import * as lib from '../lib'
 import path = require('path');
 import { InstalledThemeItem } from './TreeViewInstalled';
+import { ThemeItem } from './TreeViewFavorites';
 
 
 export class ActiveDataProvider implements vscode.TreeDataProvider<ActiveThemeItem>, vscode.TreeDragAndDropController<ActiveThemeItem>{
-    dropMimeTypes = [];
-	dragMimeTypes = ["application/vnd.code.tree.favtreeview", "text/plain"];
+    dropMimeTypes = ["application/vnd.code.tree.favtreeview"];
+	dragMimeTypes = [];
     context: vscode.ExtensionContext
     activeTheme: IThemeEXT
     private _onDidChangeTreeData: vscode.EventEmitter<ActiveThemeItem|undefined|null|void> = new vscode.EventEmitter<ActiveThemeItem|undefined|null|void>()
@@ -29,10 +30,19 @@ export class ActiveDataProvider implements vscode.TreeDataProvider<ActiveThemeIt
         this.activeTheme = lib.getCurrentTheme()
         this._onDidChangeTreeData.fire()
     }
-    // DRAG
-    handleDrag(source: readonly InstalledThemeItem[], dataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): void | Thenable<void> {
-        console.log("drag")
-        dataTransfer.set('application/vnd.code.tree.favtreeview', new vscode.DataTransferItem(source));
+    // DROP
+    handleDrop(target: ActiveThemeItem | undefined, dataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): void | Thenable<void> {
+        const data: vscode.DataTransferItem|undefined = dataTransfer.get("application/vnd.code.tree.favtreeview")
+        if(!data) return
+        const theme: string|ThemeItem[] = data.value
+        let incoming: ThemeItem[]
+        try {
+            incoming = JSON.parse(theme as string) 
+        }
+        catch (e) {
+            incoming = theme as ThemeItem[]
+        }
+        lib.activateTheme(incoming[0].theme)
     }
 }
 

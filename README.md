@@ -1,4 +1,7 @@
 <div align="center">
+
+![ThemeFav Logo]()
+
 <h1 style="text-align: center;">ThemeFav for <a href="https://code.visualstudio.com/">VSCode</a></h1>
 
 ### Create favorites lists and group your favorite themes together.
@@ -6,7 +9,7 @@
 <div  class="display:flex; align-items: center; justify-content: center; text-align: center;">
 
 
-[GitHub](https://github.com/neuralworm/ThemeFav)
+[GitHub](/resources/themefav_logo.png)
 
 
 
@@ -28,7 +31,6 @@ Sort themes by a variety of means.
 
 (Early Development) - Mashup feature alows the styles from different themes to be applied to different sections of VSCode.   Please give feedback!
 
-\!\[feature X\]\(images/feature-x.png\)
 
 
 

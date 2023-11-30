@@ -15,7 +15,6 @@ export class HistoryDataProvider implements vscode.TreeDataProvider<HistoryItem>
     constructor(context: vscode.ExtensionContext){
         this.context = context
         this.history = lib.getHistory(context)
-        console.log(this.history)
     }
     getTreeItem(element: HistoryItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
         return element

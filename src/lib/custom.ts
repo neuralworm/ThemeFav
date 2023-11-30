@@ -6,6 +6,7 @@ import { IMashupTheme, MashupTheme, createMashupTheme } from "../models/MashupTh
 import { MashupThemeProvider } from "../treeviews/TreeViewMashups"
 import * as jsonTemplate from '../template/sections.json'
 import path = require("path")
+import { jsonrepair } from "jsonrepair"
 type Dictionary = {
     [index: string]: string[]
 }
@@ -70,16 +71,32 @@ export namespace Custom {
                 let val = value as IThemeEXT
                 let jsonPath = path.resolve(val.absPath!, val.path)
                 let buffer = fs.readFileSync(jsonPath)
-                const themeObj: any = JSON.parse(buffer.toString())
-                
-                
+                const JSONstring: string = buffer.toString()
+                // REPAIR JSON
+                const repaired = jsonrepair(JSONstring)
+                                
+                const themeObj: any = JSON.parse(repaired)
 
                 const dict = jsonTemplate as Dictionary
                 const valuesToSearch: string[] = dict[key]
+                console.log("KEY: " + key)
+               
+                let count = 0
+                valuesToSearch.forEach((val:string)=>{
+                    if(!themeObj.colors) return
+                    if(val in themeObj.colors){
+                        console.log("found " + val)
+                        try{
+                            config[val] = themeObj.colors[val]
+                            count++
+                        }
+                        catch(e){
+                            console.log(e)
+                        }
+                    }
 
-                config[key] = {
-                    "Sdasd": "sdasd"
-                }
+                })
+                console.log("found " + count + " of " + valuesToSearch.length + "values")
 
 
             }
@@ -87,7 +104,7 @@ export namespace Custom {
                 console.log(e)
             }
        }
-       
+        console.log(config)
         return config
     }
     export const applyUpdate = (mashup: IMashupTheme) => {

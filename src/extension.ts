@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as lib from './lib'
+import { Sort } from './lib/sort';
 import { FolderItem, ThemeItem, ThemeFavProvider } from './treeviews/TreeViewFavorites';
 import { InstalledThemeItem, InstalledThemeProvider } from './treeviews/TreeViewInstalled';
 import { MashupFolderItem, MashupThemeItem, MashupThemeProvider } from './treeviews/TreeViewMashups';
@@ -87,10 +88,10 @@ export function activate(context: vscode.ExtensionContext) {
 		favThemeProvider.refresh()
 	})
 	const disposable_sortAlphaAsc = vscode.commands.registerCommand("themeFav.sortAlphaAsc", (e: any) => {
-		lib.sortListAlphaAsc(context, favThemeProvider)
+		Sort.sortListAlphaAsc(context, favThemeProvider)
 	})
 	const disposable_sortAlphaDesc = vscode.commands.registerCommand("themeFav.sortAlphaDesc", () => {
-		lib.sortListAlphaDesc(context, favThemeProvider)
+		Sort.sortListAlphaDesc(context, favThemeProvider)
 	})
 	const disposable_manageFavorites = vscode.commands.registerCommand("themeFav.manage", () => {
 		lib.manageMenu(context, favThemeProvider)

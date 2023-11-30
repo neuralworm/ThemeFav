@@ -221,7 +221,6 @@
 					"when": "view == favtreeview && viewItem == folder",
 					"group": "edit"
 				},
-
 				{
 					"command": "themeFav.editJSON",
 					"when": "view == favtreeview && viewItem != folder",
@@ -256,7 +255,6 @@
 					"when": "view == historytreeview",
 					"group": "inline"
 				}
-				
 			],
 			"commandPalette": [
 				{
@@ -352,6 +350,7 @@
 	},
 	"dependencies": {
 		"@types/uuid": "^9.0.7",
+		"jsonrepair": "^3.4.1",
 		"uuid": "^9.0.1"
 	}
 }

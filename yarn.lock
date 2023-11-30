@@ -860,6 +860,11 @@ json-stable-stringify-without-jsonify@^1.0.1:
   resolved "https://registry.npmjs.org/json-stable-stringify-without-jsonify/-/json-stable-stringify-without-jsonify-1.0.1.tgz"
   integrity sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==
 
+jsonrepair@^3.4.1:
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/jsonrepair/-/jsonrepair-3.4.1.tgz#7efc04f1aa79e79f2e87a43857395f09b34ac114"
+  integrity sha512-KcKVkjXuNIIVDOzjLqPmo6xNG6rR7qnJWQ/jMkJjan+NPxipNYxkDNCWFO3sncVhiG+V48WVlCe7XSs0Yd4K3A==
+
 jszip@^3.10.1:
   version "3.10.1"
   resolved "https://registry.npmjs.org/jszip/-/jszip-3.10.1.tgz"

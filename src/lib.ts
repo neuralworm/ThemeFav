@@ -475,20 +475,7 @@ export const removeThemeViaTree = (themeFav: ThemeItem, context: vscode.Extensio
     const toRemove: string = themeFav.label
     removeThemeFromUncat(context, toRemove, treeProvider)
 }
-export const sortListAlphaAsc = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
-    const favs: IThemeEXT[] = getFavorites(context)
-    const sorted: IThemeEXT[] = sortAlphaAsc(favs)
-    context.globalState.update("themeFav_favorites", JSON.stringify(sorted)).then(() => {
-        themeProvider.refresh()
-    })
-}
-export const sortListAlphaDesc = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
-    const favs: IThemeEXT[] = getFavorites(context)
-    const sorted: IThemeEXT[] = sortAlphaDesc(favs)
-    context.globalState.update("themeFav_favorites", JSON.stringify(sorted)).then(() => {
-        themeProvider.refresh()
-    })
-}
+
 export const moveToUncat = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider, themeItem: ThemeItem) => {
     if (!themeItem.parent) return
     const folderID: string = themeItem.parent.id
@@ -551,13 +538,7 @@ export const reorderFav = (context: vscode.ExtensionContext, themeToMove: string
         vscode.commands.executeCommand("themeFav.refreshTreeView")
     })
 }
-// SORT UTIL
-const sortAlphaDesc = (themes: IThemeEXT[]) => {
-    return themes.sort((a, b) => ThemeExtUtil.getInterfaceIdentifier(a) > ThemeExtUtil.getInterfaceIdentifier(b) ? 1 : -1)
-}
-const sortAlphaAsc = (themes: IThemeEXT[]) => {
-    return themes.sort((a, b) => ThemeExtUtil.getInterfaceIdentifier(a) < ThemeExtUtil.getInterfaceIdentifier(b) ? 1 : -1)
-}
+
 // BASE THEMES
 export const getInstalled = (): IThemeEXT[] => {
     let ext: vscode.Extension<any>[] = [...vscode.extensions.all]

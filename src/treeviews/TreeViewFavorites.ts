@@ -4,9 +4,10 @@ import { IThemeEXT, ThemeExtUtil } from '../models/ThemeExtJSON'
 import { Folder } from '../models/Folder'
 import path = require('path');
 import { InstalledThemeItem } from './TreeViewInstalled';
+import { ActiveThemeItem } from './TreeViewActive';
 
 export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem | FolderItem>, vscode.TreeDragAndDropController<ThemeItem>{
-    dropMimeTypes = ["application/vnd.code.tree.favtreeview", "text/plain"];
+    dropMimeTypes = ["application/vnd.code.tree.favtreeview", "application/vnd.code.tree.activetreeview", "text/plain"];
     dragMimeTypes = [];
     context: vscode.ExtensionContext
     favs: IThemeEXT[]
@@ -61,13 +62,13 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem | Fol
             catch (e) {
                 incoming = transferContent.value
             }
-            console.log("target: " + target)
-            console.log("data: " + incoming[0])
+            // console.log("target: " + target)
+            // console.log("data: " + incoming[0])
 
             targetType = !target ? "uncategorized" : (target.contextValue === "folder") ? "folder" : "item"
             
             // DETERMINE TRANSFER LOCATION
-            let themeItem: InstalledThemeItem|ThemeItem = incoming[0]
+            let themeItem: InstalledThemeItem|ThemeItem|ActiveThemeItem = incoming[0]
             
 
             const activeTheme = themeItem.theme
@@ -75,6 +76,7 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem | Fol
             switch (targetType) {
                 case "uncategorized":
                     if (lib.doesInclude(this.favs, activeTheme)) return
+                    console.log(activeTheme)
                     lib.addThemeToUncat(activeTheme, this.context, this)
                     break;
                 case "folder":

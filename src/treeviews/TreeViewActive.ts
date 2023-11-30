@@ -8,7 +8,7 @@ import { ThemeItem } from './TreeViewFavorites';
 
 export class ActiveDataProvider implements vscode.TreeDataProvider<ActiveThemeItem>, vscode.TreeDragAndDropController<ActiveThemeItem>{
     dropMimeTypes = ["application/vnd.code.tree.favtreeview"];
-	dragMimeTypes = [];
+	dragMimeTypes = ['application/vnd.code.tree.activetreeview'];
     context: vscode.ExtensionContext
     activeTheme: IThemeEXT
     private _onDidChangeTreeData: vscode.EventEmitter<ActiveThemeItem|undefined|null|void> = new vscode.EventEmitter<ActiveThemeItem|undefined|null|void>()
@@ -31,6 +31,9 @@ export class ActiveDataProvider implements vscode.TreeDataProvider<ActiveThemeIt
         this._onDidChangeTreeData.fire()
     }
     // DROP
+    handleDrag(source: readonly ActiveThemeItem[], dataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): void | Thenable<void> {
+        dataTransfer.set("application/vnd.code.tree.favtreeview", new vscode.DataTransferItem(source))
+    }
     handleDrop(target: ActiveThemeItem | undefined, dataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): void | Thenable<void> {
         const data: vscode.DataTransferItem|undefined = dataTransfer.get("application/vnd.code.tree.favtreeview")
         if(!data) return

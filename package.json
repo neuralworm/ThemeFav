@@ -136,6 +136,16 @@
 				"command": "themeFav.removeFromMashup",
 				"title": "Remove",
 				"icon": "$(remove)"
+			},
+			{
+				"command": "themeFav.sortFolderAsc",
+				"title": "Alphabetically (Asc)",
+				"icon": "$(up)"
+			},
+			{
+				"command": "themeFav.sortFolderDesc",
+				"title": "Alphabetically (Desc)",
+				"icon": "$(down)"
 			}
 		],
 		"viewsContainers": {
@@ -267,6 +277,10 @@
 				{
 					"command": "themeFav.removeFromMashup",
 					"when": "view == mashuptreeview && viewItem == mashup_theme"
+				},
+				{
+					"submenu": "themeFav.sortFolder",
+					"when": "view == favtreeview && viewItem == folder"
 				}
 			],
 			"commandPalette": [
@@ -309,12 +323,24 @@
 				{
 					"command": "themeFav.moveToDefault"
 				}
+			],
+			"themeFav.sortFolder":[
+				{
+					"command": "themeFav.sortFolderAsc"
+				},
+				{
+					"command": "themeFav.sortFolderDesc"
+				}
 			]
 		},
 		"submenus": [
 			{
 				"id": "themeFav.moveToFolderSubMenu",
 				"label": "Move"
+			},
+			{
+				"id": "themeFav.sortFolder",
+				"label": "Sort"
 			}
 		],
 		"configuration": {

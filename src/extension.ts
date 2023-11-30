@@ -102,6 +102,12 @@ export function activate(context: vscode.ExtensionContext) {
 	const disposable_sortAlphaDesc = vscode.commands.registerCommand("themeFav.sortAlphaDesc", () => {
 		Sort.sortListAlphaDesc(context, favThemeProvider)
 	})
+	const disposable_sortFolderAlphaAsc = vscode.commands.registerCommand("themeFav.sortFolderAsc", (folderItem: FolderItem) => {
+		Sort.sortFolderAlphaAsc(context, folderItem, favThemeProvider)
+	})
+	const disposable_sortFolderAlphaDesc = vscode.commands.registerCommand("themeFav.sortFolderDesc", (folderItem: FolderItem) => {
+		Sort.sortFolderAlphaDesc(context, folderItem, favThemeProvider)
+	})
 	const disposable_manageFavorites = vscode.commands.registerCommand("themeFav.manage", () => {
 		lib.manageMenu(context, favThemeProvider)
 	})
@@ -155,6 +161,8 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable_refreshTreeView);
 	context.subscriptions.push(disposable_sortAlphaAsc);
 	context.subscriptions.push(disposable_sortAlphaDesc);
+	context.subscriptions.push(disposable_sortFolderAlphaAsc);
+	context.subscriptions.push(disposable_sortFolderAlphaDesc);
 	context.subscriptions.push(disposable_manageFavorites);
 	context.subscriptions.push(disposable_validate);
 	context.subscriptions.push(disposable_newFolder);

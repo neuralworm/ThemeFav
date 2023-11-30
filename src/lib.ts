@@ -539,15 +539,14 @@ export const reorderFav = (context: vscode.ExtensionContext, themeToMove: string
 export const getInstalled = (): IThemeEXT[] => {
     let ext: vscode.Extension<any>[] = [...vscode.extensions.all]
     let themesArr: any[] = ext.filter((val: vscode.Extension<any>) => {
-        if (val.packageJSON.hasOwnProperty("contributes")) return true
+        if (val.packageJSON.hasOwnProperty("contributes")){
+            if(val.packageJSON["contributes"].hasOwnProperty("themes")) return true
+        }
         return false
     }).map((val: vscode.Extension<any>) => {
         return { ...val.packageJSON.contributes, uri: val.extensionUri, absPath: val.extensionPath }
     })
-    themesArr = themesArr.filter((val: any) => {
-        if (val.hasOwnProperty("themes")) return true
-        return false
-    }).flatMap((val: any) => {
+    themesArr = themesArr.flatMap((val: any) => {
         return val.themes.map((themeObj: any) => {
             return { ...themeObj, uri: val.uri, absPath: val.absPath }
         })

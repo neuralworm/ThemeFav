@@ -10,6 +10,7 @@ import { HistoryDataProvider } from './treeviews/TreeViewHistory';
 import { readFileSync } from 'fs';
 import path = require('path');
 import { jsonrepair } from 'jsonrepair';
+import { IMashupTheme } from './models/MashupTheme';
 
 // BASIC STATE MANAGEMENT
 export const resetState = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider, mashupProvider: MashupThemeProvider, historyData: HistoryDataProvider) => {
@@ -58,6 +59,25 @@ export const getFolderState = (context: vscode.ExtensionContext): Folder[] => {
     const folderArr: Folder[] = JSON.parse(folderString)
     return folderArr
 }
+export interface IGlobalState{
+    installed: IThemeEXT[],
+    uncategorized: IThemeEXT[],
+    folders: Folder[],
+    mashup: IMashupTheme,
+    history: IThemeEXT[]
+}
+export const getGlobalState = (context: vscode.ExtensionContext): IGlobalState => {
+    return{
+        installed: getInstalled(),
+        uncategorized: getFavorites(context),
+        mashup: Custom.getMashupState(context),
+        folders: getFolderState(context),
+        history: getHistory(context)
+    }
+}
+
+
+// FOLDER UTIL
 export const renameFolder = (folderItem: FolderItem, context: vscode.ExtensionContext, themeProv: ThemeFavProvider) => {
     const reserved: string[] = ["Installed"]
     // console.log("rename " + folderItem.label)

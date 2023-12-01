@@ -19,14 +19,16 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem | Fol
 
     constructor(context: vscode.ExtensionContext) {
         this.context = context
-        this.favs = lib.getFavorites(this.context)
-        this.installed = lib.getInstalled()
-        this.history = lib.getHistory(this.context)
-        this.folders = lib.getFolderState(this.context)
+        const state: lib.IGlobalState = lib.getGlobalState(context)
+        this.favs = state.uncategorized
+        this.installed = state.installed
+        this.history = state.history
+        this.folders = state.folders
     }
     getTreeItem(element: ThemeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
         return element
     }
+   
     getChildren(element?: ThemeItem | FolderItem | undefined): vscode.ProviderResult<(ThemeItem | FolderItem)[]> {
         // RETURN FAVORITES AS ROOT ELEMENTS
         if (element === undefined) return [...this.favs.map((themeExtJson: IThemeEXT, index: number) => {
@@ -39,10 +41,11 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem | Fol
     }
     // SYNC WITH STATE
     refresh(): void {
-        this.favs = lib.getFavorites(this.context)
-        this.history = lib.getHistory(this.context)
-        this.installed = lib.getInstalled()
-        this.folders = lib.getFolderState(this.context)
+        const state: lib.IGlobalState = lib.getGlobalState(this.context)
+        this.favs = state.uncategorized
+        this.installed = state.installed
+        this.history = state.history
+        this.folders = state.folders
         this._onDidChangeTreeData.fire()
     }
     // DRAG N DROP

@@ -5,7 +5,8 @@ export interface IThemeEXT {
     uiTheme: string,
     id?: string,
     uri?: vscode.Uri,
-    absPath?: string
+    absPath?: string,
+    extID?: string
 }
 export class ThemeExtUtil {
     label: string
@@ -26,14 +27,15 @@ export class ThemeExtUtil {
     }
 }
 // WHEN USING NAMES FOUND VIA EXTENSION SEARCH, ID'S MUST BE PRIORITIZED OVER LABELS
-export const createThemeExtJSON = (label: string, path: string, uiTheme: string, id?: string | null, uri?: vscode.Uri, absPath?: string): IThemeEXT => {
+export const createThemeExtJSON = (label: string, path: string, uiTheme: string, extID?: string, id?: string | null, uri?: vscode.Uri, absPath?: string): IThemeEXT => {
     return {
         label: label,
         path: path,
         uiTheme: uiTheme,
         id: id ? id : undefined,
         absPath: absPath,
-        uri: uri
+        uri: uri,
+        extID: extID ? extID : undefined
         
     }
 }

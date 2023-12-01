@@ -146,6 +146,11 @@
 				"command": "themeFav.sortFolderDesc",
 				"title": "Alphabetically (Desc)",
 				"icon": "$(down)"
+			},
+			{
+				"command": "themeFav.uninstallTheme",
+				"title": "Uninstall Extension",
+				"icon": "$(uninstall)"
 			}
 		],
 		"viewsContainers": {
@@ -281,6 +286,10 @@
 				{
 					"submenu": "themeFav.sortFolder",
 					"when": "view == favtreeview && viewItem == folder"
+				},
+				{
+					"command": "themeFav.uninstallTheme",
+					"when": "view == installedtreeview"
 				}
 			],
 			"commandPalette": [

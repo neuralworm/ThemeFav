@@ -152,6 +152,9 @@ export function activate(context: vscode.ExtensionContext) {
 	const disposable_removeFromMashup = vscode.commands.registerCommand("themeFav.removeFromMashup", (e: MashupThemeItem) => {
 		Custom.removeMashupTheme(e, context, mashupDataProvider)
 	})
+	const disposable_uninstallTheme = vscode.commands.registerCommand("themeFav.uninstallTheme", (installedThemeItem: InstalledThemeItem) => {
+		lib.uninstallExtension(installedThemeItem, installedThemeProvider)
+	})
 	context.subscriptions.push(disposable_getFavorites);
 	context.subscriptions.push(disposable_selectFromFavorites);
 	context.subscriptions.push(disposable_saveTheme);
@@ -178,6 +181,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable_activateHistoryItem);
 	context.subscriptions.push(disposable_activateMashupTheme);
 	context.subscriptions.push(disposable_removeFromMashup)
+	context.subscriptions.push(disposable_uninstallTheme)
 
 
 

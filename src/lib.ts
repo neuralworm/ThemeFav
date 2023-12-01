@@ -7,6 +7,9 @@ import { FolderQuickPickItem, ThemeQuickPickItem } from './models/QuickPick'
 import { Custom } from './lib/custom';
 import { MashupThemeProvider } from './treeviews/TreeViewMashups';
 import { HistoryDataProvider } from './treeviews/TreeViewHistory';
+import { readFileSync } from 'fs';
+import path = require('path');
+import { jsonrepair } from 'jsonrepair';
 
 // BASIC STATE MANAGEMENT
 export const resetState = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider, mashupProvider: MashupThemeProvider, historyData: HistoryDataProvider) => {
@@ -189,7 +192,7 @@ export const addHistoryEvent = (context: vscode.ExtensionContext, newHistoryThem
     const index: number = history.map((val: IThemeEXT) => val.label).indexOf(newHistoryTheme.label)
     if (index !== -1) history.splice(index, 1)
     history.unshift(newHistoryTheme)
-    if(history.length > 40) history.pop()
+    if (history.length > 40) history.pop()
     updateHistoryState(history, context, HistoryDataProvider)
 }
 
@@ -539,19 +542,19 @@ export const reorderFav = (context: vscode.ExtensionContext, themeToMove: string
 export const getInstalled = (): IThemeEXT[] => {
     let ext: vscode.Extension<any>[] = [...vscode.extensions.all]
     let themesArr: any[] = ext.filter((val: vscode.Extension<any>) => {
-        if (val.packageJSON.hasOwnProperty("contributes")){
-            if(val.packageJSON["contributes"].hasOwnProperty("themes")) return true
+        if (val.packageJSON.hasOwnProperty("contributes")) {
+            if (val.packageJSON["contributes"].hasOwnProperty("themes")) return true
         }
         return false
     }).map((val: vscode.Extension<any>) => {
-        return { ...val.packageJSON.contributes, uri: val.extensionUri, absPath: val.extensionPath }
+        return { ...val.packageJSON.contributes, uri: val.extensionUri, absPath: val.extensionPath, extID: val.id }
     })
     themesArr = themesArr.flatMap((val: any) => {
         return val.themes.map((themeObj: any) => {
-            return { ...themeObj, uri: val.uri, absPath: val.absPath }
+            return { ...themeObj, uri: val.uri, absPath: val.absPath, extID: val.extID }
         })
     }).map((val: any) => {
-        return createThemeEXT(val.label, val.path, val.uiTheme, val.id ? val.id : null, val.uri, val.absPath)
+        return createThemeEXT(val.label, val.path, val.uiTheme, val.extID, val.id ? val.id : null, val.uri, val.absPath)
     })
     return themesArr
 }
@@ -578,14 +581,14 @@ const getExtDataFromState = (themeString: string): IThemeEXT => {
     let index = installed.map((ext: IThemeEXT) => {
         return ext.id ? ext.id : ext.label
     }).indexOf(themeString)
-    if (index === -1) return createThemeEXT(themeString, "", "", null)
+    if (index === -1) return createThemeEXT(themeString, "", "", undefined, null)
     return installed[index]
 }
 export const getExtData = (installed: IThemeEXT[], themeString: string): IThemeEXT => {
     let index = installed.map((ext: IThemeEXT) => {
         return ThemeExtUtil.getInterfaceIdentifier(ext)
     }).indexOf(themeString)
-    if (index == -1) return createThemeEXT(themeString, "", "", null)
+    if (index == -1) return createThemeEXT(themeString, "", "", undefined, null)
     return installed[index]
 }
 
@@ -603,3 +606,12 @@ export const doesFolderInclude = (folder: Folder, theme: IThemeEXT): boolean => 
     return false
 }
 
+// UNINSTALL THEME EXT
+export const uninstallExtension = (themeItem: InstalledThemeItem, installedDataProvider: InstalledThemeProvider) => {
+    let extID: string|undefined = themeItem.theme.extID
+    if(!extID) return
+    vscode.commands.executeCommand("workbench.extensions.uninstallExtension", extID).then(()=>{
+        vscode.window.showInformationMessage(`${extID} uninstalled.`)
+        installedDataProvider.refresh()
+    })
+}

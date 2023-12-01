@@ -19,7 +19,7 @@ export namespace Custom {
     }
 
     export const setCustomConfig = (customConfig: any, baseTheme?: IThemeEXT, tokens?: any) => {
-        console.log("Set base theme " + baseTheme?.label)
+        // console.log("Set base theme " + baseTheme?.label)
         const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration()
         config.update("workbench.colorCustomizations", customConfig, true).then(() => {
             if(baseTheme){
@@ -105,6 +105,22 @@ export namespace Custom {
                     }
 
                 })
+                // GET FOREGROUND AND BACKGROUND IF EDITOR LOCATION SPECIFIC ONES NOT SPECIFIED
+                // try{
+                //     if(!key+".foreground") config[`${key}.foreground`] = themeObj.colors["foreground"]
+                //     console.log(themeObj.colors["foreground"])
+
+                // }
+                // catch(e){
+
+                // }
+                // try{
+                //     if(!key+".background") config[`${key}.background`] = themeObj.colors["editor.background"]
+                //     console.log(themeObj.colors["editor.background"])
+                // }
+                // catch(e){
+
+                // }
                 // CONFIDENCE
                 console.log(getMashupConfidence(valuesToSearch.length, count))
             }

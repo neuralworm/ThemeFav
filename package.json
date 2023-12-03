@@ -151,6 +151,11 @@
 				"command": "themeFav.uninstallTheme",
 				"title": "Uninstall Extension",
 				"icon": "$(uninstall)"
+			},
+			{
+				"command": "themeFav.refreshInstalled",
+				"title": "Refresh Installed Themes",
+				"icon": "$(refresh)"
 			}
 		],
 		"viewsContainers": {
@@ -219,7 +224,7 @@
 					"group": "navigation@3"
 				},
 				{
-					"command": "themeFav.validate",
+					"command": "themeFav.refreshInstalled",
 					"when": "view == installedtreeview",
 					"group": "navigation@2"
 				},

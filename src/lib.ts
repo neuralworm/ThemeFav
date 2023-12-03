@@ -480,8 +480,11 @@ export const doesFolderInclude = (folder: IFolder, theme: IThemeEXT): boolean =>
 export const uninstallExtension = (themeItem: InstalledThemeItem, installedDataProvider: InstalledThemeProvider) => {
     let extID: string|undefined = themeItem.theme.extID
     if(!extID) return
-    vscode.commands.executeCommand("workbench.extensions.uninstallExtension", extID).then(()=>{
-        vscode.window.showInformationMessage(`${extID} uninstalled.`)
-        installedDataProvider.refresh()
+    vscode.commands.executeCommand('extension.open', extID).then(()=>{
+        vscode.commands.executeCommand("workbench.extensions.uninstallExtension", extID).then(()=>{
+            installedDataProvider.refresh()
+            vscode.window.showInformationMessage(`${extID} uninstalled.`)
+        })
     })
+   
 }

@@ -1,10 +1,10 @@
 import * as vscode from 'vscode'
 import { IFolder } from '../models/IFolder'
-import { FolderItem, ThemeFavProvider } from '../treeviews/TreeViewFavorites'
+import { FolderItem, ThemeFavProvider as ThemeDataProvider } from '../treeviews/TreeViewFavorites'
 import { IThemeEXT } from '../models/IThemeExtJSON'
 
 export namespace Folders {
-    export const updateFolderState = (folders: IFolder[], context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
+    export const updateFolderState = (folders: IFolder[], context: vscode.ExtensionContext, themeProvider: ThemeDataProvider) => {
         context.globalState.update("themeFav_folders", JSON.stringify(folders)).then(() => {
             themeProvider.refresh()
         })
@@ -24,7 +24,7 @@ export namespace Folders {
     }
 
     // FOLDER UTIL
-    export const renameFolder = (folderItem: FolderItem, context: vscode.ExtensionContext, themeProv: ThemeFavProvider) => {
+    export const renameFolder = (folderItem: FolderItem, context: vscode.ExtensionContext, themeProv: ThemeDataProvider) => {
         const reserved: string[] = ["Installed"]
         // console.log("rename " + folderItem.label)
         const folders: IFolder[] = getFolderState(context)
@@ -50,7 +50,7 @@ export namespace Folders {
         // ACTIVATE
         quickPickAction.show()
     }
-    export const updateFolderCollapse = (folder: FolderItem, context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
+    export const updateFolderCollapse = (folder: FolderItem, context: vscode.ExtensionContext, themeProvider: ThemeDataProvider) => {
         const folders: IFolder[] = getFolderState(context)
         const index: number = getFolderIndexFromItem(folder, folders)
         folders[index].open = !folders[index].open
@@ -64,7 +64,7 @@ export namespace Folders {
         const folderIds: string[] = folders.map((stateFolder) => stateFolder.id)
         return folderIds.indexOf(folder.id)
     }
-    export const addToFolder = (themeToAdd: IThemeEXT, folder: IFolder, context: vscode.ExtensionContext, themeProvider: ThemeFavProvider, index?: number) => {
+    export const addToFolder = (themeToAdd: IThemeEXT, folder: IFolder, context: vscode.ExtensionContext, themeProvider: ThemeDataProvider, index?: number) => {
         const folders: IFolder[] = getFolderState(context)
         const folderIndex: number = getFolderIndex(folder, folders)
         const themeStrings = folders[folderIndex].themes.map((val: IThemeEXT) => val.label)
@@ -74,7 +74,7 @@ export namespace Folders {
             updateFolderState(folders, context, themeProvider)
         }
     }
-    export const removeFromFolder = (themeToAdd: IThemeEXT, folder: IFolder, context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
+    export const removeFromFolder = (themeToAdd: IThemeEXT, folder: IFolder, context: vscode.ExtensionContext, themeProvider: ThemeDataProvider) => {
         const folders: IFolder[] = getFolderState(context)
         const folderIndex: number = getFolderIndex(folder, folders)
         const themeStrings = folders[folderIndex].themes.map((val: IThemeEXT) => val.label)
@@ -84,4 +84,18 @@ export namespace Folders {
             updateFolderState(folders, context, themeProvider)
         }
     }
+    export const getFolderViaID = (id: string, folders: IFolder[]): IFolder => {
+        return folders[folders.map((folder)=>folder.id).indexOf(id)]
+    }
+    export const getFolderIndexViaID = (id: string, folders: IFolder[]): number => {
+        return folders.map((folder)=>folder.id).indexOf(id)
+    }
+    export const reorderFolder = (folderID: string, newIndex: number, context: vscode.ExtensionContext, themeDataProvider: ThemeDataProvider) => {
+        const folders: IFolder[] = getFolderState(context)
+        const oldIndex: number = getFolderIndexViaID(folderID, folders)
+        if(oldIndex === -1) return
+        const old: IFolder[] = folders.splice(oldIndex, 1)
+        folders.splice(newIndex, 0, old[0])
+        updateFolderState(folders, context, themeDataProvider)
+    }   
 }

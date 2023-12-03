@@ -1,7 +1,8 @@
-import { IThemeEXT } from './../models/ThemeExtJSON';
+import { IThemeEXT } from '../models/IThemeExtJSON';
 import * as vscode from 'vscode'
 import * as lib from '../lib'
 import path = require('path');
+import { History } from '../lib/history';
 
 
 export class HistoryDataProvider implements vscode.TreeDataProvider<HistoryItem>, vscode.TreeDragAndDropController<HistoryItem>{
@@ -14,7 +15,7 @@ export class HistoryDataProvider implements vscode.TreeDataProvider<HistoryItem>
 
     constructor(context: vscode.ExtensionContext){
         this.context = context
-        this.history = lib.getHistory(context)
+        this.history = History.getHistory(context)
     }
     getTreeItem(element: HistoryItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
         return element
@@ -27,7 +28,7 @@ export class HistoryDataProvider implements vscode.TreeDataProvider<HistoryItem>
     }
     // SYNC WITH STATE
     refresh(): void {
-        this.history = lib.getHistory(this.context)
+        this.history = History.getHistory(this.context)
         this._onDidChangeTreeData.fire()
     }
    

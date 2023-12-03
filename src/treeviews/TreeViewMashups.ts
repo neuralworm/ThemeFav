@@ -1,8 +1,8 @@
 import * as vscode from 'vscode'
-import { IThemeEXT, ThemeExtUtil } from '../models/ThemeExtJSON';
+import { IThemeEXT, ThemeExtUtil } from '../models/IThemeExtJSON';
 import * as lib from '../lib'
 import path = require('path');
-import { IMashupTheme, MashupTheme, createMashupTheme } from '../models/MashupTheme';
+import { IMashupTheme, MashupTheme, createMashupTheme } from '../models/IMashupTheme';
 import * as jsonTemplate from '../template/sections.json'
 import { Custom } from '../lib/custom';
 import { ThemeItem } from './TreeViewFavorites';

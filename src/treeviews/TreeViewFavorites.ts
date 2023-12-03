@@ -1,10 +1,12 @@
 import * as vscode from 'vscode'
 import * as lib from '../lib'
-import { IThemeEXT, ThemeExtUtil } from '../models/ThemeExtJSON'
-import { Folder } from '../models/Folder'
+import { IThemeEXT, ThemeExtUtil } from '../models/IThemeExtJSON'
+import { IFolder } from '../models/IFolder'
 import path = require('path');
 import { InstalledThemeItem } from './TreeViewInstalled';
 import { ActiveThemeItem } from './TreeViewActive';
+import { Folders } from '../lib/folders';
+import { Favorites } from '../lib/favorites';
 
 export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem | FolderItem>, vscode.TreeDragAndDropController<ThemeItem>{
     dropMimeTypes = ["application/vnd.code.tree.favtreeview", "application/vnd.code.tree.activetreeview", "text/plain"];
@@ -13,7 +15,7 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem | Fol
     favs: IThemeEXT[]
     installed: IThemeEXT[]
     history: IThemeEXT[]
-    folders: Folder[]
+    folders: IFolder[]
     private _onDidChangeTreeData: vscode.EventEmitter<ThemeItem | undefined | null | void> = new vscode.EventEmitter<ThemeItem | undefined | null | void>()
     readonly onDidChangeTreeData: vscode.Event<ThemeItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
@@ -33,7 +35,7 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem | Fol
         // RETURN FAVORITES AS ROOT ELEMENTS
         if (element === undefined) return [...this.favs.map((themeExtJson: IThemeEXT, index: number) => {
             return new ThemeItem(themeExtJson, vscode.TreeItemCollapsibleState.None)
-        }), ...this.folders.map((folder: Folder) => new FolderItem(vscode.TreeItemCollapsibleState.Expanded, folder))]
+        }), ...this.folders.map((folder: IFolder) => new FolderItem(vscode.TreeItemCollapsibleState.Expanded, folder))]
         else if (element.hasOwnProperty("folder")) {
             let folderElement = element as FolderItem
             return folderElement.folder.themes.map((theme: IThemeEXT) => new ThemeItem(theme, vscode.TreeItemCollapsibleState.None, folderElement.folder))
@@ -80,12 +82,12 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem | Fol
                 case "uncategorized":
                     if (lib.doesInclude(this.favs, activeTheme)) return
                     console.log(activeTheme)
-                    lib.addThemeToUncat(activeTheme, this.context, this)
+                    Favorites.addThemeToUncat(activeTheme, this.context, this)
                     break;
                 case "folder":
                     let targetFolder: FolderItem = target as FolderItem
                     if (lib.doesFolderInclude(targetFolder.folder, activeTheme)) return
-                    lib.addToFolder(activeTheme, targetFolder.folder, this.context, this)
+                    Folders.addToFolder(activeTheme, targetFolder.folder, this.context, this)
                     break
                 case "item":
                     const targetItem: ThemeItem = target as ThemeItem
@@ -96,17 +98,17 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem | Fol
                         if(lib.doesFolderInclude(targetItem.parent!, activeTheme)) return
                     } 
                     // GET PARENT OF TARGET ITEM
-                    const parent: Folder = targetItem.parent!
+                    const parent: IFolder = targetItem.parent!
 
                     // MOVE TO UNCAT
                     if (!parent) {
-                        const index = lib.getFavIndex(this.favs, targetItem.label)
-                        lib.addThemeToUncat(activeTheme, this.context, this, index)
+                        const index = lib.getThemeIndex(this.favs, targetItem.label)
+                        Favorites.addThemeToUncat(activeTheme, this.context, this, index)
                     }
                     // OR MOVE TO FOLDER
                     else {
-                        const index = lib.getFavIndex(parent.themes, targetItem.label)
-                        lib.addToFolder(activeTheme, parent, this.context, this, index)
+                        const index = lib.getThemeIndex(parent.themes, targetItem.label)
+                        Folders.addToFolder(activeTheme, parent, this.context, this, index)
                     }
                     break
                 default:
@@ -117,8 +119,8 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem | Fol
             else {
                 const themeItem2 = themeItem as ThemeItem
                 const parent = themeItem2.parent
-                if(parent === undefined) lib.removeThemeFromUncat(this.context, themeItem2.label, this)
-                else lib.removeFromFolder(themeItem2.theme, themeItem2.parent!, this.context, this)
+                if(parent === undefined) Favorites.removeThemeFromUncat(this.context, themeItem2.label, this)
+                else Folders.removeFromFolder(themeItem2.theme, themeItem2.parent!, this.context, this)
             }
         }
     }
@@ -134,7 +136,7 @@ export class ThemeItem implements vscode.TreeItem {
     constructor(
         public theme: IThemeEXT,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-        public parent?: Folder,
+        public parent?: IFolder,
         public readonly iconPath = {
             light: path.join(__filename, '../', "../", "../", 'resources', theme.uiTheme == "vs" ? "light_dark.svg" : "dark_dark.svg"),
             dark: path.join(__filename, '../', "../", "../", 'resources', theme.uiTheme == "vs" ? "light_light.svg" : "dark_light.svg")
@@ -159,7 +161,7 @@ export class FolderItem implements vscode.TreeItem {
     description?: string | boolean | undefined;
     constructor(
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-        public folder: Folder,
+        public folder: IFolder,
     ) {
         this.folder = folder
         this.label = folder.label

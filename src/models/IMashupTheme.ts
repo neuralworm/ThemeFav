@@ -1,4 +1,4 @@
-import { IThemeEXT } from "./ThemeExtJSON"
+import { IThemeEXT } from "./IThemeExtJSON"
 
 export class MashupTheme{
     name: string = "New Custom Theme"

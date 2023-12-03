@@ -1,8 +1,8 @@
 import { MashupFolderItem, MashupThemeItem, MashupThemeProvider } from './../treeviews/TreeViewMashups';
-import { IThemeEXT } from "../models/ThemeExtJSON"
+import { IThemeEXT } from "../models/IThemeExtJSON"
 import * as vscode from 'vscode'
 import * as fs from "fs"
-import { IMashupTheme, MashupTheme, createMashupTheme } from "../models/MashupTheme"
+import { IMashupTheme, MashupTheme, createMashupTheme } from "../models/IMashupTheme"
 import { MashupThemeProvider as MashupDataProvider } from "../treeviews/TreeViewMashups"
 import * as jsonTemplate from '../template/sections.json'
 import path = require("path")
@@ -44,7 +44,6 @@ export namespace Custom {
     export const generateRandom = () => {
 
     }
-
     // MASHUPS
     export const getMashupState = (context: vscode.ExtensionContext): IMashupTheme => {
         let rawData: string = context.globalState.get("themeFav_mashup")!

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { IThemeEXT, ThemeExtUtil } from '../models/ThemeExtJSON';
+import { IThemeEXT, ThemeExtUtil } from '../models/IThemeExtJSON';
 import * as lib from '../lib'
 import path = require('path');
 import { InstalledThemeItem } from './TreeViewInstalled';

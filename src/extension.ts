@@ -7,9 +7,12 @@ import { FolderItem, ThemeItem, ThemeFavProvider } from './treeviews/TreeViewFav
 import { InstalledThemeItem, InstalledThemeProvider } from './treeviews/TreeViewInstalled';
 import { MashupFolderItem, MashupThemeItem, MashupThemeProvider } from './treeviews/TreeViewMashups';
 import { HistoryDataProvider, HistoryItem } from './treeviews/TreeViewHistory';
-import { IThemeEXT } from './models/ThemeExtJSON';
+import {History} from './lib/history'
+import { IThemeEXT } from './models/IThemeExtJSON';
 import { Custom } from './lib/custom';
 import { ActiveDataProvider, ActiveThemeItem } from './treeviews/TreeViewActive';
+import { Folders } from './lib/folders';
+import { Favorites } from './lib/favorites';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -30,7 +33,7 @@ export function activate(context: vscode.ExtensionContext) {
 		if(!e.affectsConfiguration("workbench.colorTheme")) return
 		// HISTORY UPDATE
 		const theme: IThemeEXT = lib.getExtData(installedThemeProvider.installed , vscode.workspace.getConfiguration().get("workbench.colorTheme")!)
-		lib.addHistoryEvent(context, theme, historyDataProvider)
+		History.addHistoryEvent(context, theme, historyDataProvider)
 		activeDataProvider.refresh()
 	})
 	vscode.extensions.onDidChange(() => {
@@ -65,20 +68,20 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	})
 	favoritesTreeView.onDidCollapseElement((e: vscode.TreeViewExpansionEvent<FolderItem|ThemeItem>) => {
-		lib.updateFolderCollapse(e.element as FolderItem, context, favThemeProvider)
+		Folders.updateFolderCollapse(e.element as FolderItem, context, favThemeProvider)
 	})
 	favoritesTreeView.onDidExpandElement((e: vscode.TreeViewExpansionEvent<FolderItem|ThemeItem>) => {
-		lib.updateFolderCollapse(e.element as FolderItem, context, favThemeProvider)
+		Folders.updateFolderCollapse(e.element as FolderItem, context, favThemeProvider)
 	})
 	installedTreeView.onDidChangeSelection((e: vscode.TreeViewSelectionChangeEvent<InstalledThemeItem>)=>{
 		lib.activateTheme(e.selection[0].theme)
 	})
 	// COMMANDS
 	const disposable_getFavorites = vscode.commands.registerCommand('themeFav.getFavorites', () => {
-		lib.getFavorites(context)
+		Favorites.getFavorites(context)
 	});
 	const disposable_saveTheme = vscode.commands.registerCommand('themeFav.saveTheme', () => {
-		lib.saveThemeToUncat(context, favThemeProvider)
+		Favorites.saveThemeToUncat(context, favThemeProvider)
 	});
 	const disposable_selectFromFavorites = vscode.commands.registerCommand('themeFav.selectFromFavorites', () => {
 		lib.getCurrentTheme()
@@ -129,7 +132,7 @@ export function activate(context: vscode.ExtensionContext) {
 		lib.treeDelete(context, favThemeProvider, treeItem)
 	})
 	const disposable_renameFolder = vscode.commands.registerCommand("themeFav.renameFolder", (e: FolderItem) => {
-		lib.renameFolder(e, context, favThemeProvider)
+		Folders.renameFolder(e, context, favThemeProvider)
 	})
 	const disposable_copyPath = vscode.commands.registerCommand("themeFav.copyPath", (e: ThemeItem) => {
 		lib.copyPath(e, context, favThemeProvider)

@@ -1,4 +1,4 @@
-import { Folder } from "../models/Folder"
+import { IFolder } from "../models/IFolder"
 
 const obj = {
     fasds: "sdasd",
@@ -26,6 +26,6 @@ console.log(JSON.stringify(obj))
 console.log(JSON.parse(JSON.stringify(obj)))
 console.log(JSON.stringify(JSON.parse(JSON.stringify(obj))))
 
-let folder = new Folder([], "test folder")
+let folder = new IFolder([], "test folder")
 console.log(JSON.stringify(folder))
-console.log(Folder.folders)
+console.log(IFolder.folders)

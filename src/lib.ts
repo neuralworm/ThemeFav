@@ -33,7 +33,6 @@ export const resetState = (context: vscode.ExtensionContext, themeProvider: Them
         })
     })
 }
-
 export const getGlobalState = (context: vscode.ExtensionContext): IGlobalState => {
     return{
         installed: getInstalled(),
@@ -43,8 +42,6 @@ export const getGlobalState = (context: vscode.ExtensionContext): IGlobalState =
         history: History.getHistory(context)
     }
 }
-
-
 export const duplicateTheme = (theme: InstalledThemeItem, context: vscode.ExtensionContext): IThemeEXT => {
     const newTheme: IThemeEXT = {
         ...theme.theme, label: theme.theme.label + "_copy"
@@ -395,7 +392,8 @@ export const createFolder = (context: vscode.ExtensionContext, themeProvider: Th
     }
     let newFolder = new IFolder([], nameToCheck)
     folders.unshift(newFolder)
-    Folders.updateFolderState(folders, context, themeProvider)
+    const sorted = Folders.sortFoldersAlpha(folders)
+    Folders.updateFolderState(sorted, context, themeProvider)
 }
 export const reorderFav = (context: vscode.ExtensionContext, themeToMove: string, newInd: number) => {
     let themes: IThemeEXT[] = Favorites.getFavorites(context)

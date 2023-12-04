@@ -43,7 +43,8 @@ export namespace Folders {
             if (reserved.map(s => s.toLowerCase()).includes(currentName.toLowerCase())) return
             // NEEDS VALIDATION
             folders[index].label = currentName
-            updateFolderState(folders, context, themeProv)
+            const sorted = sortFoldersAlpha(folders)
+            updateFolderState(sorted, context, themeProv)
             quickPickAction.hide()
         })
 
@@ -98,4 +99,14 @@ export namespace Folders {
         folders.splice(newIndex, 0, old[0])
         updateFolderState(folders, context, themeDataProvider)
     }   
+    export const sortFoldersAlpha = (folders: IFolder[]): IFolder[] => {
+        return folders.sort((folderA, folderB)=>{
+            return folderA.label.localeCompare(folderB.label)
+        })
+    }
+    export const sortFoldersFromState = (context: vscode.ExtensionContext, dataProvider: ThemeDataProvider) => {
+        const folders: IFolder[] = getFolderState(context)
+        const sorted = sortFoldersAlpha(folders)
+        updateFolderState(sorted, context, dataProvider)
+    }
 }

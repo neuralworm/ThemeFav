@@ -486,3 +486,8 @@ export const uninstallExtension = (themeItem: InstalledThemeItem, installedDataP
     })
    
 }
+export const getRandomTheme = (): IThemeEXT => {
+    const installed: IThemeEXT[] = getInstalled()
+    const rand = Math.floor(Math.random() * installed.length)
+    return installed[rand]
+}

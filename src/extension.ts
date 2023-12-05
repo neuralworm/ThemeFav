@@ -161,9 +161,12 @@ export function activate(context: vscode.ExtensionContext) {
 	const disposable_refreshInstalled = vscode.commands.registerCommand("themeFav.refreshInstalled", (installedThemeItem: InstalledThemeItem) => {
 		installedThemeProvider.refresh()
 	})
-	const disposable_activateTheme = vscode.commands.registerCommand("themeFav.activateTheme", (activeThemeTree: InstalledThemeItem) => {
-		console.log(activeThemeTree)
+	const disposable_activateTheme = vscode.commands.registerCommand("themeFav.activateTheme", () => {
 		lib.activateTheme(activeDataProvider.activeTheme)
+	})
+	const disposable_randomMashup = vscode.commands.registerCommand("themeFav.randomMashup", (e: any) => {
+		console.log(e)
+		Custom.generateRandomConfig(context, mashupDataProvider)
 	})
 	context.subscriptions.push(disposable_getFavorites);
 	context.subscriptions.push(disposable_selectFromFavorites);
@@ -194,6 +197,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable_uninstallTheme)
 	context.subscriptions.push(disposable_refreshInstalled)
 	context.subscriptions.push(disposable_activateTheme)
+	context.subscriptions.push(disposable_randomMashup)
 
 
 

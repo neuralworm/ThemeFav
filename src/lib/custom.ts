@@ -7,6 +7,9 @@ import { MashupThemeProvider as MashupDataProvider } from "../treeviews/TreeView
 import * as jsonTemplate from '../template/sections.json'
 import path = require("path")
 import { jsonrepair } from "jsonrepair"
+import { sections } from '../constants/mashupsections';
+import { getRandomTheme } from '../lib';
+
 type Dictionary = {
     [index: string]: string[]
 }
@@ -14,10 +17,6 @@ type StringIndexable = {
     [index: string]: IThemeEXT|undefined
 }
 export namespace Custom {
-    export const getTemplate = () => {
-
-    }
-
     export const setCustomConfig = (customConfig: any, baseTheme?: IThemeEXT, tokens?: any) => {
         // console.log("Set base theme " + baseTheme?.label)
         const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration()
@@ -33,7 +32,6 @@ export namespace Custom {
                 })
             }
         })
-        
     }
     export const clearConfig = () => {
         const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration()
@@ -41,8 +39,14 @@ export namespace Custom {
             config.update("editor.tokenColorCustomizations", "{}", true)
         })
     }
-    export const generateRandom = () => {
-
+    export const generateRandomConfig = (context: vscode.ExtensionContext, dataProvider: MashupDataProvider) => {
+        const mashTheme: IMashupTheme = {}
+        sections.forEach((sectionString: string) => {
+            mashTheme[sectionString] = getRandomTheme()
+        })
+        const randomConfig = createCustomConfig(mashTheme, dataProvider)
+        updateMashupState(context, mashTheme, dataProvider)
+        setCustomConfig(randomConfig, randomConfig["base"], randomConfig["tokens/syntax"])
     }
     // MASHUPS
     export const getMashupState = (context: vscode.ExtensionContext): IMashupTheme => {
@@ -87,13 +91,13 @@ export namespace Custom {
                 // @ts-ignore
                 const dict = jsonTemplate as Dictionary
                 const valuesToSearch: string[] = dict[key]
-                console.log("KEY: " + key)
+                // console.log("KEY: " + key)
                
                 let count = 0
                 valuesToSearch.forEach((val:string)=>{
                     if(!themeObj.colors) return
                     if(val in themeObj.colors){
-                        console.log("found " + val)
+                        // console.log("found " + val)
                         try{
                             config[val] = themeObj.colors[val]
                             count++
@@ -121,7 +125,7 @@ export namespace Custom {
 
                 // }
                 // CONFIDENCE
-                console.log(getMashupConfidence(valuesToSearch.length, count))
+                // console.log(getMashupConfidence(valuesToSearch.length, count))
             }
             catch(e){
                 console.log(e)

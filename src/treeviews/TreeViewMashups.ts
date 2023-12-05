@@ -3,12 +3,11 @@ import { IThemeEXT, ThemeExtUtil } from '../models/IThemeExtJSON';
 import * as lib from '../lib'
 import path = require('path');
 import { IMashupTheme, MashupTheme, createMashupTheme } from '../models/IMashupTheme';
-import * as jsonTemplate from '../template/sections.json'
 import { Custom } from '../lib/custom';
 import { ThemeItem } from './TreeViewFavorites';
+import { sections } from '../constants/mashupsections';
 
 const mashupTemp: IMashupTheme = createMashupTheme()
-const sections: string[] = ["base", "tokens/syntax", ...Object.keys(jsonTemplate)]
 type Dictionary = {
     [index: string]: IThemeEXT|undefined
 }

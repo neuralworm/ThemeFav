@@ -15,6 +15,7 @@ export class MashupTheme{
     }
 }
 export interface IMashupTheme{
+    [key: string]: any,
     base?: IThemeEXT
     activitybar?: IThemeEXT
     statusbar?: IThemeEXT

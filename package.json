@@ -161,6 +161,11 @@
 				"command": "themeFav.activateTheme",
 				"title": "Activate",
 				"icon": "$(check)"
+			},
+			{
+				"command": "themeFav.randomMashup",
+				"title": "Randomize",
+				"icon": "$(flame)"
 			}
 		],
 		"viewsContainers": {
@@ -242,6 +247,11 @@
 					"command": "themeFav.activateMashup",
 					"when": "view == mashuptreeview",
 					"group": "navigation@1"
+				},
+				{
+					"command": "themeFav.randomMashup",
+					"when": "view == mashuptreeview",
+					"group": "navigation@2"
 				},
 				{
 					"command": "themeFav.activateTheme",

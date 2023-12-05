@@ -46,7 +46,7 @@ export namespace Custom {
         })
         const randomConfig = createCustomConfig(mashTheme, dataProvider)
         updateMashupState(context, mashTheme, dataProvider)
-        setCustomConfig(randomConfig, randomConfig["base"], randomConfig["tokens/syntax"])
+        setCustomConfig(randomConfig, randomConfig["base"], randomConfig["tokens"])
     }
     // MASHUPS
     export const getMashupState = (context: vscode.ExtensionContext): IMashupTheme => {
@@ -91,7 +91,7 @@ export namespace Custom {
                 // @ts-ignore
                 const dict = jsonTemplate as Dictionary
                 const valuesToSearch: string[] = dict[key]
-                // console.log("KEY: " + key)
+                console.log("KEY: " + key)
                
                 let count = 0
                 valuesToSearch.forEach((val:string)=>{

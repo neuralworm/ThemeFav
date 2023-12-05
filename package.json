@@ -156,6 +156,11 @@
 				"command": "themeFav.refreshInstalled",
 				"title": "Refresh Installed Themes",
 				"icon": "$(refresh)"
+			},
+			{
+				"command": "themeFav.activateTheme",
+				"title": "Activate",
+				"icon": "$(check)"
 			}
 		],
 		"viewsContainers": {
@@ -236,6 +241,11 @@
 				{
 					"command": "themeFav.activateMashup",
 					"when": "view == mashuptreeview",
+					"group": "navigation@1"
+				},
+				{
+					"command": "themeFav.activateTheme",
+					"when": "view == activetreeview",
 					"group": "navigation@1"
 				}
 			],

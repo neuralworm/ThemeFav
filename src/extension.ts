@@ -161,6 +161,10 @@ export function activate(context: vscode.ExtensionContext) {
 	const disposable_refreshInstalled = vscode.commands.registerCommand("themeFav.refreshInstalled", (installedThemeItem: InstalledThemeItem) => {
 		installedThemeProvider.refresh()
 	})
+	const disposable_activateTheme = vscode.commands.registerCommand("themeFav.activateTheme", (activeThemeTree: InstalledThemeItem) => {
+		console.log(activeThemeTree)
+		lib.activateTheme(activeDataProvider.activeTheme)
+	})
 	context.subscriptions.push(disposable_getFavorites);
 	context.subscriptions.push(disposable_selectFromFavorites);
 	context.subscriptions.push(disposable_saveTheme);
@@ -189,6 +193,8 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable_removeFromMashup)
 	context.subscriptions.push(disposable_uninstallTheme)
 	context.subscriptions.push(disposable_refreshInstalled)
+	context.subscriptions.push(disposable_activateTheme)
+
 
 
 

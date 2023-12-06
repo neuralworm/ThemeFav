@@ -1,3 +1,4 @@
+import { sections } from "../constants/mashupsections"
 import { IThemeEXT } from "./IThemeExtJSON"
 
 export class MashupTheme{
@@ -15,15 +16,22 @@ export class MashupTheme{
     }
 }
 export interface IMashupTheme{
-    [key: string]: any
+    [key: string]: MashupSlot
 }
 export const createMashupTheme = (): IMashupTheme => {
-    return {
-    }
+    const mashupTheme: IMashupTheme = {}
+    sections.forEach((section: string)=>{
+        mashupTheme[section] = {
+            theme: undefined,
+            locked: false
+        }
+    })
+    // @ts-ignore
+    return mashupTheme
     
 }
-interface MashupSlot{
-    theme: IThemeEXT,
+export interface MashupSlot{
+    theme: IThemeEXT|undefined,
     locked: boolean
 }
 enum WorkBenchArea{

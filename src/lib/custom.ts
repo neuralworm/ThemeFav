@@ -2,7 +2,7 @@ import { MashupFolderItem, MashupThemeItem, MashupThemeProvider } from './../tre
 import { IThemeEXT } from "../models/IThemeExtJSON"
 import * as vscode from 'vscode'
 import * as fs from "fs"
-import { IMashupTheme, MashupTheme, createMashupTheme } from "../models/IMashupTheme"
+import { IMashupTheme, MashupSlot, MashupTheme, createMashupTheme } from "../models/IMashupTheme"
 import { MashupThemeProvider as MashupDataProvider } from "../treeviews/TreeViewMashups"
 import * as jsonTemplate from '../template/sections.json'
 import path = require("path")
@@ -14,21 +14,21 @@ type Dictionary = {
     [index: string]: string[]
 }
 type StringIndexable = {
-    [index: string]: IThemeEXT|undefined
+    [index: string]: MashupSlot | undefined
 }
 export namespace Custom {
     export const setCustomConfig = (customConfig: any, baseTheme?: IThemeEXT, tokens?: any) => {
         // console.log("Set base theme " + baseTheme?.label)
         const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration()
         config.update("workbench.colorCustomizations", customConfig, true).then(() => {
-            if(baseTheme){
+            if (baseTheme) {
                 config.update("workbench.colorTheme", baseTheme.label, true).then(() => {
-                    
+
                 })
             }
-                config.update("editor.tokenColorCustomizations", tokens ? tokens : {}, true).then(() => {
-                    
-                })
+            config.update("editor.tokenColorCustomizations", tokens ? tokens : {}, true).then(() => {
+
+            })
         })
     }
     export const clearConfig = () => {
@@ -38,9 +38,9 @@ export namespace Custom {
         })
     }
     export const generateRandomConfig = (context: vscode.ExtensionContext, dataProvider: MashupDataProvider) => {
-        const mashTheme: IMashupTheme = {}
+        const mashTheme: IMashupTheme = createMashupTheme()
         sections.forEach((sectionString: string) => {
-            mashTheme[sectionString] = getRandomTheme()
+            mashTheme[sectionString].theme = getRandomTheme()
         })
         const randomConfig = createCustomConfig(mashTheme, dataProvider)
         updateMashupState(context, mashTheme, dataProvider)
@@ -59,6 +59,7 @@ export namespace Custom {
             mashupTheme = createMashupTheme()
         }
         if (!rawData) mashupTheme = createMashupTheme()
+        console.log(mashupTheme)
         return mashupTheme
     }
     export const updateMashupState = (context: vscode.ExtensionContext, data: IMashupTheme, mashupDataProvider: MashupDataProvider) => {
@@ -69,39 +70,42 @@ export namespace Custom {
     export const removeMashupTheme = (e: MashupThemeItem, context: vscode.ExtensionContext, dataProvider: MashupDataProvider) => {
         const state: IMashupTheme = getMashupState(context)
         const stateD = state as StringIndexable
-        stateD[e.slot] = undefined
-        updateMashupState(context, stateD, dataProvider)
+        if(!stateD[e.slot]) return
+        stateD[e.slot]!.theme = undefined
+        updateMashupState(context, state, dataProvider)
     }
     export const createCustomConfig = (mashupTheme: IMashupTheme, dataProvider: MashupThemeProvider): any => {
         const config: any = {
         }
-        for (const [key, value] of Object.entries(mashupTheme)){
-            if(key === "base" || key === "tokens") continue
-            if(!value) continue
-            try{
-                let val = value as IThemeEXT
+        for (const [key, value] of Object.entries(mashupTheme)) {
+            console.log(key)
+            if (key === "base" || key === "tokens") continue
+            if (!value || !value.theme) continue
+            try {
+                if(value.locked) continue
+                let val = value.theme as IThemeEXT
                 let jsonPath = path.resolve(val.absPath!, val.path)
                 let buffer = fs.readFileSync(jsonPath)
                 const JSONstring: string = buffer.toString()
                 // REPAIR JSON
                 const repaired = jsonrepair(JSONstring)
-                                
+
                 const themeObj: any = JSON.parse(repaired)
                 // @ts-ignore
                 const dict = jsonTemplate as Dictionary
                 const valuesToSearch: string[] = dict[key]
                 console.log("KEY: " + key)
-               
+
                 let count = 0
-                valuesToSearch.forEach((val:string)=>{
-                    if(!themeObj.colors) return
-                    if(val in themeObj.colors){
+                valuesToSearch.forEach((val: string) => {
+                    if (!themeObj.colors) return
+                    if (val in themeObj.colors) {
                         // console.log("found " + val)
-                        try{
+                        try {
                             config[val] = themeObj.colors[val]
                             count++
                         }
-                        catch(e){
+                        catch (e) {
                             console.log(e)
                         }
                     }
@@ -126,27 +130,37 @@ export namespace Custom {
                 // CONFIDENCE
                 // console.log(getMashupConfidence(valuesToSearch.length, count))
             }
-            catch(e){
+            catch (e) {
                 console.log(e)
             }
-       }
+        }
         // console.log(config)
         return config
     }
     export const applyUpdate = (mashupDataProvider: MashupDataProvider) => {
         const data: IMashupTheme = mashupDataProvider.mashupData
         const newConfig = createCustomConfig(data, mashupDataProvider)
-        setCustomConfig(newConfig, data.base, data.tokens ? getTokenConfig(data.tokens) : undefined)
+        let baseTheme: IThemeEXT|undefined
+        if(data.base){
+            baseTheme = data.base.theme
+        }
+        else baseTheme = undefined
+        let tokenTheme: IThemeEXT|undefined
+        if(data.tokens){
+            tokenTheme = data.tokens.theme
+        }
+        else tokenTheme = undefined
+        setCustomConfig(newConfig, baseTheme, tokenTheme ? getTokenConfig(tokenTheme) : undefined)
     }
-   
+
     export const getTokenConfig = (mashupTheme: IThemeEXT): any => {
-        try{
+        try {
             let jsonPath = path.resolve(mashupTheme.absPath!, mashupTheme.path)
             let buffer = fs.readFileSync(jsonPath)
             const JSONstring: string = buffer.toString()
             // REPAIR JSON
             const repaired = jsonrepair(JSONstring)
-                            
+
             const themeObj: any = JSON.parse(repaired)
             // @ts-ignore
             // console.log("tokens: " + themeObj.tokenColors)
@@ -155,7 +169,7 @@ export namespace Custom {
             }
             return config
         }
-        catch(e){
+        catch (e) {
             return undefined
         }
     }

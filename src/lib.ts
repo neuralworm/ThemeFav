@@ -8,7 +8,7 @@ import { Custom } from './lib/custom';
 import { MashupThemeProvider } from './treeviews/TreeViewMashups';
 import { HistoryDataProvider } from './treeviews/TreeViewHistory';
 import { History } from './lib/history';
-import { IMashupTheme } from './models/IMashupTheme';
+import { IMashupTheme, createMashupTheme } from './models/IMashupTheme';
 import { Folders } from './lib/folders';
 import { Favorites } from './lib/favorites';
 // GLOBAL STATE RETRIEVAL
@@ -22,7 +22,7 @@ export interface IGlobalState{
 // BASIC STATE MANAGEMENT
 export const resetState = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider, mashupProvider: MashupThemeProvider, historyData: HistoryDataProvider) => {
     context.globalState.update("themeFav_favorites", "[]").then(() => {
-        context.globalState.update("themeFav_mashup", "{}").then(() => {
+        context.globalState.update("themeFav_mashup", JSON.stringify(createMashupTheme())).then(() => {
             context.globalState.update("themeFav_folders", "[]").then(() => {
                 context.globalState.update("themeFav_history", "[]").then(() => {
                     historyData.refresh()

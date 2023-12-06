@@ -26,11 +26,9 @@ export namespace Custom {
                     
                 })
             }
-            if(tokens){
-                config.update("editor.tokenColorCustomizations", tokens, true).then(() => {
+                config.update("editor.tokenColorCustomizations", tokens ? tokens : {}, true).then(() => {
                     
                 })
-            }
         })
     }
     export const clearConfig = () => {
@@ -46,7 +44,8 @@ export namespace Custom {
         })
         const randomConfig = createCustomConfig(mashTheme, dataProvider)
         updateMashupState(context, mashTheme, dataProvider)
-        setCustomConfig(randomConfig, randomConfig["base"], randomConfig["tokens"])
+        setCustomConfig(randomConfig, randomConfig["base"], getTokenConfig(randomConfig["tokens"]))
+
     }
     // MASHUPS
     export const getMashupState = (context: vscode.ExtensionContext): IMashupTheme => {
@@ -135,12 +134,30 @@ export namespace Custom {
         return config
     }
     export const applyUpdate = (mashupDataProvider: MashupDataProvider) => {
-        const data = mashupDataProvider.mashupData
+        const data: IMashupTheme = mashupDataProvider.mashupData
         const newConfig = createCustomConfig(data, mashupDataProvider)
-        setCustomConfig(newConfig, data.base)
+        setCustomConfig(newConfig, data.base, data.tokens ? getTokenConfig(data.tokens) : undefined)
     }
-    export const getTokenConfig = (mashupTheme: IMashupTheme) => {
-
+   
+    export const getTokenConfig = (mashupTheme: IThemeEXT): any => {
+        try{
+            let jsonPath = path.resolve(mashupTheme.absPath!, mashupTheme.path)
+            let buffer = fs.readFileSync(jsonPath)
+            const JSONstring: string = buffer.toString()
+            // REPAIR JSON
+            const repaired = jsonrepair(JSONstring)
+                            
+            const themeObj: any = JSON.parse(repaired)
+            // @ts-ignore
+            // console.log("tokens: " + themeObj.tokenColors)
+            const config: any = {
+                "textMateRules": themeObj.tokenColors
+            }
+            return config
+        }
+        catch(e){
+            return undefined
+        }
     }
     export const getMashupConfidence = (possibleValues: number, foundValues: number): string => {
         const perc = (foundValues * 100) / possibleValues

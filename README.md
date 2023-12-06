@@ -1,6 +1,6 @@
 <div align="center">
   
-![themefav_logo_sm](https://github.com/neuralworm/ThemeFav/assets/105694623/76324fc0-0765-4486-af5c-7860b7e2c5d7)
+![themefav_logo_sm](https://github.com/neuralworm/ThemeFav/assets/105694623/f55c03b3-56a0-4b44-875e-7164e981c859)
 
 <h1 style="text-align: center;">ThemeFav for <a href="https://code.visualstudio.com/">VSCode</a></h1>
 

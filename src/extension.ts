@@ -168,6 +168,9 @@ export function activate(context: vscode.ExtensionContext) {
 		console.log(e)
 		Custom.generateRandomConfig(context, mashupDataProvider)
 	})
+	const disposable_deactivateMashupTheme = vscode.commands.registerCommand("themeFav.disableMashup", (e: any) => {
+		lib.activateTheme(activeDataProvider.activeTheme)
+	})
 	context.subscriptions.push(disposable_getFavorites);
 	context.subscriptions.push(disposable_selectFromFavorites);
 	context.subscriptions.push(disposable_saveTheme);
@@ -193,10 +196,12 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable_duplicate);
 	context.subscriptions.push(disposable_activateHistoryItem);
 	context.subscriptions.push(disposable_activateMashupTheme);
+	context.subscriptions.push(disposable_deactivateMashupTheme)
 	context.subscriptions.push(disposable_removeFromMashup)
 	context.subscriptions.push(disposable_uninstallTheme)
 	context.subscriptions.push(disposable_refreshInstalled)
 	context.subscriptions.push(disposable_activateTheme)
+
 	context.subscriptions.push(disposable_randomMashup)
 
 

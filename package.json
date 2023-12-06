@@ -281,11 +281,6 @@
 					"group": "paths"
 				},
 				{
-					"command": "themeFav.delete",
-					"when": "view == favtreeview && viewItem != installedFolder && viewItem !== installed",
-					"group": "delete"
-				},
-				{
 					"command": "themeFav.editJSON",
 					"when": "view == mashuptreeview && viewItem == mashup_theme",
 					"group": "paths"
@@ -315,6 +310,11 @@
 				{
 					"command": "themeFav.uninstallTheme",
 					"when": "view == installedtreeview"
+				},
+				{
+					"command": "themeFav.delete",
+					"when": "view == favtreeview && viewItem != installedFolder && viewItem !== installed",
+					"group": "delete"
 				}
 			],
 			"commandPalette": [
@@ -345,7 +345,40 @@
 				{
 					"command": "themeFav.editJSON",
 					"when": "false"
+				},
+				{
+					"command": "themeFav.remove",
+					"when": "false"
+				},
+				{
+					"command": "themeFav.getFavorites",
+					"when": "false"
+				},
+				{
+					"command": "themeFav.activateTheme",
+					"when": "false"
+				},
+				{
+					"command": "themeFav.duplciateAndEdit",
+					"when": "false"
+				},
+				{
+					"command": "themeFav.copyPath",
+					"when": "false"
+				},
+				{
+					"command": "themeFav.sortFolderAsc",
+					"when": "false"
+				},
+				{
+					"command": "themeFav.sortFolderDesc",
+					"when": "false"
+				},
+				{
+					"command": "themeFav.uninstallTheme",
+					"when": "false"
 				}
+			
 			],
 			"themeFav.moveToFolderSubMenu": [
 				{

@@ -15,22 +15,16 @@ export class MashupTheme{
     }
 }
 export interface IMashupTheme{
-    [key: string]: any,
-    base?: IThemeEXT
-    activitybar?: IThemeEXT
-    statusbar?: IThemeEXT
-    editor?: IThemeEXT
-    terminal?: IThemeEXT
+    [key: string]: any
 }
 export const createMashupTheme = (): IMashupTheme => {
     return {
-        base: undefined,
-        activitybar: undefined,
-        editor: undefined,
-        statusbar: undefined,
-        terminal: undefined 
     }
     
+}
+interface MashupSlot{
+    theme: IThemeEXT,
+    locked: boolean
 }
 enum WorkBenchArea{
     "activitybar",

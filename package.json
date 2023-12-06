@@ -166,6 +166,16 @@
 				"command": "themeFav.randomMashup",
 				"title": "Randomize",
 				"icon": "$(flame)"
+			},
+			{
+				"command": "themeFav.lockSlot",
+				"title": "Lock",
+				"icon": "$(lock)"
+			},
+			{
+				"command": "themeFav.unlockSlot",
+				"title": "Unlock",
+				"icon": "$(unlock)"
 			}
 		],
 		"viewsContainers": {
@@ -315,6 +325,16 @@
 					"command": "themeFav.delete",
 					"when": "view == favtreeview && viewItem != installedFolder && viewItem !== installed",
 					"group": "delete"
+				},
+				{
+					"command": "themeFav.lockSlot",
+					"when": "view == mashuptreeview && viewItem == mashup_folder",
+					"group": "inline"
+				},
+				{
+					"command": "themeFav.unlockSlot",
+					"when": "view == mashuptreeview && viewItem == mashup_folder",
+					"group": "inline"
 				}
 			],
 			"commandPalette": [
@@ -347,7 +367,7 @@
 					"when": "false"
 				},
 				{
-					"command": "themeFav.remove",
+					"command": "themeFav.removeViaView",
 					"when": "false"
 				},
 				{
@@ -377,8 +397,15 @@
 				{
 					"command": "themeFav.uninstallTheme",
 					"when": "false"
+				},
+				{
+					"command": "themeFav.lockSlot",
+					"when": "false"
+				},
+				{
+					"command": "themeFav.unlockSlot",
+					"when": "false"
 				}
-			
 			],
 			"themeFav.moveToFolderSubMenu": [
 				{
@@ -391,7 +418,7 @@
 					"command": "themeFav.moveToDefault"
 				}
 			],
-			"themeFav.sortFolder":[
+			"themeFav.sortFolder": [
 				{
 					"command": "themeFav.sortFolderAsc"
 				},

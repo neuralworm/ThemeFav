@@ -77,6 +77,7 @@ export class MashupFolderItem implements vscode.TreeItem {
         light: path.join(__filename, '../', "../", "../", 'resources', 'folder.png'),
         dark: path.join(__filename, '../', "../", "../", 'resources', 'folder.png')
     }
+    public locked: boolean = false
     public confidence?: string
     constructor(
         public label: string,

@@ -171,6 +171,10 @@ export function activate(context: vscode.ExtensionContext) {
 	const disposable_deactivateMashupTheme = vscode.commands.registerCommand("themeFav.disableMashup", (e: any) => {
 		lib.activateTheme(activeDataProvider.activeTheme)
 	})
+	const disposable_lockSlot = vscode.commands.registerCommand("themeFav.lockSlot", (e: MashupFolderItem) => {
+	})
+	const disposable_unlockSlot = vscode.commands.registerCommand("themeFav.unlockSlot", (e: MashupFolderItem) => {
+	})
 	context.subscriptions.push(disposable_getFavorites);
 	context.subscriptions.push(disposable_selectFromFavorites);
 	context.subscriptions.push(disposable_saveTheme);
@@ -201,8 +205,9 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable_uninstallTheme)
 	context.subscriptions.push(disposable_refreshInstalled)
 	context.subscriptions.push(disposable_activateTheme)
-
 	context.subscriptions.push(disposable_randomMashup)
+	context.subscriptions.push(disposable_lockSlot)
+	context.subscriptions.push(disposable_unlockSlot)
 
 
 

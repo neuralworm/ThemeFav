@@ -4,6 +4,13 @@ All notable changes to the "favoritethemes" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.0.3] - 2023-12-6
+
+### Added
+
+  - Added activate context option to favorite and install theme tree views in sidebar.
+  - Lock button now functions for locking mashup theme slots, preventing reassignment.
+
 ## [0.0.2] - 2023-12-6
 
 ### Added

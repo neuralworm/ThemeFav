@@ -4,6 +4,13 @@ All notable changes to the "favoritethemes" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.0.4] - 2023-12-6
+
+### Fixed
+
+  - Fixed issue where mashup slot lock button being activated would prevent that theme from being applied to that section of the editor.
+
+
 ## [0.0.3] - 2023-12-6
 
 ### Added

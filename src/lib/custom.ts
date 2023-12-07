@@ -86,7 +86,7 @@ export namespace Custom {
             if (key === "base" || key === "tokens") continue
             if (!value || !value.theme) continue
             try {
-                if(value.locked) continue
+                // if(value.locked) continue
                 let val = value.theme as IThemeEXT
                 let jsonPath = path.resolve(val.absPath!, val.path)
                 let buffer = fs.readFileSync(jsonPath)

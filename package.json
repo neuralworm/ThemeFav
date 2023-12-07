@@ -350,11 +350,6 @@
 					"command": "themeFav.lockSlot",
 					"when": "view == mashuptreeview && viewItem == mashup_folder",
 					"group": "inline"
-				},
-				{
-					"command": "themeFav.unlockSlot",
-					"when": "view == mashuptreeview && viewItem == mashup_folder",
-					"group": "inline"
 				}
 			],
 			"commandPalette": [

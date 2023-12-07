@@ -53,6 +53,8 @@ export class MashupThemeProvider implements vscode.TreeDataProvider<MashupFolder
             }
             if (!target) return
             const targetLabel: string = target?.label!
+            // EXIT IF SLOT LOCKED
+            if(this.mashupData[targetLabel].locked) return
             const tempDict = this.mashupData as Dictionary
             if(!tempDict[targetLabel]){
                 tempDict[targetLabel] = {
@@ -94,7 +96,8 @@ export class MashupFolderItem implements vscode.TreeItem {
         this.collapsibleState = vscode.TreeItemCollapsibleState.Expanded
         this.contextValue = "mashup_folder"
         this.child = mashupSlot
-        this.description = this.child.theme ? this.child.theme.label : "empty"
+        this.locked = this.child.locked
+        this.description = this.child.theme ? (this.locked ? "(locked)" : this.child.theme.label) : "empty"
     }
 
 }

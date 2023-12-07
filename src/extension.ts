@@ -175,6 +175,7 @@ export function activate(context: vscode.ExtensionContext) {
 		lib.activateTheme(activeDataProvider.activeTheme)
 	})
 	const disposable_lockSlot = vscode.commands.registerCommand("themeFav.lockSlot", (e: MashupFolderItem) => {
+		Custom.lockSlot(e, context, mashupDataProvider)
 	})
 	const disposable_unlockSlot = vscode.commands.registerCommand("themeFav.unlockSlot", (e: MashupFolderItem) => {
 	})

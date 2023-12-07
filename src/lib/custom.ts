@@ -39,8 +39,12 @@ export namespace Custom {
     }
     export const generateRandomConfig = (context: vscode.ExtensionContext, dataProvider: MashupDataProvider) => {
         const mashTheme: IMashupTheme = createMashupTheme()
+        const mashupState: IMashupTheme = getMashupState(context)
         sections.forEach((sectionString: string) => {
-            mashTheme[sectionString].theme = getRandomTheme()
+            // IF LOCKED, KEEP SET STATE
+            if(mashupState[sectionString].locked) mashTheme[sectionString] = mashupState[sectionString]
+            // ELSE GET RANDOM
+            else mashTheme[sectionString].theme = getRandomTheme()
         })
         const randomConfig = createCustomConfig(mashTheme, dataProvider)
         updateMashupState(context, mashTheme, dataProvider)
@@ -176,5 +180,12 @@ export namespace Custom {
     export const getMashupConfidence = (possibleValues: number, foundValues: number): string => {
         const perc = (foundValues * 100) / possibleValues
         return `${perc < 10 ? "Pointless" : (perc < 30 ? "Ineffective" : (perc < 70 ? "Effective" : "Very Effective"))} (${foundValues}/${possibleValues})`
+    }
+    // SLOTS
+    export const lockSlot = (folderItem: MashupFolderItem, context: vscode.ExtensionContext, dataProvider: MashupDataProvider) => {
+        const mashupState: IMashupTheme = getMashupState(context)
+        const slotLabel: string = folderItem.label
+        mashupState[slotLabel].locked = !folderItem.locked
+        updateMashupState(context, mashupState, dataProvider)
     }
 }

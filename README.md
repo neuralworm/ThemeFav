@@ -32,13 +32,14 @@ Sort themes by a variety of means.
 
 
 ## Installation
+Enter the following command into VSCode's command palette.
 
 ```
 ext install themefav
 ```
 
 ## Commands
-tbd
+(coming soon)
 
 
 ## Requirements
@@ -47,7 +48,7 @@ VSCode
 
 ## Extension Settings
 
-tbd
+(coming soon)
 
 ## Known Issues
 

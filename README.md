@@ -30,8 +30,6 @@ Sort themes by a variety of means.
 
 
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
 ## Installation
 
 ```
@@ -48,7 +46,7 @@ VSCode
 
 ## Extension Settings
 
-* `themeFav.validateThemesOnLaunch`: Validate favorites list with all installed themes, removing unisntalled themes from favorites. (boolean)
+tbd
 
 ## Known Issues
 
@@ -57,6 +55,7 @@ VSCode
 ## Release Notes
 
 Users appreciate release notes as you update your extension.
+
 
 
 

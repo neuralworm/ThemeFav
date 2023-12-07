@@ -10,6 +10,7 @@
 	"categories": [
 		"Other"
 	],
+	"icon": "./resources/icon.png",
 	"activationEvents": [
 		"onCommand:themeFav.favoritethememessage"
 	],
@@ -465,7 +466,8 @@
 		"watch": "tsc -watch -p ./",
 		"pretest": "yarn run compile && yarn run lint",
 		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
+		"test": "node ./out/test/runTest.js",
+		"publish": "vsce package && vsce publish"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.2.0",

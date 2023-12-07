@@ -13,6 +13,9 @@
 		"onCommand:themeFav.favoritethememessage"
 	],
 	"main": "./out/extension.js",
+	"repository": {
+		"url": "https://github.com/neuralworm/ThemeFav"
+	},
 	"contributes": {
 		"commands": [
 			{

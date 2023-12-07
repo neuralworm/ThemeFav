@@ -138,7 +138,7 @@ export function activate(context: vscode.ExtensionContext) {
 		lib.copyPath(e, context, favThemeProvider)
 	})
 	const disposable_addTo = vscode.commands.registerCommand("themeFav.addTo", (e: InstalledThemeItem)=>{
-		lib.moveToFolderViaPallette(context, favThemeProvider, e)
+		lib.addToFolderPallette(context, favThemeProvider, e)
 	})
 	const disposable_search = vscode.commands.registerCommand("themeFav.search", () => {
 		lib.searchInstalled(context, installedThemeProvider, installedTreeView)

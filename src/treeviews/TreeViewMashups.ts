@@ -107,7 +107,7 @@ export class MashupThemeItem implements vscode.TreeItem {
     public slot: string
 
     constructor(mashupSlot: MashupSlot, slot: string) {
-        this.label = mashupSlot.theme ? mashupSlot.theme.label : "empty"
+        this.label = mashupSlot.theme ? ThemeExtUtil.getInterfaceIdentifier(mashupSlot.theme) : "empty"
         this.themeSlot = mashupSlot
         this.collapsibleState = vscode.TreeItemCollapsibleState.None
         this.slot = slot

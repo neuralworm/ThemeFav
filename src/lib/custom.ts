@@ -1,5 +1,5 @@
 import { MashupFolderItem, MashupThemeItem, MashupThemeProvider } from './../treeviews/TreeViewMashups';
-import { IThemeEXT } from "../models/IThemeExtJSON"
+import { IThemeEXT, ThemeExtUtil } from "../models/IThemeExtJSON"
 import * as vscode from 'vscode'
 import * as fs from "fs"
 import { IMashupTheme, MashupSlot, MashupTheme, createMashupTheme } from "../models/IMashupTheme"
@@ -22,7 +22,7 @@ export namespace Custom {
         const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration()
         config.update("workbench.colorCustomizations", customConfig, true).then(() => {
             if (baseTheme) {
-                config.update("workbench.colorTheme", baseTheme.label, true).then(() => {
+                config.update("workbench.colorTheme", ThemeExtUtil.getInterfaceIdentifier(baseTheme), true).then(() => {
 
                 })
             }

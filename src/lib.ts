@@ -248,10 +248,9 @@ export const manageFolder = (context: vscode.ExtensionContext, themeProvider: Th
     // ACTIVATE
     quickPickAction.show()
 }
-export const addToFolderPallette = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider, themeItem: ThemeItem) => {
-    const oldFolder: IFolder | undefined = themeItem.parent
+export const addToFolderPallette = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider, themeItem: InstalledThemeItem) => {
     const folders: IFolder[] = Folders.getFolderState(context)
-    const favs = Favorites.getFavorites(context)
+    console.log(themeItem)
     // CHECK IF ALREADY IN FOLDERS
     const quickPickItems: FolderQuickPickItem[] = folders.map((val: IFolder, index: number) => {
         const pick: FolderQuickPickItem = {
@@ -261,7 +260,9 @@ export const addToFolderPallette = (context: vscode.ExtensionContext, themeProvi
         }
         return pick
     }).filter((fldr: FolderQuickPickItem) => {
-        if (fldr.folder.themes.map((val) => val.label).includes(themeItem.label)) return false
+        if (fldr.folder.themes.map((val) => ThemeExtUtil.getInterfaceIdentifier(val)).includes(themeItem.label)){
+            return false
+        }
         return true
     })
     // SETUP MENU
@@ -295,6 +296,7 @@ export const moveToFolderViaPallette = (context: vscode.ExtensionContext, themeP
         if (fldr.folder.themes.map((val) => val.label).includes(themeItem.label)) return false
         return true
     })
+    console.log(quickPickItems)
 
     // SETUP MENU
     let quickPickAction = vscode.window.createQuickPick()

@@ -81,11 +81,8 @@ export class MashupFolderItem implements vscode.TreeItem {
     public contextValue?: string = "mashup_folder"
     public child: MashupSlot
     public description?: string | boolean | undefined;
-    public readonly iconPath = {
-        light: path.join(__filename, '../', "../", "../", 'resources', 'folder.png'),
-        dark: path.join(__filename, '../', "../", "../", 'resources', 'folder.png')
-    }
     public locked: boolean = false
+    public readonly iconPath;
     public confidence?: string
     constructor(
         public label: string,
@@ -98,6 +95,10 @@ export class MashupFolderItem implements vscode.TreeItem {
         this.child = mashupSlot
         this.locked = this.child.locked
         this.description = this.child.theme ? (this.locked ? "(locked)" : this.child.theme.label) : "empty"
+        this.iconPath = {
+            light: path.join(__filename, '../', "../", "../", 'resources', `${this.locked ? "lock.svg" : "folder.png"}`),
+            dark: path.join(__filename, '../', "../", "../", 'resources', `${this.locked ? "lock.svg" : "folder.png"}`)
+        }
     }
 
 }

@@ -3,7 +3,7 @@
 	"publisher": "neuralworm",
 	"displayName": "ThemeFav: Theme Manager",
 	"description": "Easily favorite themes and switch between them. Edit, create, save.",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"engines": {
 		"vscode": "^1.84.0"
 	},
@@ -168,6 +168,11 @@
 				"icon": "$(check)"
 			},
 			{
+				"command": "themeFav.activateContextTheme",
+				"title": "Activate",
+				"icon": "$(check)"
+			},
+			{
 				"command": "themeFav.randomMashup",
 				"title": "Randomize",
 				"icon": "$(flame)"
@@ -275,6 +280,16 @@
 				}
 			],
 			"view/item/context": [
+				{
+					"command": "themeFav.activateContextTheme",
+					"when": "view == favtreeview && viewItem == themeItem",
+					"group": "activate"
+				},
+				{
+					"command": "themeFav.activateContextTheme",
+					"when": "view == installedtreeview",
+					"group": "activate"
+				},
 				{
 					"submenu": "themeFav.moveToFolderSubMenu",
 					"when": "view == favtreeview && viewItem == themeItem",
@@ -409,6 +424,10 @@
 				},
 				{
 					"command": "themeFav.unlockSlot",
+					"when": "false"
+				},
+				{
+					"command": "themeFav.activateContextTheme",
 					"when": "false"
 				}
 			],

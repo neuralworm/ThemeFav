@@ -13,8 +13,8 @@ type Dictionary = {
 }
 
 export class MashupThemeProvider implements vscode.TreeDataProvider<MashupFolderItem | MashupThemeItem>, vscode.TreeDragAndDropController<MashupFolderItem | MashupThemeItem>{
-    dropMimeTypes = ['application/vnd.code.tree.favtreeview', "text/plain"];
-    dragMimeTypes = ['application/vnd.code.tree.favtreeview', "text/plain"];
+    dropMimeTypes = ['application/vnd.code.tree.favtreeview', 'application/vnd.code.tree.historytreeview'];
+    dragMimeTypes = ['application/vnd.code.tree.favtreeview'];
     context: vscode.ExtensionContext
     private _onDidChangeTreeData: vscode.EventEmitter<MashupFolderItem | undefined | null | void> = new vscode.EventEmitter<MashupFolderItem | undefined | null | void>()
     readonly onDidChangeTreeData: vscode.Event<MashupFolderItem | undefined | null | void> = this._onDidChangeTreeData.event;
@@ -41,7 +41,11 @@ export class MashupThemeProvider implements vscode.TreeDataProvider<MashupFolder
 
     }
     handleDrop(target: MashupFolderItem | MashupThemeItem | undefined, dataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): void | Thenable<void> {
-        const transferData = dataTransfer.get("application/vnd.code.tree.favtreeview")
+        let transferData = dataTransfer.get("application/vnd.code.tree.favtreeview")
+        if(!transferData){
+            // HISTORY DROPS
+        transferData = dataTransfer.get("application/vnd.code.tree.historytreeview")
+        }
         if (transferData) {
             console.log(transferData)
             let transferItem
@@ -67,6 +71,7 @@ export class MashupThemeProvider implements vscode.TreeDataProvider<MashupFolder
             // UPDATE DATA MODEL
             Custom.updateMashupState(this.context, this.mashupData, this)
         }
+        
     }
     // SYNC WITH STATE
     refresh(): void {

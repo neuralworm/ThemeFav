@@ -54,6 +54,7 @@ export function activate(context: vscode.ExtensionContext) {
 	})
 	const historyTreeView: vscode.TreeView<HistoryItem> = vscode.window.createTreeView("historytreeview", {
 		treeDataProvider: historyDataProvider,
+		dragAndDropController: historyDataProvider
 	})
 	const activeTreeView: vscode.TreeView<ActiveThemeItem> = vscode.window.createTreeView("activetreeview", {
 		treeDataProvider: activeDataProvider,

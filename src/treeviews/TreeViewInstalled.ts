@@ -5,7 +5,7 @@ import path = require('path');
 
 export class InstalledThemeProvider implements vscode.TreeDataProvider<InstalledThemeItem>, vscode.TreeDragAndDropController<InstalledThemeItem>{
     dropMimeTypes = [];
-	dragMimeTypes = ["application/vnd.code.tree.favtreeview", "text/plain"];
+	dragMimeTypes = ["application/vnd.code.tree.favtreeview"];
     context: vscode.ExtensionContext
     installed: IThemeEXT[]
     private _onDidChangeTreeData: vscode.EventEmitter<InstalledThemeItem|undefined|null|void> = new vscode.EventEmitter<InstalledThemeItem|undefined|null|void>()

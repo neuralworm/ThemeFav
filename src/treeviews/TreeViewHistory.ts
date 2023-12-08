@@ -6,8 +6,8 @@ import { History } from '../lib/history';
 
 
 export class HistoryDataProvider implements vscode.TreeDataProvider<HistoryItem>, vscode.TreeDragAndDropController<HistoryItem>{
-    dropMimeTypes = ['application/vnd.code.tree.favtreeview', "text/plain"];
-	dragMimeTypes = ['application/vnd.code.tree.favtreeview', "text/plain"];
+    dropMimeTypes = [];
+	dragMimeTypes = ['application/vnd.code.tree.historytreeview'];
     context: vscode.ExtensionContext
     history: IThemeEXT[]
     private _onDidChangeTreeData: vscode.EventEmitter<HistoryItem|undefined|null|void> = new vscode.EventEmitter<HistoryItem|undefined|null|void>()
@@ -30,6 +30,9 @@ export class HistoryDataProvider implements vscode.TreeDataProvider<HistoryItem>
     refresh(): void {
         this.history = History.getHistory(this.context)
         this._onDidChangeTreeData.fire()
+    }
+    handleDrag(source: readonly HistoryItem[], dataTransfer: vscode.DataTransfer, token: vscode.CancellationToken): void | Thenable<void> {
+        dataTransfer.set('application/vnd.code.tree.historytreeview', new vscode.DataTransferItem(source))
     }
    
 }

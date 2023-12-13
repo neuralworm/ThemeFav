@@ -11,6 +11,7 @@ import { History } from './lib/history';
 import { IMashupTheme, createMashupTheme } from './models/IMashupTheme';
 import { Folders } from './lib/folders';
 import { Favorites } from './lib/favorites';
+import { ActiveDataProvider } from './treeviews/TreeViewActive';
 // GLOBAL STATE RETRIEVAL
 export interface IGlobalState{
     installed: IThemeEXT[],
@@ -82,7 +83,7 @@ export const treeDelete = (context: vscode.ExtensionContext, themeProvider: Them
 
 
 // PALLETTE ACTION
-export const selectFavorite = (context: vscode.ExtensionContext) => {
+export const selectFavorite = (context: vscode.ExtensionContext, activeDataProvider: ActiveDataProvider) => {
     const favs: IThemeEXT[] = Favorites.getFavorites(context)
     const current: IThemeEXT = getCurrentTheme()
     const currentIncludedInFavorites = doesThemesInclude(favs, current)
@@ -109,12 +110,12 @@ export const selectFavorite = (context: vscode.ExtensionContext) => {
     // CALLBACKS
     quickPickAction.onDidAccept(() => {
         const selection = quickPickAction.activeItems[0]
-        activateTheme(selection.theme)
+        activateTheme(selection.theme, activeDataProvider)
         quickPickAction.hide()
     })
     quickPickAction.onDidChangeActive(() => {
         const selection = quickPickAction.activeItems[0]
-        activateTheme(selection.theme)
+        activateTheme(selection.theme, activeDataProvider)
     })
     // ACTIVATE
     quickPickAction.show()
@@ -359,10 +360,11 @@ export const copyPath = (themeItem: ThemeItem, context: vscode.ExtensionContext,
     vscode.env.clipboard.writeText(themeItem.theme.absPath!)
 }
 // UTIL
-export const activateTheme = (theme: IThemeEXT) => {
+export const activateTheme = (theme: IThemeEXT, activeDataProvider: ActiveDataProvider) => {
     const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration()
     config.update("workbench.colorTheme", ThemeExtUtil.getInterfaceIdentifier(theme), true).then(() => {
         Custom.clearConfig()
+        activeDataProvider.mashupActive = false
     })
 }
 export const getCurrentTheme = (): IThemeEXT => {
@@ -493,3 +495,23 @@ export const getRandomTheme = (): IThemeEXT => {
     const rand = Math.floor(Math.random() * installed.length)
     return installed[rand]
 }
+
+// sort an array of IThemeExt by their label alphabetically
+export const sortThemes = (themes: IThemeEXT[]): IThemeEXT[] => {
+    return themes.sort((a: IThemeEXT, b: IThemeEXT) => {
+        if (a.label < b.label) return -1
+        if (a.label > b.label) return 1
+        return 0
+    })
+}
+/**
+ * Retrieves the stored favorites from globalstate and returns them as an array of IThemeEXT objects.
+ * @param context The VS Code extension context.
+ * @returns An array of IThemeEXT objects representing the favorites.
+ */
+export const getFavorites = (context: vscode.ExtensionContext): IThemeEXT[] => {
+    // Retrieve the stored data from vscode.extension.globalstate for the string "favorites"
+    let favorites: IThemeEXT[] = JSON.parse(context.globalState.get("themeFav_favorites") || "[]")
+    return favorites
+}
+

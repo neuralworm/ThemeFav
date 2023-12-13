@@ -6,6 +6,7 @@ import { IMashupTheme, MashupSlot, MashupTheme, createMashupTheme } from '../mod
 import { Custom } from '../lib/custom';
 import { ThemeItem } from './TreeViewFavorites';
 import { sections } from '../constants/mashupsections';
+import { ActiveDataProvider } from './TreeViewActive';
 
 const mashupTemp: IMashupTheme = createMashupTheme()
 type Dictionary = {
@@ -19,8 +20,10 @@ export class MashupThemeProvider implements vscode.TreeDataProvider<MashupFolder
     private _onDidChangeTreeData: vscode.EventEmitter<MashupFolderItem | undefined | null | void> = new vscode.EventEmitter<MashupFolderItem | undefined | null | void>()
     readonly onDidChangeTreeData: vscode.Event<MashupFolderItem | undefined | null | void> = this._onDidChangeTreeData.event;
     public mashupData: IMashupTheme
+    public activeDataProvider: ActiveDataProvider
 
-    constructor(context: vscode.ExtensionContext) {
+    constructor(context: vscode.ExtensionContext, activeDataProvider: ActiveDataProvider) {
+        this.activeDataProvider = activeDataProvider
         this.context = context
         this.mashupData = Custom.getMashupState(this.context)
 
@@ -76,7 +79,7 @@ export class MashupThemeProvider implements vscode.TreeDataProvider<MashupFolder
     // SYNC WITH STATE
     refresh(): void {
         this.mashupData = Custom.getMashupState(this.context)
-        Custom.applyUpdate(this)
+        Custom.applyUpdate(this, this.activeDataProvider)
         this._onDidChangeTreeData.fire()
     }
 

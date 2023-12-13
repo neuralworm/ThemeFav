@@ -9,6 +9,7 @@ import path = require("path")
 import { jsonrepair } from "jsonrepair"
 import { sections } from '../constants/mashupsections';
 import { getRandomTheme } from '../lib';
+import { ActiveDataProvider } from '../treeviews/TreeViewActive';
 
 type Dictionary = {
     [index: string]: string[]
@@ -18,7 +19,6 @@ type StringIndexable = {
 }
 export namespace Custom {
     export const setCustomConfig = (customConfig: any, baseTheme?: IThemeEXT, tokens?: any) => {
-        // console.log("Set base theme " + baseTheme?.label)
         const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration()
         config.update("workbench.colorCustomizations", customConfig, true).then(() => {
             if (baseTheme) {
@@ -141,7 +141,7 @@ export namespace Custom {
         // console.log(config)
         return config
     }
-    export const applyUpdate = (mashupDataProvider: MashupDataProvider) => {
+    export const applyUpdate = (mashupDataProvider: MashupDataProvider, activeDataProvider: ActiveDataProvider) => {
         const data: IMashupTheme = mashupDataProvider.mashupData
         const newConfig = createCustomConfig(data, mashupDataProvider)
         let baseTheme: IThemeEXT|undefined
@@ -155,6 +155,7 @@ export namespace Custom {
         }
         else tokenTheme = undefined
         setCustomConfig(newConfig, baseTheme, tokenTheme ? getTokenConfig(tokenTheme) : undefined)
+        activeDataProvider.mashupActive = true
     }
 
     export const getTokenConfig = (mashupTheme: IThemeEXT): any => {

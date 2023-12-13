@@ -4,6 +4,13 @@ All notable changes to the "favoritethemes" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.0.6] - 2023-12-13
+
+### Added
+
+  - Active theme TreeView displays if a mashup is active.
+ 
+  
 ## [0.0.5] - 2023-12-7
 
 ### Added

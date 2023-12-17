@@ -276,8 +276,6 @@ export const addToFolderPallette = (context: vscode.ExtensionContext, themeProvi
         Folders.addToFolder(themeItem.theme, selected.folder, context, themeProvider)
         quickPickAction.hide()
     })
-
-
     // ACTIVATE
     quickPickAction.show()
 }
@@ -323,7 +321,6 @@ export const moveToFolderViaPallette = (context: vscode.ExtensionContext, themeP
         Favorites.updateUncatFavs(favs, context, themeProvider)
         quickPickAction.hide()
     })
-
     // ACTIVATE
     quickPickAction.show()
 }

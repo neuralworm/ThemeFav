@@ -434,6 +434,10 @@
 				{
 					"command": "themeFav.TEST_RESET",
 					"when": "isDebugMode"
+				},
+				{
+					"command": "themeFav.listExt",
+					"when": "isDebugMode"
 				}
 			],
 			"themeFav.moveToFolderSubMenu": [

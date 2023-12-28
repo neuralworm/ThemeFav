@@ -430,6 +430,10 @@
 				{
 					"command": "themeFav.activateContextTheme",
 					"when": "false"
+				},
+				{
+					"command": "themeFav.TEST_RESET",
+					"when": "isDebugMode"
 				}
 			],
 			"themeFav.moveToFolderSubMenu": [

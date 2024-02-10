@@ -3,7 +3,7 @@
 	"publisher": "neuralworm",
 	"displayName": "ThemeFav: Theme Manager",
 	"description": "Easily favorite themes and switch between them. Edit, create, save.",
-	"version": "0.0.7",
+	"version": "0.0.8",
 	"engines": {
 		"vscode": "^1.84.0"
 	},

@@ -16,7 +16,8 @@
 		"theme manager",
 		"customize"
 	],
-	"icon": "./resources/icon.png",
+	"license":"MIT",
+	"icon": "resources/icon.png",
 	"activationEvents": [
 		"onCommand:themeFav.favoritethememessage"
 	],
@@ -513,6 +514,7 @@
 	"dependencies": {
 		"@types/uuid": "^9.0.7",
 		"jsonrepair": "^3.4.1",
-		"uuid": "^9.0.1"
+		"uuid": "^9.0.1",
+		"vsce": "^2.15.0"
 	}
 }

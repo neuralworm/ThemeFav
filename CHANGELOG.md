@@ -4,6 +4,15 @@ All notable changes to the "favoritethemes" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.0.8] - 2024-2-10
+
+### Fixed
+
+  - Fixed issue where switching from a mashup theme to a single theme using the checkmark button in the [ACTIVE THEME] tree would not update the displayed string back to the active theme.
+
+### NOTE: THANKS FOR THE REVIEWS GUYS!
+ 
+
 ## [0.0.7] - 2023-12-13
 
 ### Fixed

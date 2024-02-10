@@ -137,7 +137,6 @@ export const removeViaCommandPalette = (context: vscode.ExtensionContext, themeP
     // SELECT TO REMOVE
     quickPickAction.onDidAccept(() => {
         const selection = quickPickAction.activeItems[0]
-        console.log("want to remove " + selection.label)
         Favorites.removeThemeFromUncat(context, selection.label, themeProvider)
         quickPickAction.hide()
     })
@@ -362,6 +361,7 @@ export const activateTheme = (theme: IThemeEXT, activeDataProvider: ActiveDataPr
     config.update("workbench.colorTheme", ThemeExtUtil.getInterfaceIdentifier(theme), true).then(() => {
         Custom.clearConfig()
         activeDataProvider.mashupActive = false
+        activeDataProvider.refresh()
     })
 }
 export const getCurrentTheme = (): IThemeEXT => {

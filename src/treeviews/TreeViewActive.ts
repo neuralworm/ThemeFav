@@ -24,6 +24,7 @@ export class ActiveDataProvider implements vscode.TreeDataProvider<ActiveThemeIt
         return element
     }
     getChildren(element?: ActiveThemeItem | undefined): vscode.ProviderResult<(ActiveThemeItem|MashupActiveItem)[]> {
+        console.log("GETTING NEW CHILDREN: " + this.mashupActive)
         // RETURN FAVORITES AS ROOT ELEMENTS
         return this.mashupActive ? [new MashupActiveItem()] : [new ActiveThemeItem(this.activeTheme, vscode.TreeItemCollapsibleState.None)]
     }

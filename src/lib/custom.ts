@@ -23,11 +23,9 @@ export namespace Custom {
         config.update("workbench.colorCustomizations", customConfig, true).then(() => {
             if (baseTheme) {
                 config.update("workbench.colorTheme", ThemeExtUtil.getInterfaceIdentifier(baseTheme), true).then(() => {
-
                 })
             }
             config.update("editor.tokenColorCustomizations", tokens ? tokens : {}, true).then(() => {
-
             })
         })
     }
@@ -63,7 +61,7 @@ export namespace Custom {
             mashupTheme = createMashupTheme()
         }
         if (!rawData) mashupTheme = createMashupTheme()
-        console.log(mashupTheme)
+        // console.log(mashupTheme)
         return mashupTheme
     }
     export const updateMashupState = (context: vscode.ExtensionContext, data: IMashupTheme, mashupDataProvider: MashupDataProvider) => {
@@ -82,7 +80,6 @@ export namespace Custom {
         const config: any = {
         }
         for (const [key, value] of Object.entries(mashupTheme)) {
-            console.log(key)
             if (key === "base" || key === "tokens") continue
             if (!value || !value.theme) continue
             try {
@@ -98,7 +95,6 @@ export namespace Custom {
                 // @ts-ignore
                 const dict = jsonTemplate as Dictionary
                 const valuesToSearch: string[] = dict[key]
-                console.log("KEY: " + key)
 
                 let count = 0
                 valuesToSearch.forEach((val: string) => {
@@ -156,6 +152,7 @@ export namespace Custom {
         else tokenTheme = undefined
         setCustomConfig(newConfig, baseTheme, tokenTheme ? getTokenConfig(tokenTheme) : undefined)
         activeDataProvider.mashupActive = true
+        activeDataProvider.refresh()
     }
 
     export const getTokenConfig = (mashupTheme: IThemeEXT): any => {

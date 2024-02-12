@@ -38,27 +38,23 @@ Enter the following command into VSCode's command palette.
 ext install themefav
 ```
 
-## Commands
-(coming soon)
+## Roadmap
+- Nested Folders
+- Complete UI state syncing
 
+## Commands
+(still coming soon)
 
 ## Requirements
 
 VSCode
 
-## Extension Settings
-
-(coming soon)
 
 ## Known Issues
 
+Installing and uninstalling themes may not always rerender their corresponding treeviews (this can be manually alleviated by hitting the Validate or Refresh Install Themes)
+
 ¯\_(ツ)_/¯
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-
 
 
 ## LICENSE

@@ -116,7 +116,7 @@ export function activate(context: vscode.ExtensionContext) {
 		lib.manageMenu(context, favThemeProvider)
 	})
 	const disposable_validate = vscode.commands.registerCommand("themeFav.validate", () => {
-		lib.validateThemes(context, favThemeProvider)
+		lib.validateThemes(context, favThemeProvider, installedThemeProvider)
 	})
 	const disposable_newFolder = vscode.commands.registerCommand("themeFav.newFolder", () => {
 		lib.createFolder(context, favThemeProvider)
@@ -157,7 +157,7 @@ export function activate(context: vscode.ExtensionContext) {
 		Custom.removeMashupTheme(e, context, mashupDataProvider)
 	})
 	const disposable_uninstallTheme = vscode.commands.registerCommand("themeFav.uninstallTheme", (installedThemeItem: InstalledThemeItem) => {
-		lib.uninstallExtension(installedThemeItem, installedThemeProvider)
+		lib.uninstallExtension(installedThemeItem, installedThemeProvider, context, favThemeProvider)
 	})
 	const disposable_refreshInstalled = vscode.commands.registerCommand("themeFav.refreshInstalled", (installedThemeItem: InstalledThemeItem) => {
 		installedThemeProvider.refresh()

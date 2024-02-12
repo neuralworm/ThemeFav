@@ -13,7 +13,7 @@ import { Folders } from './lib/folders';
 import { Favorites } from './lib/favorites';
 import { ActiveDataProvider } from './treeviews/TreeViewActive';
 // GLOBAL STATE RETRIEVAL
-export interface IGlobalState{
+export interface IGlobalState {
     installed: IThemeEXT[],
     uncategorized: IThemeEXT[],
     folders: IFolder[],
@@ -35,7 +35,7 @@ export const resetState = (context: vscode.ExtensionContext, themeProvider: Them
     })
 }
 export const getGlobalState = (context: vscode.ExtensionContext): IGlobalState => {
-    return{
+    return {
         installed: getInstalled(),
         uncategorized: Favorites.getFavorites(context),
         mashup: Custom.getMashupState(context),
@@ -260,7 +260,7 @@ export const addToFolderPallette = (context: vscode.ExtensionContext, themeProvi
         }
         return pick
     }).filter((fldr: FolderQuickPickItem) => {
-        if (fldr.folder.themes.map((val) => ThemeExtUtil.getInterfaceIdentifier(val)).includes(themeItem.label)){
+        if (fldr.folder.themes.map((val) => ThemeExtUtil.getInterfaceIdentifier(val)).includes(themeItem.label)) {
             return false
         }
         return true
@@ -427,19 +427,34 @@ export const getInstalled = (): IThemeEXT[] => {
     })
     return themesArr
 }
-export const validateThemes = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
+export const validateThemes = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider, installedThemeProvider: InstalledThemeProvider) => {
+    // GET ALL INSTALLED AGAIN TO VERIFY AGAINST
     let installed: IThemeEXT[] = getInstalled()
+    // VERIFY
     let installStrings: string[] = installed.map((val: IThemeEXT) => ThemeExtUtil.getInterfaceIdentifier(val))
+    // UNCAT FAVS
     let favs: IThemeEXT[] = Favorites.getFavorites(context)
     let newFavs: IThemeEXT[] = favs.filter((theme: IThemeEXT) => {
         if (installStrings.includes(ThemeExtUtil.getInterfaceIdentifier(theme))) return true
         return false
     })
+    // FOLDER FAVES
+    let folders: IFolder[] = Folders.getFolderState(context);
+    let newFolders: IFolder[] = folders.map((folder: IFolder, index: number) => {
+        folder.themes = folder.themes.filter((theme: IThemeEXT) => {
+                if (installStrings.includes(ThemeExtUtil.getInterfaceIdentifier(theme))) return true
+                return false
+            }
+        )
+        return folder
+    })
     // ALERT IF REMOVED
     let diff = favs.length - newFavs.length
     if (diff > 0) vscode.window.showInformationMessage(`Removed ${diff} uninstalled favorites.`)
     // UPDATE GLOBAL STATE
+    Folders.updateFolderState(newFolders, context, themeProvider)
     Favorites.updateUncatFavs(newFavs, context, themeProvider)
+    installedThemeProvider.refresh();
 }
 const isInstalled = (themeString: string, allInstalled: IThemeEXT[]): boolean => {
     if (allInstalled.map((val: IThemeEXT) => val.id ? val.id : val.label).includes(themeString)) return true
@@ -476,16 +491,20 @@ export const doesFolderInclude = (folder: IFolder, theme: IThemeEXT): boolean =>
 }
 
 // UNINSTALL THEME EXT
-export const uninstallExtension = (themeItem: InstalledThemeItem, installedDataProvider: InstalledThemeProvider) => {
-    let extID: string|undefined = themeItem.theme.extID
-    if(!extID) return
-    vscode.commands.executeCommand('extension.open', extID).then(()=>{
-        vscode.commands.executeCommand("workbench.extensions.uninstallExtension", extID).then(()=>{
-            installedDataProvider.refresh()
-            vscode.window.showInformationMessage(`${extID} uninstalled.`)
+export const uninstallExtension = (themeItem: InstalledThemeItem, installedDataProvider: InstalledThemeProvider, context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
+    let extID: string | undefined = themeItem.theme.extID
+    if (!extID) return
+    vscode.commands.executeCommand('extension.open', extID).then(() => {
+        vscode.commands.executeCommand("workbench.extensions.uninstallExtension", extID).then(() => {
+            setTimeout(()=>{
+                validateThemes(context, themeProvider, installedDataProvider);
+                vscode.window.showInformationMessage(`${extID} uninstalled.`)
+
+            },200)
+          
         })
     })
-   
+
 }
 export const getRandomTheme = (): IThemeEXT => {
     const installed: IThemeEXT[] = getInstalled()

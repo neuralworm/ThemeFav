@@ -27,6 +27,7 @@ export class InstalledThemeProvider implements vscode.TreeDataProvider<Installed
     // SYNC WITH STATE
     refresh(): void {
         this.installed = lib.getInstalled()
+        console.log("SYncing...")
         this._onDidChangeTreeData.fire()
     }
     // DRAG

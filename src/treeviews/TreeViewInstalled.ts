@@ -13,7 +13,7 @@ export class InstalledThemeProvider implements vscode.TreeDataProvider<Installed
 
     constructor(context: vscode.ExtensionContext){
         this.context = context
-        this.installed = lib.getInstalled()
+        this.installed = lib.GetInstalled()
     }
     getTreeItem(element: InstalledThemeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
         return element
@@ -26,7 +26,8 @@ export class InstalledThemeProvider implements vscode.TreeDataProvider<Installed
     }
     // SYNC WITH STATE
     refresh(): void {
-        this.installed = lib.getInstalled()
+        this.installed = lib.GetInstalled()
+        console.log("SYncing...")
         this._onDidChangeTreeData.fire()
     }
     // DRAG
@@ -50,7 +51,7 @@ export class InstalledThemeItem implements vscode.TreeItem{
         }
       ) {
         this.theme = theme
-        this.label = ThemeExtUtil.getInterfaceIdentifier(theme)
+        this.label = ThemeExtUtil.GetInterfaceIdentifier(theme)
         this.collapsibleState = vscode.TreeItemCollapsibleState.None
         this.contextValue = "installedThemeItem"
         this.description = theme.uiTheme

@@ -18,7 +18,7 @@ export class ActiveDataProvider implements vscode.TreeDataProvider<ActiveThemeIt
 
     constructor(context: vscode.ExtensionContext){
         this.context = context
-        this.activeTheme = lib.getCurrentTheme()
+        this.activeTheme = lib.GetCurrentTheme()
     }
     getTreeItem(element: ActiveThemeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
         return element
@@ -30,7 +30,7 @@ export class ActiveDataProvider implements vscode.TreeDataProvider<ActiveThemeIt
     }
     // SYNC WITH STATE
     refresh(): void {
-        this.activeTheme = lib.getCurrentTheme()
+        this.activeTheme = lib.GetCurrentTheme()
         this._onDidChangeTreeData.fire()
     }
     // DROP
@@ -48,7 +48,7 @@ export class ActiveDataProvider implements vscode.TreeDataProvider<ActiveThemeIt
         catch (e) {
             incoming = theme as ThemeItem[]
         }
-        lib.activateTheme(incoming[0].theme, this)
+        lib.ActivateTheme(incoming[0].theme, this, this.context)
     }
 }
 
@@ -66,7 +66,7 @@ export class ActiveThemeItem implements vscode.TreeItem{
         }
       ) {
         this.theme = theme
-        this.label = ThemeExtUtil.getInterfaceIdentifier(theme)
+        this.label = ThemeExtUtil.GetInterfaceIdentifier(theme)
         this.collapsibleState = vscode.TreeItemCollapsibleState.None
         this.contextValue = "activeThemeItem"
         this.description = theme.uiTheme

@@ -1,7 +1,8 @@
 import { MashupFolderItem, MashupThemeItem, MashupThemeProvider } from './../treeviews/TreeViewMashups';
 import { IThemeEXT, ThemeExtUtil } from "../models/IThemeExtJSON"
-import * as vscode from 'vscode'
 import * as fs from "fs"
+import * as vscode from 'vscode'
+
 import { IMashupTheme, MashupSlot, MashupTheme, createMashupTheme } from "../models/IMashupTheme"
 import { MashupThemeProvider as MashupDataProvider } from "../treeviews/TreeViewMashups"
 import * as jsonTemplate from '../template/sections.json'
@@ -10,6 +11,9 @@ import { jsonrepair } from "jsonrepair"
 import { sections } from '../constants/mashupsections';
 import { getRandomTheme } from '../lib';
 import { ActiveDataProvider } from '../treeviews/TreeViewActive';
+import { State } from './state';
+import { IConfig } from '../models/IConfig';
+import { Console } from 'console';
 
 type Dictionary = {
     [index: string]: string[]
@@ -18,35 +22,56 @@ type StringIndexable = {
     [index: string]: MashupSlot | undefined
 }
 export namespace Custom {
-    export const setCustomConfig = (customConfig: any, baseTheme?: IThemeEXT, tokens?: any) => {
+    export const SetCustomConfig = async (context: vscode.ExtensionContext, activeDataProvider: ActiveDataProvider, customConfig: any, baseTheme?: IThemeEXT, tokens?: any) => {
         const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration()
-        config.update("workbench.colorCustomizations", customConfig, true).then(() => {
-            if (baseTheme) {
-                config.update("workbench.colorTheme", ThemeExtUtil.getInterfaceIdentifier(baseTheme), true).then(() => {
-                })
-            }
-            config.update("editor.tokenColorCustomizations", tokens ? tokens : {}, true).then(() => {
-            })
-        })
+        if (!activeDataProvider.mashupActive) {
+            console.log("ENTERING MASHUP MODE")
+            State.SaveState(context)
+        }
+        // SAVE CURRENT THEME STATE TO PERSISTANCE
+        await Promise.all([
+            config.update("workbench.colorCustomizations", customConfig, true),
+            baseTheme ? config.update("workbench.colorTheme", ThemeExtUtil.GetInterfaceIdentifier(baseTheme), true) : null,
+            config.update("editor.tokenColorCustomizations", tokens ? tokens : {}, true)
+        ])
+       
     }
+
     export const clearConfig = () => {
         const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration()
         config.update("workbench.colorCustomizations", {}, true).then(() => {
-            config.update("editor.tokenColorCustomizations", "{}", true)
+            config.update("editor.tokenColorCustomizations", {}, true)
         })
     }
-    export const generateRandomConfig = (context: vscode.ExtensionContext, dataProvider: MashupDataProvider) => {
+    export const ResetToDefault = async (forceTheme: IThemeEXT | undefined, context: vscode.ExtensionContext) => {
+        const previousConfig: IConfig | undefined = State.GetDefaultState(context)
+        if (previousConfig == null) return
+        const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration()
+        console.log(previousConfig.colorCustomizations)
+        console.log(previousConfig.tokenColorCustomizations)
+        console.log(previousConfig.colorTheme)
+        console.log(forceTheme?.label)
+        await Promise.all([
+            config.update("workbench.colorTheme", forceTheme ? ThemeExtUtil.GetInterfaceIdentifier(forceTheme) : previousConfig.colorTheme, vscode.ConfigurationTarget.Global),
+            config.update("workbench.colorCustomizations", JSON.parse(previousConfig.colorCustomizations), vscode.ConfigurationTarget.Global),
+            config.update("editor.tokenColorCustomizations", JSON.parse(previousConfig.tokenColorCustomizations), vscode.ConfigurationTarget.Global)
+        ])
+
+
+
+    }
+    export const GenerateRandomConfig = (context: vscode.ExtensionContext, dataProvider: MashupDataProvider, activeDataProvider: ActiveDataProvider) => {
         const mashTheme: IMashupTheme = createMashupTheme()
         const mashupState: IMashupTheme = getMashupState(context)
         sections.forEach((sectionString: string) => {
             // IF LOCKED, KEEP SET STATE
-            if(mashupState[sectionString].locked) mashTheme[sectionString] = mashupState[sectionString]
+            if (mashupState[sectionString].locked) mashTheme[sectionString] = mashupState[sectionString]
             // ELSE GET RANDOM
             else mashTheme[sectionString].theme = getRandomTheme()
         })
-        const randomConfig = createCustomConfig(mashTheme, dataProvider)
+        const randomConfig = CreateCustomConfig(mashTheme, dataProvider)
         updateMashupState(context, mashTheme, dataProvider)
-        setCustomConfig(randomConfig, randomConfig["base"], getTokenConfig(randomConfig["tokens"]))
+        SetCustomConfig(context, activeDataProvider, randomConfig, randomConfig["base"], getTokenConfig(randomConfig["tokens"]))
 
     }
     // MASHUPS
@@ -72,11 +97,11 @@ export namespace Custom {
     export const removeMashupTheme = (e: MashupThemeItem, context: vscode.ExtensionContext, dataProvider: MashupDataProvider) => {
         const state: IMashupTheme = getMashupState(context)
         const stateD = state as StringIndexable
-        if(!stateD[e.slot]) return
+        if (!stateD[e.slot]) return
         stateD[e.slot]!.theme = undefined
         updateMashupState(context, state, dataProvider)
     }
-    export const createCustomConfig = (mashupTheme: IMashupTheme, dataProvider: MashupThemeProvider): any => {
+    export const CreateCustomConfig = (mashupTheme: IMashupTheme, dataProvider: MashupThemeProvider): any => {
         const config: any = {
         }
         for (const [key, value] of Object.entries(mashupTheme)) {
@@ -137,20 +162,20 @@ export namespace Custom {
         // console.log(config)
         return config
     }
-    export const applyUpdate = (mashupDataProvider: MashupDataProvider, activeDataProvider: ActiveDataProvider) => {
+    export const UpdateActiveMashupState = (mashupDataProvider: MashupDataProvider, activeDataProvider: ActiveDataProvider, context: vscode.ExtensionContext) => {
         const data: IMashupTheme = mashupDataProvider.mashupData
-        const newConfig = createCustomConfig(data, mashupDataProvider)
-        let baseTheme: IThemeEXT|undefined
-        if(data.base){
+        const newConfig = CreateCustomConfig(data, mashupDataProvider)
+        let baseTheme: IThemeEXT | undefined
+        if (data.base) {
             baseTheme = data.base.theme
         }
         else baseTheme = undefined
-        let tokenTheme: IThemeEXT|undefined
-        if(data.tokens){
+        let tokenTheme: IThemeEXT | undefined
+        if (data.tokens) {
             tokenTheme = data.tokens.theme
         }
         else tokenTheme = undefined
-        setCustomConfig(newConfig, baseTheme, tokenTheme ? getTokenConfig(tokenTheme) : undefined)
+        SetCustomConfig(context, activeDataProvider, newConfig, baseTheme, tokenTheme ? getTokenConfig(tokenTheme) : undefined)
         activeDataProvider.mashupActive = true
         activeDataProvider.refresh()
     }
@@ -185,5 +210,13 @@ export namespace Custom {
         const slotLabel: string = folderItem.label
         mashupState[slotLabel].locked = !folderItem.locked
         updateMashupState(context, mashupState, dataProvider)
+    }
+    // Descativation and reinstatement of default config
+    export const DisableMashup = (context: vscode.ExtensionContext) => {
+        // GET SAVED STATE
+        let previousState: IConfig | undefined = State.GetDefaultState(context)
+        if (!previousState) return
+        const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration()
+        config.update("workspace.colorTheme", previousState.colorTheme)
     }
 }

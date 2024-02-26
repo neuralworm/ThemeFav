@@ -68,20 +68,20 @@ export namespace Folders {
     export const addToFolder = (themeToAdd: IThemeEXT, folder: IFolder, context: vscode.ExtensionContext, themeProvider: ThemeDataProvider, index?: number) => {
         const folders: IFolder[] = getFolderState(context)
         const folderIndex: number = getFolderIndex(folder, folders)
-        const themeStrings = folders[folderIndex].themes.map((val: IThemeEXT) => val.label)
+        const themeStrings = folders[folderIndex].items.map((val: IThemeEXT) => val.label)
         if (themeStrings.indexOf(themeToAdd.label) === -1) {
-            if (index !== undefined) folders[folderIndex].themes.splice(index, 0, themeToAdd)
-            else folders[folderIndex].themes.push(themeToAdd)
+            if (index !== undefined) folders[folderIndex].items.splice(index, 0, themeToAdd)
+            else folders[folderIndex].items.push(themeToAdd)
             updateFolderState(folders, context, themeProvider)
         }
     }
     export const removeFromFolder = (themeToAdd: IThemeEXT, folder: IFolder, context: vscode.ExtensionContext, themeProvider: ThemeDataProvider) => {
         const folders: IFolder[] = getFolderState(context)
         const folderIndex: number = getFolderIndex(folder, folders)
-        const themeStrings = folders[folderIndex].themes.map((val: IThemeEXT) => val.label)
+        const themeStrings = folders[folderIndex].items.map((val: IThemeEXT) => val.label)
         const themeIndex: number = themeStrings.indexOf(themeToAdd.label)
         if (themeIndex !== -1) {
-            folders[folderIndex].themes.splice(themeIndex, 1)
+            folders[folderIndex].items.splice(themeIndex, 1)
             updateFolderState(folders, context, themeProvider)
         }
     }

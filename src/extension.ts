@@ -36,6 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
 		History.addHistoryEvent(context, theme, historyDataProvider)
 		activeDataProvider.refresh()
 	})
+	
 	vscode.extensions.onDidChange(() => {
 		// EXTENSION INSTALL EVENTS
 	})
@@ -62,10 +63,10 @@ export function activate(context: vscode.ExtensionContext) {
 	})
 	
 	// TREE VIEW SELECTION EVENTS
-	favoritesTreeView.onDidChangeSelection((e: vscode.TreeViewSelectionChangeEvent<ThemeItem|FolderItem>)=>{
+	favoritesTreeView.onDidChangeSelection(async (e: vscode.TreeViewSelectionChangeEvent<ThemeItem|FolderItem>)=>{
 		if(e.selection[0].hasOwnProperty("theme")){
 			//@ts-ignore
-			lib.activateTheme(e.selection[0].theme, activeDataProvider)
+			await lib.ActivateTheme(e.selection[0].theme, activeDataProvider, context)
 		}
 	})
 	favoritesTreeView.onDidCollapseElement((e: vscode.TreeViewExpansionEvent<FolderItem|ThemeItem>) => {
@@ -74,18 +75,18 @@ export function activate(context: vscode.ExtensionContext) {
 	favoritesTreeView.onDidExpandElement((e: vscode.TreeViewExpansionEvent<FolderItem|ThemeItem>) => {
 		Folders.updateFolderCollapse(e.element as FolderItem, context, favThemeProvider)
 	})
-	installedTreeView.onDidChangeSelection((e: vscode.TreeViewSelectionChangeEvent<InstalledThemeItem>)=>{
-		lib.activateTheme(e.selection[0].theme, activeDataProvider)
+	installedTreeView.onDidChangeSelection( async (e: vscode.TreeViewSelectionChangeEvent<InstalledThemeItem>)=>{
+		await lib.ActivateTheme(e.selection[0].theme, activeDataProvider, context)
 	})
 	// COMMANDS
 	const disposable_getFavorites = vscode.commands.registerCommand('themeFav.getFavorites', () => {
-		Favorites.getFavorites(context)
+		Favorites.GetFavorites(context)
 	});
 	const disposable_saveTheme = vscode.commands.registerCommand('themeFav.saveTheme', () => {
 		Favorites.saveThemeToUncat(context, favThemeProvider)
 	});
 	const disposable_selectFromFavorites = vscode.commands.registerCommand('themeFav.selectFromFavorites', () => {
-		lib.getCurrentTheme()
+		lib.GetCurrentTheme()
 		lib.selectFavorite(context, activeDataProvider)
 	});
 	const disposable_removeViaCommandPalette = vscode.commands.registerCommand('themeFav.removeViaCommandPalette', () => {
@@ -116,7 +117,7 @@ export function activate(context: vscode.ExtensionContext) {
 		lib.manageMenu(context, favThemeProvider)
 	})
 	const disposable_validate = vscode.commands.registerCommand("themeFav.validate", () => {
-		lib.validateThemes(context, favThemeProvider)
+		lib.ValidateThemes(context, favThemeProvider, installedThemeProvider)
 	})
 	const disposable_newFolder = vscode.commands.registerCommand("themeFav.newFolder", () => {
 		lib.createFolder(context, favThemeProvider)
@@ -147,33 +148,33 @@ export function activate(context: vscode.ExtensionContext) {
 	const disposable_duplicate = vscode.commands.registerCommand("themeFav.duplicateAndEdit", (e: InstalledThemeItem) => {
 		lib.duplicateTheme(e, context)
 	})
-	const disposable_activateHistoryItem = vscode.commands.registerCommand("themeFav.activateHistoryItem", (e: HistoryItem) => {
-		lib.activateTheme(e.theme, activeDataProvider)
+	const disposable_activateHistoryItem = vscode.commands.registerCommand("themeFav.activateHistoryItem", async (e: HistoryItem) => {
+		await lib.ActivateTheme(e.theme, activeDataProvider, context)
 	})
 	const disposable_activateMashupTheme = vscode.commands.registerCommand("themeFav.activateMashup", (e: HistoryItem) => {
-		Custom.applyUpdate(mashupDataProvider, activeDataProvider)
+		Custom.UpdateActiveMashupState(mashupDataProvider, activeDataProvider, context)
 	})
 	const disposable_removeFromMashup = vscode.commands.registerCommand("themeFav.removeFromMashup", (e: MashupThemeItem) => {
 		Custom.removeMashupTheme(e, context, mashupDataProvider)
 	})
 	const disposable_uninstallTheme = vscode.commands.registerCommand("themeFav.uninstallTheme", (installedThemeItem: InstalledThemeItem) => {
-		lib.uninstallExtension(installedThemeItem, installedThemeProvider)
+		lib.uninstallExtension(installedThemeItem, installedThemeProvider, context, favThemeProvider)
 	})
 	const disposable_refreshInstalled = vscode.commands.registerCommand("themeFav.refreshInstalled", (installedThemeItem: InstalledThemeItem) => {
 		installedThemeProvider.refresh()
 	})
-	const disposable_activateTheme = vscode.commands.registerCommand("themeFav.activateTheme", () => {
-		lib.activateTheme(activeDataProvider.activeTheme, activeDataProvider)
+	const disposable_activateTheme = vscode.commands.registerCommand("themeFav.activateTheme", async () => {
+		// CHECK IF CURRENT STATE IS MASHUP
+		await lib.ActivateTheme(activeDataProvider.activeTheme, activeDataProvider, context)
 	})
-	const disposable_activateContextTheme = vscode.commands.registerCommand("themeFav.activateContextTheme", (e: ThemeItem) => {
-		lib.activateTheme(e.theme, activeDataProvider)
+	const disposable_activateContextTheme = vscode.commands.registerCommand("themeFav.activateContextTheme", async (e: ThemeItem) => {
+		await lib.ActivateTheme(e.theme, activeDataProvider, context)
 	})
 	const disposable_randomMashup = vscode.commands.registerCommand("themeFav.randomMashup", (e: any) => {
-		console.log(e)
-		Custom.generateRandomConfig(context, mashupDataProvider)
+		Custom.GenerateRandomConfig(context, mashupDataProvider, activeDataProvider)
 	})
-	const disposable_deactivateMashupTheme = vscode.commands.registerCommand("themeFav.disableMashup", (e: any) => {
-		lib.activateTheme(activeDataProvider.activeTheme, activeDataProvider)
+	const disposable_deactivateMashupTheme = vscode.commands.registerCommand("themeFav.disableMashup", async (e: any) => {
+		await Custom.ResetToDefault(undefined, context)
 	})
 	const disposable_lockSlot = vscode.commands.registerCommand("themeFav.lockSlot", (e: MashupFolderItem) => {
 		Custom.lockSlot(e, context, mashupDataProvider)
@@ -221,7 +222,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// TEST
 	let disposable_listExt = vscode.commands.registerCommand("themeFav.listExt", () => {
-		lib.getInstalled()
+		lib.GetInstalled()
 	})
 	
 	let TEST_reset_state = vscode.commands.registerCommand("themeFav.TEST_RESET", () => {

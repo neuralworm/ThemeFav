@@ -10,7 +10,7 @@ export namespace Favorites{
         })
     }
     export const addThemeToUncat = (themeToAdd: IThemeEXT, context: vscode.ExtensionContext, themeProvider: ThemeFavProvider, index?: number) => {
-        let favs: IThemeEXT[] = getFavorites(context)
+        let favs: IThemeEXT[] = GetFavorites(context)
         let doesExist: boolean = lib.doesInclude(favs, themeToAdd)
         if (doesExist) return
         if (index !== undefined) {
@@ -20,7 +20,7 @@ export namespace Favorites{
         updateUncatFavs(favs, context, themeProvider)
     }
     
-export const getFavorites = (context: vscode.ExtensionContext): IThemeEXT[] => {
+export const GetFavorites = (context: vscode.ExtensionContext): IThemeEXT[] => {
     const state = context.globalState
     let favoriteString: string | undefined = state.get('themeFav_favorites')
     // ATTEMPT TO PARSE
@@ -35,9 +35,9 @@ export const getFavorites = (context: vscode.ExtensionContext): IThemeEXT[] => {
     return favoriteArray
 }
 export const saveThemeToUncat = (context: vscode.ExtensionContext, themeProvider: ThemeFavProvider) => {
-    const activeTheme: IThemeEXT = lib.getCurrentTheme()
-    const favoriteArray: IThemeEXT[] = getFavorites(context)
-    if (favoriteArray.map((theme: IThemeEXT) => ThemeExtUtil.getInterfaceIdentifier(theme)).indexOf(ThemeExtUtil.getInterfaceIdentifier(activeTheme)) == -1) {
+    const activeTheme: IThemeEXT = lib.GetCurrentTheme()
+    const favoriteArray: IThemeEXT[] = GetFavorites(context)
+    if (favoriteArray.map((theme: IThemeEXT) => ThemeExtUtil.GetInterfaceIdentifier(theme)).indexOf(ThemeExtUtil.GetInterfaceIdentifier(activeTheme)) == -1) {
         favoriteArray.push(activeTheme)
     }
     else return
@@ -45,7 +45,7 @@ export const saveThemeToUncat = (context: vscode.ExtensionContext, themeProvider
 }
 export const removeThemeFromUncat = (context: vscode.ExtensionContext, themeString: string, themeProvider: ThemeFavProvider) => {
     // console.log('request to remove ' + themeString)
-    const favorites: IThemeEXT[] = getFavorites(context)
+    const favorites: IThemeEXT[] = GetFavorites(context)
     const ind = lib.getThemeNameArray(favorites).indexOf(themeString)
     if (ind == -1) return
     favorites.splice(ind, 1)

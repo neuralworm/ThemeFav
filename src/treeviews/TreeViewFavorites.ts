@@ -38,7 +38,7 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem | Fol
         }), ...this.folders.map((folder: IFolder) => new FolderItem(vscode.TreeItemCollapsibleState.Expanded, folder))]
         else if (element.hasOwnProperty("folder")) {
             let folderElement = element as FolderItem
-            return folderElement.folder.themes.map((theme: IThemeEXT) => new ThemeItem(theme, vscode.TreeItemCollapsibleState.None, folderElement.folder))
+            return folderElement.folder.items.map((theme: IThemeEXT) => new ThemeItem(theme, vscode.TreeItemCollapsibleState.None, folderElement.folder))
         }
     }
     // SYNC WITH STATE
@@ -107,7 +107,7 @@ export class ThemeFavProvider implements vscode.TreeDataProvider<ThemeItem | Fol
                     }
                     // OR MOVE TO FOLDER
                     else {
-                        const index = lib.getThemeIndex(parent.themes, targetItem.label)
+                        const index = lib.getThemeIndex(parent.items, targetItem.label)
                         Folders.addToFolder(activeTheme, parent, this.context, this, index)
                     }
                     break
@@ -143,7 +143,7 @@ export class ThemeItem implements vscode.TreeItem {
         }
     ) {
         this.theme = theme
-        this.label = ThemeExtUtil.getInterfaceIdentifier(theme)
+        this.label = ThemeExtUtil.GetInterfaceIdentifier(theme)
         this.collapsibleState = vscode.TreeItemCollapsibleState.None
         if (parent && parent.label == "Installed") this.contextValue = "installed"
         else this.contextValue = "themeItem"
@@ -165,7 +165,7 @@ export class FolderItem implements vscode.TreeItem {
     ) {
         this.folder = folder
         this.label = folder.label
-        this.description = `${this.folder.themes.length > 0 ? ` (${folder.themes.length})` : " (empty)"}`
+        this.description = `${this.folder.items.length > 0 ? ` (${folder.items.length})` : " (empty)"}`
 
         this.collapsibleState = folder.open ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.Collapsed
         this.contextValue = "folder"

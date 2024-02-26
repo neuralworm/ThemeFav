@@ -79,7 +79,7 @@ export class MashupThemeProvider implements vscode.TreeDataProvider<MashupFolder
     // SYNC WITH STATE
     refresh(): void {
         this.mashupData = Custom.getMashupState(this.context)
-        Custom.applyUpdate(this, this.activeDataProvider)
+        Custom.UpdateActiveMashupState(this, this.activeDataProvider, this.context)
         this._onDidChangeTreeData.fire()
     }
 
@@ -119,7 +119,7 @@ export class MashupThemeItem implements vscode.TreeItem {
     public slot: string
 
     constructor(mashupSlot: MashupSlot, slot: string) {
-        this.label = mashupSlot.theme ? ThemeExtUtil.getInterfaceIdentifier(mashupSlot.theme) : "empty"
+        this.label = mashupSlot.theme ? ThemeExtUtil.GetInterfaceIdentifier(mashupSlot.theme) : "empty"
         this.themeSlot = mashupSlot
         this.collapsibleState = vscode.TreeItemCollapsibleState.None
         this.slot = slot

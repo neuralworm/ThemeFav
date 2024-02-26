@@ -16,6 +16,7 @@ import { ActiveDataProvider } from './treeviews/TreeViewActive';
 import { State } from './lib/state';
 // GLOBAL STATE RETRIEVAL
 export interface IGlobalState {
+export interface IGlobalState {
     installed: IThemeEXT[],
     uncategorized: IThemeEXT[],
     folders: IFolder[],
@@ -478,6 +479,7 @@ export const ValidateThemes = (context: vscode.ExtensionContext, themeProvider: 
     if (diff > 0) vscode.window.showInformationMessage(`Removed ${diff} uninstalled favorites.`)
     // UPDATE GLOBAL STATE
     Folders.updateFolderState(newFolders, context, themeProvider)
+    Folders.updateFolderState(newFolders, context, themeProvider)
     Favorites.updateUncatFavs(newFavs, context, themeProvider)
     installedThemeProvider.refresh();
 }
@@ -537,6 +539,7 @@ export const uninstallExtension = (themeItem: InstalledThemeItem, installedDataP
           
         })
     })
+
 
 }
 export const getRandomTheme = (): IThemeEXT => {

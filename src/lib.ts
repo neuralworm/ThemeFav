@@ -16,7 +16,6 @@ import { ActiveDataProvider } from './treeviews/TreeViewActive';
 import { State } from './lib/state';
 // GLOBAL STATE RETRIEVAL
 export interface IGlobalState {
-export interface IGlobalState {
     installed: IThemeEXT[],
     uncategorized: IThemeEXT[],
     folders: IFolder[],

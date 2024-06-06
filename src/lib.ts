@@ -13,6 +13,7 @@ import { IMashupTheme, createMashupTheme } from './models/IMashupTheme';
 import { Folders } from './lib/folders';
 import { Favorites } from './lib/favorites';
 import { ActiveDataProvider } from './treeviews/TreeViewActive';
+import * as path from 'path'
 import { State } from './lib/state';
 // GLOBAL STATE RETRIEVAL
 export interface IGlobalState {
@@ -332,19 +333,58 @@ export const searchInstalled = (context: vscode.ExtensionContext, dataProvider: 
 }
 // TREE VIEW ACTIONS
 export const editThemeJSON = (itemContext: ThemeItem, context: vscode.ExtensionContext) => {
+    const getDirectories = (extensionDirectory: string): string[] => {
+        return fs.readdirSync(extensionDirectory).filter(name => {
+            return fs.lstatSync(path.join(extensionDirectory, name)).isDirectory();
+        });
+    };
+
+
     console.log("EDIT REQUEST:" + itemContext.theme)
     console.log(itemContext.theme.uri?.path)
     console.log(itemContext.theme.path.slice(1))
     let pathString
 
     const filePath = itemContext.theme.uri?.fsPath;
-    if(fs.existsSync(filePath!)){
+    if (fs.existsSync(filePath!)) {
         pathString = vscode.Uri.parse(itemContext.theme.uri?.path + itemContext.theme.path.slice(1))
     }
-   
-    vscode.workspace.openTextDocument(pathString!).then((val: vscode.TextDocument) => {
-        vscode.window.showTextDocument(val)
+
+    let extPath: string = itemContext.theme.uri?.path!
+
+    let directoryPath = path.dirname(extPath)
+    console.log(directoryPath)
+    let extDirectories: string[] = getDirectories(vscode.Uri.parse(directoryPath).fsPath)
+
+
+    let indexToUse: number
+
+    let extDirectoriesNoVersion = extDirectories.map((themeDirectoryString: string, index: number) => {
+        return removeVersionNumbers(themeDirectoryString)
     })
+    let themeNameWithoutVersion: string = removeVersionNumbers(extPath.split("/")[extPath.split("/").length-1])
+
+    console.log("FIND " + themeNameWithoutVersion)
+
+    console.log("IN " + extDirectoriesNoVersion)
+
+    
+
+    if(extDirectoriesNoVersion.includes(themeNameWithoutVersion)){
+        indexToUse = extDirectoriesNoVersion.indexOf(themeNameWithoutVersion)
+        console.log("DIRECTORY TO OPEN: " + extDirectories[indexToUse] + " with index" + indexToUse)
+
+        console.log(vscode.Uri.joinPath(vscode.Uri.parse(directoryPath), extDirectories[indexToUse], itemContext.theme.path.slice(1)))
+
+        vscode.workspace.openTextDocument(vscode.Uri.parse(directoryPath + "/" + extDirectories[indexToUse] + itemContext.theme.path.slice(1))).then((val: vscode.TextDocument) => {
+            vscode.window.showTextDocument(val)
+        })
+    }
+
+   
+
+
+
 }
 export const removeThemeViaTree = (themeFav: ThemeItem, context: vscode.ExtensionContext, treeProvider: ThemeFavProvider) => {
     const toRemove: string = themeFav.label
@@ -367,13 +407,13 @@ export const copyPath = (themeItem: ThemeItem, context: vscode.ExtensionContext,
 }
 // UTIL
 export const ActivateTheme = async (theme: IThemeEXT, activeDataProvider: ActiveDataProvider, context: vscode.ExtensionContext) => {
-    if(activeDataProvider.mashupActive){
+    if (activeDataProvider.mashupActive) {
         console.log("LEAVING MASHUP MODE")
         await Custom.ResetToDefault(theme ? theme : undefined, context)
         activeDataProvider.mashupActive = false;
         activeDataProvider.refresh()
     }
-    else{
+    else {
         // SET IT
         const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration()
         config.update("workbench.colorTheme", ThemeExtUtil.GetInterfaceIdentifier(theme), true).then(() => {
@@ -467,9 +507,9 @@ export const ValidateThemes = (context: vscode.ExtensionContext, themeProvider: 
     let folders: IFolder[] = Folders.getFolderState(context);
     let newFolders: IFolder[] = folders.map((folder: IFolder, index: number) => {
         folder.items = folder.items.filter((theme: IThemeEXT) => {
-                if (installStrings.includes(ThemeExtUtil.GetInterfaceIdentifier(theme))) return true
-                return false
-            }
+            if (installStrings.includes(ThemeExtUtil.GetInterfaceIdentifier(theme))) return true
+            return false
+        }
         )
         return folder
     })
@@ -484,7 +524,7 @@ export const ValidateThemes = (context: vscode.ExtensionContext, themeProvider: 
 }
 const ValidateThemeVersions = (favorites: IThemeEXT[], installed: string[]): IThemeEXT[] => {
     let versionStrings: string[] = []
-    favorites.forEach((val: IThemeEXT)=>{
+    favorites.forEach((val: IThemeEXT) => {
         let versionString: string = val.uri?.fsPath!
         console.log(versionString)
     })
@@ -530,12 +570,12 @@ export const uninstallExtension = (themeItem: InstalledThemeItem, installedDataP
     if (!extID) return
     vscode.commands.executeCommand('extension.open', extID).then(() => {
         vscode.commands.executeCommand("workbench.extensions.uninstallExtension", extID).then(() => {
-            setTimeout(()=>{
+            setTimeout(() => {
                 ValidateThemes(context, themeProvider, installedDataProvider);
                 vscode.window.showInformationMessage(`${extID} uninstalled.`)
 
-            },200)
-          
+            }, 200)
+
         })
     })
 
@@ -566,3 +606,20 @@ export const getFavorites = (context: vscode.ExtensionContext): IThemeEXT[] => {
     return favorites
 }
 
+const removeVersionNumbers = (filePath: string) => {
+    const endsWithNumber = (str: string) => {
+        const regex = /\d$/;
+        return regex.test(str);
+      };
+      if(endsWithNumber(filePath)){
+        const splited = filePath.split("-")
+        splited.pop()
+        return splited.join("-")
+      }
+      return filePath
+    
+  };
+
+  const UpdateVersionNumber = () => {
+    
+  }
